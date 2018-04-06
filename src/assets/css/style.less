@@ -1,0 +1,379 @@
+@color_c7202c:#c7202c;
+@color_font:#494949;
+
+//一像素边框
+.border-1px(@w,@line,@color){
+  content: " ";
+  position: absolute;
+  left: 0;
+  width: @w;
+  height: 1px;
+  border-bottom: 1px @line @color;
+  color: @color;
+  -webkit-transform-origin: 0 0;
+  transform-origin: 0 0;
+  -webkit-transform: scaleY(0.5);
+  transform: scaleY(0.5);
+}
+
+.borderRadius(@radius) {
+  background-clip: padding-box;
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  -ms-border-radius: @radius;
+  -o-border-radius: @radius;
+  border-radius: @radius;
+}
+/*箭头*/
+.icon_arrows(@top,@right,@b_color,@wh,@deg){
+  display:inline-block;
+  position: absolute;
+  top: @top;
+  right: @right;
+  content: '';
+  border: 1px solid @b_color;
+  border-bottom: 0;
+  border-left: 0;
+  width: @wh;
+  height: @wh;
+  transform: rotate(@deg);
+  -webkit-transform: rotate(@deg);
+}
+
+.icon_left{
+  padding-left: 0.25rem;
+}
+/*左箭头*/
+.icon_left:after{
+  display:inline-block;
+  position: absolute;
+  bottom: 0.32rem;
+  left: 0.3rem;
+  content: '';
+  border: 2px solid #fff;
+  border-bottom: 0;
+  border-left: 0;
+  width: 0.24rem;
+  height: 0.24rem;
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+}
+
+//定位上下左右居中
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+/*定位上下居中*/
+.jz{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+//定位左右居中
+.cl {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+//宽与右边距
+.wr(@w,@r){
+  width:@w;
+  right:@r;
+}
+//宽与左边距
+.wl(@w,@l){
+  width:@w;
+  left:@l;
+}
+//宽高
+.wh(@w,@h){
+  width:@w;
+  height:@h;
+}
+//行高
+.hl(@h){
+  height:@h;
+  line-height: @h;
+}
+//定位公共button
+.button_p{
+  position:absolute;
+  right:0.2rem;
+  bottom:0.3rem;
+}
+
+//字体大小，颜色
+.sc(@size, @color){
+  font-size: @size;
+  color: @color;
+}
+//button
+.button(@w,@h){
+  display: inline-block;
+  .wh(@w,@h);
+  line-height: @h;
+  border:1px solid #EF4F4F;
+  border-radius: 5px;
+  background:@color_c7202c;
+  color:#fff;
+  font-size: 0.28rem;
+  text-align: center;
+  &:active{
+    background:#8F2F2F;
+  }
+}
+//倒三角形
+.triangle_down(@t,@r,@b,@bc){
+  position: absolute;
+  top:@t;
+  right:@r;
+  content:'';
+  width: 0;
+  height: 0;
+  border-left: @b solid transparent;
+  border-right: @b solid transparent;
+  border-top: @b solid @bc;
+}
+//绝对定位
+.position_a(@t,@r){
+  position:absolute;
+  top:@t;
+  right:@r;
+}
+
+.details_list{
+  padding: 0 0.2rem;
+}
+.list_li{
+  //.hl(1rem);
+  line-height: 1rem;
+  &:after{
+  .border-1px(100%,solid,#ccc);
+  }
+}
+.details_type{
+  display: inline-block;
+  width:2rem;
+}
+/*列表----------结束*/
+
+/*tabel--------开始*/
+.record_table{
+  table-layout:fixed;
+  tr:nth-child(2n){
+    background:#fff;
+  }
+  th{
+    border-bottom:1px solid #dddddd
+  }
+  thead{
+    background:#fff;
+    .dropdown{
+      position:relative;
+      p{
+        box-sizing: border-box;
+        .cl;
+        width: 27%;
+        padding: 0 0.2rem 0.2rem 0.2rem;
+      }
+      img{
+        width:100%;
+      }
+    }
+  }
+  tbody{
+    tr{
+      height:0.88rem;
+    }
+    tr:first-child{
+      padding-top: 0.4rem
+    }
+    td{
+      word-wrap:break-word;
+    }
+  }
+}
+.ellipsis{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/*tabel--------结束*/
+
+/*点击状态*/
+.click_active:active{
+  background:rgba(230,230,230,.6);
+}
+// 返回箭头
+.goBacks{
+  .jz;
+  padding:0.2rem;
+}
+// 隐藏默认右箭头
+.weui-cell_access .weui-cell__ft:after{
+  display: none !important;
+}
+// 地址选择器
+.change_lottery{
+  display:inline-block;
+  font-size: 0.36rem;
+  color:#fff;
+  white-space: nowrap;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  &:after{
+    .triangle_down(0.4rem,0.2rem,0.12rem,#fff);
+  }
+}
+
+// 首次进入正在加载位置
+.weui-loadmore{
+  .cl;
+  top: 2rem;
+  z-index:99999;
+  .weui-loadmore__tips{
+    color:#2B2B2B;
+  }
+}
+
+.weui-mask_transparent{
+  z-index: 400 !important;
+}
+.vux-tap-active:active{
+  background: none;
+}
+// 团队管理确认按钮
+.affirm{
+  right: 0.4rem;
+  border:1px solid #fff;
+  .borderRadius(0.05rem);
+  padding:0.08rem 0.2rem;
+  font-size: 0.26rem;
+  color: #fff;
+  .jz;
+}
+.header_app{
+  margin-top: 1rem !important;
+}
+.header_app_v{
+  margin-top: 0.88rem;
+}
+.header_app_v1{
+  margin-top: 0.6rem;
+}
+.main-body{
+  margin-top:0.88rem !important;
+}
+.main-body_userInfo{
+  margin-bottom: 0.8rem;
+  background: #F6F6F6;
+}
+
+.weui-toast{
+  top:5rem !important;
+}
+
+.weui-mask_transparent{
+  top:1.28rem !important;
+}
+
+//没有更多数据了
+.prompt{
+  box-sizing: border-box;
+  .wh(100%, 0.7rem);
+  line-height: 0.7rem;
+  text-align: center;
+  color:#aaa;
+  font-size: 0.26rem;
+  background: #fff;
+  margin:0.1rem 0 1rem 0;
+  border: 1px solid #ddd;
+}
+//右箭头
+.icon_right{
+  .icon_arrows(0.5rem,0.17rem,#ccc,0.2rem,45deg);
+}
+
+.whiteSpace{
+  white-space:nowrap;
+}
+.vux-slider > .vux-indicator > a > .vux-icon-dot.active, .vux-slider .vux-indicator-right > a > .vux-icon-dot.active{
+  background-color: #c7202c !important;
+}
+.vux-slider > .vux-indicator, .vux-slider .vux-indicator-right{
+  bottom: 13px;
+}
+
+//走势连线
+.linkLine{
+  border-bottom: 1px solid #c7202c;
+}
+.weui-dialog{
+  width: 260px !important;
+}
+
+//Agreemnet
+.selsect_user{
+  .weui-cell{
+    padding: 0 !important;
+  }
+  .vux-cell-box:before{
+    border: 0 !important;
+  }
+  .vux-popup-picker-select{
+    text-align: left !important;
+  }
+  .vux-cell-primary{
+    border: 1px solid #ccc !important;
+    padding: 0 0.3rem 0 0.1rem;
+    margin-right: 50%;
+    &:after{
+      .triangle_down(0.24rem,56%,0.12rem,#aaa);
+    }
+  }
+}
+//--------------
+//dividend
+.selsect_dividend{
+  font-size: 0.26rem;
+  .weui-cell{
+    padding: 0 !important;
+  }
+  .vux-cell-box:before{
+    border: 0 !important;
+  }
+  .vux-popup-picker-select{
+    text-align: left !important;
+  }
+  .vux-cell-primary{
+    border: 1px solid #ccc !important;
+    padding: 0 0.3rem 0 0.1rem;
+    margin-right: 30%;
+    height: 0.52rem;
+    &:after{
+      .triangle_down(0.24rem,37%,0.12rem,#aaa);
+    }
+  }
+}
+//----------------
+
+.wage_table{
+  overflow: auto;
+  width:100%;
+}
+// 报表管理中head定位
+.p_fixed{
+  position: fixed;
+  top: 0.88rem;
+  z-index: -1;
+}
+
+.weui-dialog{
+  overflow: visible !important;
+}
