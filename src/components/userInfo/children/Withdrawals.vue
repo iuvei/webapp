@@ -200,9 +200,8 @@
     background:#c7202c;
     text-align:center;
     font-size:0.28rem;
-    margin-top: 0.4rem;
+    margin: 0.4rem 0 0.4rem 3%;
     width:94%;
-    margin-left: 3%;
   }
  .tips{
     padding-top: 0.3rem;
