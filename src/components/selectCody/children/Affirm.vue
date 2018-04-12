@@ -466,7 +466,7 @@
           if (item.type === 'lhzx_lh') {
             item.desc = item.desc.slice(0, 2) + item.codes
             item.methodName = item.methodName.slice(0, 5) + item.codes
-            let str = item.desc.slice(0, 2).concat(item.codes).replace('万', 'w').replace('千', 'q').replace('白', 'b').replace('十', 's').replace('个', 'g').replace('龙', 'l').replace('虎', 't').replace('和', 'h')
+            let str = item.desc.slice(0, 2).concat(item.codes).replace('万', 'w').replace('千', 'q').replace('百', 'b').replace('十', 's').replace('个', 'g').replace('龙', 'l').replace('虎', 't').replace('和', 'h')
             item.codes = this.lh_obj[str]
             data.forEach((value) => {
               if (value.title === '龙虎') {
