@@ -6,10 +6,12 @@
     </div>
 
     <div v-transfer-dom>
-      <x-dialog v-model="showToast" hide-on-blur :dialog-style="{'max-width': '100%', width: '100%', height: '50%', 'background-color': 'transparent'}">
+      <x-dialog v-model="showToast" hide-on-blur
+                :dialog-style="{'max-width': '100%', width: '100%', height: '50%', 'background-color': 'transparent'}">
         <div class="img-box" style="position: relative;">
           <img v-tap="{ methods: _message}" src="./img/active_1020.png" style="max-width:100%">
-          <img @click="showToast=false" src="./img/active_1020_close.png" style="max-width:100%;position: absolute;top:-70px;right:0;">
+          <img @click="showToast=false" src="./img/active_1020_close.png"
+               style="max-width:100%;position: absolute;top:-70px;right:0;">
         </div>
       </x-dialog>
     </div>
@@ -36,7 +38,7 @@
           <div class="hotActivity clear">
             <div class="clear">
               <span class="left" style="font-size: 0.26rem;margin-left:-0.1rem;color:#363636;">【重庆时时彩】开奖稳定,收益高</span>
-              <span  v-tap="{ methods: _activity}" class="hotActivity_button clear">
+              <span v-tap="{ methods: _activity}" class="hotActivity_button clear">
                 <img class="hotActivity_icon" src="./img/hotActivity_icon.png" alt="">
                 <img class="hotActivity_text" src="./img/hotActivity_text.png" alt="">
               </span>
@@ -45,7 +47,7 @@
               <ul class="hotActivity_code clear">
                 <li v-for="item in cqcody" v-text="item"></li>
               </ul>
-                <span  v-tap="{ methods:_selectCody , item : 'ssc' }" class="test_luck right">2元小试身手</span>
+              <span v-tap="{ methods:_selectCody , item : 'ssc' }" class="test_luck right">2元小试身手</span>
               <div style="margin-top:0.24rem;font-weight: normal;">
                 <span style="color:#585858;">&nbsp;投注截止 :</span>
                 <span style="color:#C7202C;" v-text="tickWord"></span>
@@ -57,20 +59,22 @@
           <div class="content clear">
             <div class="enshrine">
               <h2 style="font-weight: normal;font-size: 0.28rem;">常玩彩种</h2>
-              <img v-tap="{ methods:_add_lottery }" src="./img/addbig.png" alt="" >
+              <img v-tap="{ methods:_add_lottery }" src="./img/addbig.png" alt="">
               <p v-tap="{ methods:_accomplish_lottery }" v-show="accomplish">完成</p>
             </div>
             <div class="collecting_list">
               <!--<transition name="findIn">-->
               <section>
                 <ul class="collecting_ui clear">
-                  <li v-show="findin" class="collecting_li" v-for="(item,index) in enshrine" v-tap="{ methods:_selectCody, item: item.nav }" :key="index">
+                  <li v-show="findin" class="collecting_li" v-for="(item,index) in enshrine"
+                      v-tap="{ methods:_selectCody, item: item.nav }" :key="index">
                     <img class="lottery_icon left" :src="'static/'+item.lotteryid+'.png'" alt="">
                     <span class="lottery_name left">
                       {{item.cnname}}
                       <div class="lottery_time">{{item.lotteryDesc}}</div>
                     </span>
-                    <i v-show="isIconAdd" :class="{icon_del:isIconAdd}" v-tap="{ methods:_delEnshrine , item : item, index: index }" ></i>
+                    <i v-show="isIconAdd" :class="{icon_del:isIconAdd}"
+                       v-tap="{ methods:_delEnshrine , item : item, index: index }"></i>
                   </li>
                 </ul>
               </section>
@@ -90,7 +94,8 @@
                     {{item.cnname}}
                     <div class="lottery_time">{{item.lotteryDesc}}</div>
                   </span>
-                  <i :class="{icon_add: isIconAdd, icon_added: item.isIconAdded}" v-tap="{ methods:_addEnshrine, item: item ,index: index }"></i>
+                  <i :class="{icon_add: isIconAdd, icon_added: item.isIconAdded}"
+                     v-tap="{ methods:_addEnshrine, item: item ,index: index }"></i>
                 </li>
               </ul>
             </div>
@@ -104,13 +109,13 @@
 <script>
   import Swipe from '../swipe/Swipe.vue'
   import rollNotice from '../rollNotice/rollNotice.vue'
-  import { Loading, XDialog, TransferDomDirective as TransferDom } from 'vux'
+  import {Loading, XDialog, TransferDomDirective as TransferDom} from 'vux'
 
-  export default{
+  export default {
     directives: {
       TransferDom
     },
-    data () {
+    data() {
       return {
         loading: true, // 加载玩法
         account: '', // 用户名
@@ -133,7 +138,7 @@
         lotteryType: [], // 彩种类型
         times: '', // 定时器
         showToast: false, // 活动
-        clearsetTime:''
+        clearsetTime: ''
       }
     },
     components: {
@@ -152,20 +157,20 @@
         deep: true
       }
     },
-    activated () {
+    activated() {
       this._getaccout()
       this.getMoney()
       // 提交mutation到Store
       this.$store.commit('updateTypeInput', undefined)
       // 提交mutation到Store
       this.$store.commit('updateMethodid', null)
-      if (this.$store.state.home!=0) {
+      if (this.$store.state.home != 0) {
         this.loading = true
         this._inits()
         this.httpUrl()
         // 提交mutation到Store
         this.$store.commit('updateHome', 0)
-      }else{
+      } else {
         this._restart_tick()
       }
       if (this.enshrine.length == 0) {
@@ -175,29 +180,29 @@
         this.getNowFormatDate()
       }
     },
-    deactivated () {
+    deactivated() {
       clearTimeout(this.clearsetTime)
       if (this.accomplish == true) {
         this._accomplish_lottery()
       }
     },
-    created () {
+    created() {
       if (this.$store.state._lotteryBet !== null) {
         this.loading = false
       }
     },
-    beforeRouteLeave (to, from, next) {
+    beforeRouteLeave(to, from, next) {
       clearInterval(this.times)
       next(true)
     },
-    mounted () {
+    mounted() {
       this.httpUrl()
       this._getaccout()
       this._enshrine()
       this._getlocalStorage()
     },
     methods: {
-      _message () {
+      _message() {
         this.showToast = false
         this.$router.push({path: '/activity'})
       },
@@ -205,10 +210,10 @@
         let newTime = new Date().getTime(),
           minTime = new Date("2017/11/16 00:00:00").getTime(),
           maxTime = new Date("2017/11/26 23:59:59").getTime()
-        if(newTime >= minTime && newTime <= maxTime) {
-          this.clearsetTime = setTimeout(()=>{
+        if (newTime >= minTime && newTime <= maxTime) {
+          this.clearsetTime = setTimeout(() => {
             this.showToast = true
-          },1000)
+          }, 1000)
           this.$store.commit('updataShowToast', false)
         }
       },
@@ -224,16 +229,16 @@
         }
         this.$store.commit('updateUserName', account.toLocaleLowerCase())
       },
-      _activity () {
+      _activity() {
         this.$router.push({path: '/activity'})
       },
-      _inits () {
+      _inits() {
         this.getSess()
         this.getMoney()
         this.getcq()
         this._restart_tick()
       },
-      _enshrine () {
+      _enshrine() {
         let lotteryType = this.$store.state.lotteryType
         for (let i = 0; i < lotteryType.length; i++) {
           if (lotteryType[i].lotteryid == 1 || lotteryType[i].lotteryid == 14 || lotteryType[i].lotteryid == 19) {
@@ -241,13 +246,13 @@
           }
         }
       },
-      loadTop () {
+      loadTop() {
         // 下拉加载
         this._inits()
         this.$refs.loadmore.onTopLoaded() // 固定方法，查询完要调用一次，用于重新定位
       },
       // 显示隐藏金额
-      _moneyNumber () {
+      _moneyNumber() {
         if (this.showMoney) {
           this.showMoney = !this.showMoney
           this.hideMoney = !this.hideMoney
@@ -257,20 +262,20 @@
         }
       },
       // 余额查询
-      getMoney () {
+      getMoney() {
         let httpurl = this.httpUrl('GETMONEY')
-        this.httpAction(httpurl,(res) => {
+        this.httpAction(httpurl, (res) => {
           let money = res.data
           // 提交mutation到Store
           this.$store.commit('updateMoney', money)
-        },{'flag': 'getmoney'})
+        }, {'flag': 'getmoney'})
       },
       // 获取彩种分类
-      getSess () {
+      getSess() {
         let i = 0
         this.lotteryList = []
         this.navList = []
-        let typeSsc = [], selectFive = [], second = [], rests = [], diping =[]
+        let typeSsc = [], selectFive = [], second = [], rests = [], diping = []
 
         let data = this.$store.state.lotteryType
         for (let item in data) {
@@ -300,7 +305,7 @@
         this._allOzd(i)
       },
       // 获取所有玩法
-      _allOzd (i) {
+      _allOzd(i) {
         let navArr = this.navList
         if (i >= navArr.length) {
           this.loading = false
@@ -309,18 +314,44 @@
         }
         this.loading = true
         let httpurl = this.httpUrl('METHOD') + '&nav=' + navArr[i]
-        this.httpAction(httpurl,(res) => {
-          let data = res.data
-          if(navArr[i] == 'mmc'){
-          		this.lotteryBet[navArr[i]] = data
-          }else{
-          		this.lotteryBet[navArr[i]] = data
+        this.httpAction(httpurl, (res) => {
+          if (res.data) {
+            let data = res.data
+            // 处理龙虎庄闲数据
+            let lhobj = {}, zxobj = {}, _index = ''
+            if (navArr[i] == 'ssc') {
+              data.forEach((value, index) => {
+                if (value.title === '龙虎庄闲') {
+                  _index = index
+                  lhobj = {...value}
+                  zxobj = {...value}
+                  value.label.forEach((val) => {
+                    if (val.gtitle === '龙虎') {
+                      lhobj.title = '龙虎'
+                      lhobj.label = [val]
+                    } else {
+                      zxobj.title = '庄闲'
+                      zxobj.label = [val]
+                    }
+                  })
+                }
+              })
+              if (_index) {
+                data = [...data, lhobj, zxobj]
+                data.splice(_index, 1)
+              }
+            }
+            if (navArr[i] == 'mmc') {
+              this.lotteryBet[navArr[i]] = data
+            } else {
+              this.lotteryBet[navArr[i]] = data
+            }
           }
           i++
           this._allOzd(i)
         })
       },
-      _selectCody (params) {
+      _selectCody(params) {
         let nav = params.item
         let lotteryBet = this.$store.state._lotteryBet
         let selectLotteryName = ''
@@ -347,9 +378,9 @@
         }
       },
       // 获取最新重庆时时彩奖期
-      getcq () {
+      getcq() {
         let httpurl = this.httpUrl('HISPRIZE')
-        this.httpAction(httpurl,(res) => {
+        this.httpAction(httpurl, (res) => {
           let data = res.data.issueNumbers
           let codes = ''
           for (var i in data) {
@@ -358,10 +389,10 @@
             }
           }
           this.cqcody = codes[0].code.split('')
-        },{lotteryid: '0', type: '1'})
+        }, {lotteryid: '0', type: '1'})
       },
       // 获取url
-      httpUrl(val){
+      httpUrl(val) {
         let app = require('../../../static/ios_hc.json')
         let appData = app
         let serverList = appData.serverList
@@ -380,16 +411,16 @@
           sess = sessionStorage.getItem('sess')
         }
         this.$store.commit('updateSess', sess)
-        return this.$store.state.server + this.mUtils.interFace(val)+'&sess='+sess;
+        return this.$store.state.server + this.mUtils.interFace(val) + '&sess=' + sess;
       },
       // 添加彩种
-      _add_lottery () {
+      _add_lottery() {
         this.isIconAdd = true
         this.accomplish = true
         this._judge()
       },
       // 收藏彩种
-      _addEnshrine (params) {
+      _addEnshrine(params) {
         let val = params.item, index = params.index, e = params.event
         let enshrineArr = this.enshrine
         let flag = false
@@ -410,7 +441,7 @@
         this._judge()
       },
       // 删除收藏
-      _delEnshrine (params) {
+      _delEnshrine(params) {
         let item = params.item
         let index = params.index
         for (let i = 0; i < this.lotteryType.length; i++) {
@@ -425,7 +456,7 @@
         }
       },
       // 判读是否被添加常玩彩种
-      _judge () {
+      _judge() {
         for (let i = 0; i < this.lotteryType.length; i++) {
           for (let j = 0; j < this.enshrine.length; j++) {
             if (this.lotteryType[i].lotteryid == this.enshrine[j].lotteryid) {
@@ -438,7 +469,7 @@
         }
       },
       // 完成
-      _accomplish_lottery () {
+      _accomplish_lottery() {
         this.isIconAdd = false
         this.accomplish = false
         for (let i = 0; i < this.lotteryType.length; i++) {
@@ -448,7 +479,7 @@
         }
       },
       // 在localStorage获取常玩彩种
-      _getlocalStorage () {
+      _getlocalStorage() {
         let getEnshrine = window.localStorage.getItem('enshrine')
         if (getEnshrine != null) {
           getEnshrine = JSON.parse(getEnshrine)
@@ -461,7 +492,7 @@
         }
       },
       // 在localStorage存储常玩彩种
-      _setlocalStorage () {
+      _setlocalStorage() {
         let localEnshrine = []
         this.enshrine.forEach((item, index) => {
           localEnshrine.push(JSON.stringify(item))
@@ -471,22 +502,22 @@
         }
       },
       // 投注截止时间
-      _restart_tick () {
+      _restart_tick() {
         if (this.times) {
           clearInterval(this.times)
         }
         let httpurl = this.httpUrl('CURRENTPRIZE') + '&nav=ssc'
-        this.httpAction(httpurl,(res) => {
+        this.httpAction(httpurl, (res) => {
           let data = res.data
-          if(data.msg == 'empty'){
-          		this.tickWord = '00:00:00'
-          		return
+          if (data.msg == 'empty') {
+            this.tickWord = '00:00:00'
+            return
           }
           let tick = (new Date(data.saleend.replace(/\-/g, '/')) - new Date(data.nowtime.replace(/\-/g, '/'))) / 1000
           this._start_tick(tick)
-        },{'flag': 'read', 'lotteryid': 1})
+        }, {'flag': 'read', 'lotteryid': 1})
       },
-      _start_tick (val) {
+      _start_tick(val) {
         this.times = setInterval(() => {
           if (val == -1) {
             this.getcq()
@@ -504,231 +535,247 @@
 <style lang="less" scoped>
   @import '../../assets/css/style';
 
-  @border_radius:0.265rem;
+  @border_radius: 0.265rem;
 
-  .cqcody_style{
+  .cqcody_style {
     display: inline-block;
     .wh(0.65rem, 0.65rem);
   }
-  .newsList{
-    position:relative;
-    margin:0 0.13rem 2rem;
-    .inaline{
+
+  .newsList {
+    position: relative;
+    margin: 0 0.13rem 2rem;
+    .inaline {
       .hl(0.53rem);
-      width:100%;
-      position:absolute;
-      top:-0.265rem;
-      background:#fff;
-      border-radius:@border_radius;
+      width: 100%;
+      position: absolute;
+      top: -0.265rem;
+      background: #fff;
+      border-radius: @border_radius;
       z-index: 9999999;
-      .icon_right{
-        .icon_arrows(0.2rem,0.22rem,#ccc,0.1rem,45deg)
+      .icon_right {
+        .icon_arrows(0.2rem, 0.22rem, #ccc, 0.1rem, 45deg)
       }
     }
-    .notice{
+    .notice {
       display: inline-block;
-      width:0.31rem;
-      margin:0.13rem 0.13rem 0 0.2rem;
+      width: 0.31rem;
+      margin: 0.13rem 0.13rem 0 0.2rem;
     }
-    .userName{
+    .userName {
       box-sizing: border-box;
-      padding:0.55rem 0 0.2rem 0;
-      font-size:0.25rem;
-      color:#515151;
+      padding: 0.55rem 0 0.2rem 0;
+      font-size: 0.25rem;
+      color: #515151;
       text-align: center;
-      .pb{
+      .pb {
         padding-right: 0.65rem;
       }
-      .show_money{
-        background:url('./img/openeye.png') no-repeat right center;
+      .show_money {
+        background: url('./img/openeye.png') no-repeat right center;
         background-size: auto 0.25rem;
         .pb
       }
-      .hide_money{
-        background:url('./img/close.png') no-repeat right center;
+      .hide_money {
+        background: url('./img/close.png') no-repeat right center;
         background-size: auto 0.16rem;
         .pb
       }
-      .money{
-        display:inline-block;
-        width:1.6rem;
+      .money {
+        display: inline-block;
+        width: 1.6rem;
       }
     }
-    .enshrine{
-      position:relative;
-      margin:0.2rem 0 0 0.24rem;
-      .lottery_type{
+    .enshrine {
+      position: relative;
+      margin: 0.2rem 0 0 0.24rem;
+      .lottery_type {
         font-weight: normal;
         font-size: 0.28rem;
       }
-      img{
-        position:absolute;
-        width:0.35rem;
-        top:0.04rem;
-        left:1.6rem;
+      img {
+        position: absolute;
+        width: 0.35rem;
+        top: 0.04rem;
+        left: 1.6rem;
       }
-      p{
-        position:absolute;
-        top:0;
-        right:0.5rem;
-        .wh(0.8rem,0.4rem);
+      p {
+        position: absolute;
+        top: 0;
+        right: 0.5rem;
+        .wh(0.8rem, 0.4rem);
         line-height: 0.41rem;
         text-align: center;
         .borderRadius(10%);
         font-size: 0.30rem;
-        color:#4c4c4c;
-        border:1px solid #aaa;
-        padding:0;
-        &:active{
-          background:#bbb;
+        color: #4c4c4c;
+        border: 1px solid #aaa;
+        padding: 0;
+        &:active {
+          background: #bbb;
         }
       }
     }
   }
-  .hotActivity{
+
+  .hotActivity {
     position: relative;
-    background:#fff;
-    padding:0.24rem 0.2rem;
+    background: #fff;
+    padding: 0.24rem 0.2rem;
     font-size: 13px;
     border-radius: @border_radius;
   }
-  .hotActivity_text{
+
+  .hotActivity_text {
     position: absolute;
-    right:0.2rem;
-    top:0.25rem;
-    width:1.02rem;
+    right: 0.2rem;
+    top: 0.25rem;
+    width: 1.02rem;
   }
-  .hotActivity_icon{
+
+  .hotActivity_icon {
     position: absolute;
-    right:0.88rem;
-    top:0.04rem;
-    width:1.06rem;
+    right: 0.88rem;
+    top: 0.04rem;
+    width: 1.06rem;
     vertical-align: middle;
   }
-  .hotActivity_code{
-    margin-top:0.18rem;
-    height:0.65rem;
-    li{
-      float:left;
+
+  .hotActivity_code {
+    margin-top: 0.18rem;
+    height: 0.65rem;
+    li {
+      float: left;
       .wh(0.65rem, 0.65rem);
       line-height: 0.67rem;
-      text-align:center;
-      border-radius:50%;
-      background:#c7202c;
-      margin-right:0.22rem;
-      color:#fff;
+      text-align: center;
+      border-radius: 50%;
+      background: #c7202c;
+      margin-right: 0.22rem;
+      color: #fff;
       font-size: 0.36rem;
       font-weight: normal;
     }
   }
 
-  .update_hook{
-    transform:rotate(360deg);
-    -webkit-transform:rotate(360deg);
+  .update_hook {
+    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
   }
-  .test_luck{
-    width:1.82rem;
+
+  .test_luck {
+    width: 1.82rem;
     margin-top: -0.64rem;
     height: 0.62rem;
     line-height: 0.64rem;
     text-align: center;
-    background:#C7202C;
-    border-radius:0.1rem ;
-    color:#fff;
+    background: #C7202C;
+    border-radius: 0.1rem;
+    color: #fff;
     font-size: 0.28rem;
-    &:active{
-      background:#ccc;
+    &:active {
+      background: #ccc;
     }
   }
-  .add_del{
-    position:absolute;
-    top:-0.1rem;
-    right:-0.1rem;
-    padding:0 0 1rem 3rem;
+
+  .add_del {
+    position: absolute;
+    top: -0.1rem;
+    right: -0.1rem;
+    padding: 0 0 1rem 3rem;
   }
-  .icon_add{
+
+  .icon_add {
     .add_del;
     background: url('./img/addsmall.png') no-repeat right top;
     background-size: 0.3rem;
   }
-  .icon_del{
+
+  .icon_del {
     .add_del;
     background: url('./img/reduce.png') no-repeat right top;
     background-size: 0.3rem;
   }
-  .icon_added{
+
+  .icon_added {
     .add_del;
     background: url('./img/added.png') no-repeat right top;
     background-size: 0.3rem;
   }
-  h2:before{
+
+  h2:before {
     content: " ";
     display: inline-block;
     vertical-align: middle;
-    margin-right:0.2rem;
+    margin-right: 0.2rem;
     margin-top: -0.05rem;
-    height:0.2rem;
+    height: 0.2rem;
     border: 0.05rem solid #c7202c;
     border-radius: 0.07rem;
   }
-  .collecting_list{
+
+  .collecting_list {
     box-sizing: border-box;
-    background:#fff;
+    background: #fff;
     border-radius: 0.1rem;
-    padding:0.2rem 0.1rem 0;
+    padding: 0.2rem 0.1rem 0;
     margin-top: 0.2rem;
-    .lottery_icon{
-      width:0.79rem;
+    .lottery_icon {
+      width: 0.79rem;
       vertical-align: middle;
       margin-left: 0.24rem;
       margin-right: 0.2rem;
 
     }
-    .lottery_name{
+    .lottery_name {
       width: 1.8rem;
       font-size: 0.3rem;
-      color:#383838;
+      color: #383838;
       font-weight: normal;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
     }
-    .lottery_time{
+    .lottery_time {
       width: 1.7rem;
       font-size: 0.24rem;
-      margin-top:0.07rem;
+      margin-top: 0.07rem;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
     }
-    ul{
-      display:inline;
+    ul {
+      display: inline;
     }
-    li{
-      position:relative;
+    li {
+      position: relative;
       box-sizing: border-box;
-      float:left;
-      .wh(3.2rem,1.15rem);
+      float: left;
+      .wh(3.2rem, 1.15rem);
       border-radius: 0.1rem;
-      margin:0 0.16rem 0.2rem;
-      padding:0.17rem 0.05rem;
-      -webkit-box-shadow:0 0 0.5rem #eee;
-      -moz-box-shadow:0 0 0.5rem #eee;
-      box-shadow:0 0 0.5rem #eee;
+      margin: 0 0.16rem 0.2rem;
+      padding: 0.17rem 0.05rem;
+      -webkit-box-shadow: 0 0 0.5rem #eee;
+      -moz-box-shadow: 0 0 0.5rem #eee;
+      box-shadow: 0 0 0.5rem #eee;
     }
   }
-  .classify{
+
+  .classify {
     font-size: 18px;
-    margin:10px 0 10px 20px;
+    margin: 10px 0 10px 20px;
   }
-  .classify_lottery li{
-    float:left;
-    margin-right:0.15rem;
+
+  .classify_lottery li {
+    float: left;
+    margin-right: 0.15rem;
   }
-  .classify_lottery li:last-child{
-    margin:0;
+
+  .classify_lottery li:last-child {
+    margin: 0;
   }
-  .classify_lottery img{
-    width:1.4rem;
+
+  .classify_lottery img {
+    width: 1.4rem;
   }
 </style>

@@ -1,118 +1,141 @@
 <template>
   <!--<transition name="slide">-->
-    <div class="selectCody header_app_v main-body">
-      <headTop>
+  <div class="selectCody header_app_v main-body">
+    <headTop>
         <span v-tap="{ methods: _home}" slot="goBacks">
           <img style="width: 0.39rem;" src="../header/goBack.png" class="goBacks">
         </span>
-        <!--<span slot="lottery" class="lottery_img">-->
-          <!--<img :src="'static/'+this.$store.state.lotteryid+'.png'" alt="">-->
-        <!--</span>-->
-        <popup-picker  :data="ozdList" :columns="3" slot="changelottery" class="change_lottery" v-model="modelValue"  show-name @on-change="_ozdChange" ></popup-picker>
-        <img src="./img/carte.png" slot="carte" class="carte" v-tap="{ methods:_isCarteList }">
-        <!--<transition name="carteshow">-->
-          <section slot="carte_list" v-show="isCarteList" class="carte_section">
-            <ul  class="carte_list">
-              <!--<li v-tap="{ methods: _showomit }">-->
-                <!--{{showomit}}-->
-              <!--</li>-->
-              <li v-tap="{ methods: _betRecord }">
-                投注记录
-              </li>
-              <li v-tap="{ methods: _chaseRecord }">
-                追号记录
-              </li>
-              <li v-tap="{ methods: _lotteryCentre }">
-                开奖信息
-              </li>
-              <li v-tap="{ methods: _help }">
-                玩法介绍
+      <!--<span slot="lottery" class="lottery_img">-->
+      <!--<img :src="'static/'+this.$store.state.lotteryid+'.png'" alt="">-->
+      <!--</span>-->
+      <popup-picker :data="ozdList" :columns="3" slot="changelottery" class="change_lottery" v-model="modelValue"
+                    show-name @on-change="_ozdChange"></popup-picker>
+      <img src="./img/carte.png" slot="carte" class="carte" v-tap="{ methods:_isCarteList }">
+      <!--<transition name="carteshow">-->
+      <section slot="carte_list" v-show="isCarteList" class="carte_section">
+        <ul class="carte_list">
+          <!--<li v-tap="{ methods: _showomit }">-->
+          <!--{{showomit}}-->
+          <!--</li>-->
+          <li v-tap="{ methods: _betRecord }">
+            投注记录
+          </li>
+          <li v-tap="{ methods: _chaseRecord }">
+            追号记录
+          </li>
+          <li v-tap="{ methods: _lotteryCentre }">
+            开奖信息
+          </li>
+          <li v-tap="{ methods: _help }">
+            玩法介绍
+          </li>
+        </ul>
+      </section>
+      <!--</transition>-->
+    </headTop>
+    <div v-tap="{ methods:_hideAll }" v-show="isCarteList || showSelectList || showSelectListYJF"
+         style="position: absolute; top:0;left:0;bottom:0;right:0; z-index:9;"></div>
+    <div class="ballBlock">
+      <!--历史奖期-->
+      <transition name="historyshow">
+        <section v-show="isRecordTable" class="history_section">
+          <table width="100%" height="130px" border="0" cellspacing="0" cellpadding="2" v-if='mmcshow'>
+            <thead style="background:#fff;">
+            <tr>
+              <th width="50%">期数</th>
+              <th width="50%">开奖号</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr align="center" v-for="item in hisprizeCodes">
+              <td>{{item.issue}}期</td>
+              <td>{{item.code}}</td>
+            </tr>
+            </tbody>
+          </table>
+          <table width="100%" height="130px" border="0" cellspacing="0" cellpadding="5" v-else>
+            <thead style="background:#fff;">
+            <tr>
+              <th width="100%" colspan="2">开奖号</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr align="center">
+              <td>
+                <dl>
+                  <dd v-for="(item,index) in hisprizeCodes" v-if='index<5'>{{item}}</dd>
+                </dl>
+              </td>
+              <td>
+                <dl>
+                  <dd v-for="(item,index) in hisprizeCodes" v-if='index>4'>{{item}}</dd>
+                </dl>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </section>
+      </transition>
+      <!--距离截止时间-->
+      <div style="height:0.5rem;" v-if='mmcshow'>
+        <div class="timePeriod">
+          <div class="timePeriod_end">
+            <p class="left" style="margin-left: 0.3rem;">
+              距<span v-text="issueTime.issue"></span>期截止：
+              <span v-text="tickWord"></span>
+            </p>
+            <p class="setByRandom right" v-tap="{ methods: _setByRandom }"
+               v-show="codyBall && modelValue.indexOf('龙虎')<0">
+              <img style="vertical-align: middle;width:0.5rem;" src="./img/iphone.png" alt="">
+              <span style="color:#c7202c">机选</span>
+            </p>
+          </div>
+          <img class="clickDown" src="./img/down.png" v-tap="{ methods: _isRecordTable }">
+        </div>
+      </div>
+      <div style="height:0.5rem;" v-else>
+        <div class="timePeriod">
+          <div class="timePeriod_end">
+            <p class="setByRandom right" v-tap="{ methods: _setByRandom }"
+               v-show="codyBall">
+              <img style="vertical-align: middle;width:0.5rem;" src="./img/iphone.png" alt="">
+              <span style="color:#c7202c">机选{{modelValue}}</span>
+            </p>
+          </div>
+          <img class="clickDown" src="./img/down.png" v-tap="{ methods: _isRecordTable }">
+        </div>
+      </div>
+      <div v-if="methodid==='zx'" class="box_main">
+        <div v-for="(item,parentIndex) in zxCode">
+          <div class="parentBox">
+            <span>{{item.title}}</span>
+            <ul class="ballBlock_number">
+              <li class="codysBall left zx" :class="it.className"
+                  v-tap="{ methods:selectBall , parentIndex : parentIndex, it:it.title ,data:it}"
+                  v-for="(it) in  item.item">
+                {{it.title}}
               </li>
             </ul>
-          </section>
-        <!--</transition>-->
-      </headTop>
-      <div v-tap="{ methods:_hideAll }" v-show="isCarteList || showSelectList || showSelectListYJF" style="position: absolute; top:0;left:0;bottom:0;right:0; z-index:9;"></div>
-      <div class="ballBlock">
-        <!--历史奖期-->
-        <transition name="historyshow">
-          <section v-show="isRecordTable" class="history_section">
-            <table  width="100%" height="130px" border="0" cellspacing="0" cellpadding="2" v-if='mmcshow'>
-              <thead style="background:#fff;">
-              <tr>
-                <th width="50%">期数</th>
-                <th width="50%">开奖号</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr align="center" v-for="item in hisprizeCodes">
-                <td>{{item.issue}}期</td>
-                <td>{{item.code}}</td>
-              </tr>
-              </tbody>
-            </table>
-            <table  width="100%" height="130px" border="0" cellspacing="0" cellpadding="5" v-else>
-              <thead style="background:#fff;">
-              <tr>
-                <th width="100%" colspan="2">开奖号</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr align="center">
-                <td>
-                	<dl>
-                		<dd v-for="(item,index) in hisprizeCodes"  v-if='index<5'>{{item}}</dd>
-                	</dl>
-                </td>
-                <td>
-                	<dl>
-                		<dd v-for="(item,index) in hisprizeCodes" v-if='index>4'>{{item}}</dd>
-                	</dl>
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </section>
-        </transition>
-        <!--距离截止时间-->
-        <div style="height:0.5rem;" v-if='mmcshow'>
-          <div class="timePeriod">
-            <div class="timePeriod_end">
-              <p class="left" style="margin-left: 0.3rem;">
-                距<span v-text="issueTime.issue"></span>期截止：
-                <span v-text="tickWord"></span>
-              </p>
-              <p class="setByRandom right" v-tap="{ methods: _setByRandom }" v-show="codyBall">
-                <img style="vertical-align: middle;width:0.5rem;" src="./img/iphone.png" alt="">
-                <span style="color:#c7202c">机选</span>
-              </p>
-            </div>
-            <img class="clickDown" src="./img/down.png" v-tap="{ methods: _isRecordTable }">
           </div>
+
         </div>
-        <div style="height:0.5rem;" v-else>
-          <div class="timePeriod">
-            <div class="timePeriod_end">
-              <p class="setByRandom right" v-tap="{ methods: _setByRandom }" v-show="codyBall">
-                <img style="vertical-align: middle;width:0.5rem;" src="./img/iphone.png" alt="">
-                <span style="color:#c7202c">机选</span>
-              </p>
-            </div>
-            <img class="clickDown" src="./img/down.png" v-tap="{ methods: _isRecordTable }">
-          </div>
-        </div>
-        <div v-if="codyBall" class="box_main">
-        <div  v-for="(item,parentIndex) in layout">
+      </div>
+      <div v-else-if="codyBall" class="box_main">
+        <div v-for="(item,parentIndex) in layout">
           <div style="height: 0.42rem;" v-show="isButton">
             <ul class="selectedType clear">
-              <li class="selectType" v-tap="{ methods: _typeFun,parentIndex: parentIndex, index:index, item: item.name}" v-for="(item,index) in typeList">{{item.text}}</li>
+              <li class="selectType" v-tap="{ methods: _typeFun,parentIndex: parentIndex, index:index, item: item.name}"
+                  v-for="(item,index) in typeList">{{item.text}}
+              </li>
             </ul>
           </div>
           <div class="parentBox">
             <span v-if="item.title != ''">{{item.title}}</span>
             <span v-else>选号</span>
             <ul class="ballBlock_number">
-              <li class="codysBall left" :class="{'other':quwei}" v-tap="{ methods:selectBall , parentIndex : parentIndex, it:it }"  v-for="(it,childIndex) in  codyItem">
+              <li class="codysBall left" :class="{'other':quwei}"
+                  v-tap="{ methods:selectBall , parentIndex : parentIndex, it:it }"
+                  v-for="(it,childIndex) in  codyItem">
                 {{it}}
                 <!--<p class="omit" v-show="omit">3</p>-->
               </li>
@@ -132,7 +155,7 @@
       </div>
     </div>
 
-    <footer id="footer" class="footer"  :class="{android: iSandroid}">
+    <footer id="footer" class="footer" :class="{android: iSandroid}">
       <div class="random_number clear">
         <div class="left" v-tap="{ methods: _emptyCody }" style="margin-right: 0;">
           <img style="vertical-align: middle;width:0.32rem;padding-right: 0.1rem" src="./img/empty.png" alt="">
@@ -142,50 +165,52 @@
           <div class="select" v-show="showBonus">
             <p class="selectUl" v-tap="{ methods: selectedList }" v-text="status"></p>
             <ul class="selectBox" v-show="showSelectList">
-              <li style="white-space:nowrap;" :class="{activeStatus: index==1}" v-tap="{ methods: showname }" v-for="(item,index) in omodels" v-text="item.vl"></li>
+              <li style="white-space:nowrap;" :class="{activeStatus: index==1}" v-tap="{ methods: showname }"
+                  v-for="(item,index) in omodels" v-text="item.vl"></li>
             </ul>
           </div>
         </div>
-          <div class="inputBox left">
-            <div class="select">
-              <p class="selectUl yjfSelect" v-tap="{ methods: selectedListYJF }" v-text="yjfmodel"></p>
-              <ul class="yjfSelectUI" v-show="showSelectListYJF">
-                <li class="yjfSelect_hook" :class="{activeStatus: indexYJF == index}" v-for="(item,index) in method.modes" v-tap="{ methods: getyjfSelect, item: item, index: index }"  v-text="item.name"></li>
-                <i class="yjfSelectsj"></i>
-              </ul>
-            </div>
+        <div class="inputBox left">
+          <div class="select">
+            <p class="selectUl yjfSelect" v-tap="{ methods: selectedListYJF }" v-text="yjfmodel"></p>
+            <ul class="yjfSelectUI" v-show="showSelectListYJF">
+              <li class="yjfSelect_hook" :class="{activeStatus: indexYJF == index}" v-for="(item,index) in method.modes"
+                  v-tap="{ methods: getyjfSelect, item: item, index: index }" v-text="item.name"></li>
+              <i class="yjfSelectsj"></i>
+            </ul>
           </div>
-          <div class="code_number left">
-            <div style="margin-top: -0.13rem;">投</div>
-            <selectNumber min = 1 minuss="1"  @getCodeNumber="_getCodeNumber"></selectNumber>
-            <div style="margin-top: -0.13rem;">倍</div>
-          </div>
-          <!--<ul class="yjf right">-->
-            <!--<li :class="{ yjf_select:yjfSelect===index }" v-for="(item,index) in method.modes" v-tap="{ methods: getyjfSelect, item: item, index: index }"  v-text="item.name"></li>-->
-          <!--</ul>-->
         </div>
-        <div class="footer_list">
-          <div class="foot_affirm">
-            <div class="footer_money left" >
-              <strong>
-                <span v-text="model.nums"></span>注
-                <span v-text="model.times"></span>倍
-              </strong>
-              <strong style="margin-left: 0.2rem;">
-                <span v-text="model.nums*100*model.times*nmodel*2/100"></span>元
-              </strong>
-            </div>
-            <div class="buttonOk right" v-tap="{ methods: _buttonOk }">
-              <buttonView :buttonTitle='codeNum' height="0.7"></buttonView>
-            </div>
-            <div class="button_select right" v-tap="{ methods: _addCode }">
-              <buttonView  buttonTitle='添加' height="0.7"></buttonView>
-            </div>
+        <div class="code_number left">
+          <div style="margin-top: -0.13rem;">投</div>
+          <selectNumber min=1 minuss="1" @getCodeNumber="_getCodeNumber"></selectNumber>
+          <div style="margin-top: -0.13rem;">倍</div>
+        </div>
+        <!--<ul class="yjf right">-->
+        <!--<li :class="{ yjf_select:yjfSelect===index }" v-for="(item,index) in method.modes" v-tap="{ methods: getyjfSelect, item: item, index: index }"  v-text="item.name"></li>-->
+        <!--</ul>-->
+      </div>
+      <div class="footer_list">
+        <div class="foot_affirm">
+          <div class="footer_money left">
+            <strong>
+              <span v-text="model.nums"></span>注
+              <span v-text="model.times"></span>倍
+            </strong>
+            <strong style="margin-left: 0.2rem;">
+              <span v-text="model.nums*100*model.times*nmodel*2/100"></span>元
+            </strong>
+          </div>
+          <div class="buttonOk right" v-tap="{ methods: _buttonOk }">
+            <buttonView :buttonTitle='codeNum' height="0.7"></buttonView>
+          </div>
+          <div class="button_select right" v-tap="{ methods: _addCode }">
+            <buttonView buttonTitle='添加' height="0.7"></buttonView>
+          </div>
 
-          </div>
         </div>
-      </footer>
-    </div>
+      </div>
+    </footer>
+  </div>
   <!--</transition>-->
 
 </template>
@@ -193,19 +218,19 @@
   import headTop from '../header/Header.vue'
   import selectNumber from '../common/selectNumber.vue'
   import buttonView from '../common/button.vue'
-  import { PopupPicker } from 'vux'
+  import {PopupPicker} from 'vux'
 
-  import { random, checkNum, uniquelize, uniquelizeNosort } from './merge'
+  import {random, checkNum, uniquelize, uniquelizeNosort} from './merge'
 
   export default {
-    data () {
+    data() {
       return {
-      	mmcshow:false,
-      	codeNum:'选好了',
+        mmcshow: false,
+        codeNum: '选好了',
         showomit: '显示遗漏',
         omit: true,
         noBigIndex: 5,
-        typeList:[
+        typeList: [
           {
             text: '全',
             name: 'all'
@@ -216,11 +241,11 @@
           },
           {
             text: '小',
-            name:'small'
+            name: 'small'
           },
           {
             text: '单',
-            name:'odd'
+            name: 'odd'
           },
           {
             text: '双',
@@ -231,7 +256,7 @@
             name: 'clean'
           }
         ],
-      	quwei: false,
+        quwei: false,
         iSandroid: false,
         issueTime: {}, // 距离截止期数时间
         yjfSelect: 0, // 默认选择元
@@ -242,7 +267,7 @@
         ozdList: [], // 所有玩法
         BallDan: [], // 单式投注号码
         modelValue: [],
-        nowLotteryId:'',
+        nowLotteryId: '',
         showPopupPicker: false,
         lotteryBet: {// 玩法类
           currentPrize: undefined,
@@ -290,9 +315,60 @@
         intervals: '', // 定时器
         missnum: [], //遗漏数
         isButton: false,
-	      isok:true,
+        isok: true,
         yjfmodel: '',
-        indexYJF: 0
+        indexYJF: 0,
+        zxCode: [
+          {
+            title: '庄闲',
+            item: [{
+              title: '庄赢BANKER',
+              className: 'zxh'
+            },
+              {
+                title: '闲赢PLAYER',
+                className: 'zxh'
+              }]
+          },
+          {
+            title: '和',
+            item: [{
+              title: '和TIE',
+              className: 'zxh'
+            }]
+          },
+          {
+            title: '对子',
+            item: [{
+              title: '庄对子',
+              className: 'z'
+            }, {
+              title: '闲对子',
+              className: 'x'
+            }]
+          },
+          {
+            title: '豹子',
+            item: [{
+              title: '庄豹子',
+              className: 'z'
+            }, {
+              title: '闲豹子',
+              className: 'x'
+            }]
+          },
+          {
+            title: '天王',
+            item: [{
+              title: '庄天王',
+              className: 'z'
+            }, {
+              title: '闲天王',
+              className: 'x'
+            }]
+          }
+        ]
+
       }
     },
     components: {
@@ -302,7 +378,7 @@
       buttonView
     },
     watch: {
-      watchlotteryid (val, oldVal) {
+      watchlotteryid(val, oldVal) {
         if (this.$store.state.dataList.length !== 0) {
           let _this = this
           this.$vux.confirm.show({
@@ -310,7 +386,7 @@
             content: '还有投注没有付款，是否清空',
             confirmText: '去付款',
             cancelText: '清空',
-            onCancel () {
+            onCancel() {
               _this.dataList = []
               _this.$store.state.dataList = []
               _this.$store.commit('updateDataList', [])
@@ -318,7 +394,7 @@
               _this.$store.commit('updateSelectLotteryName', _this.$store.state.selectLotteryNameFlag)
               _this.$store.commit('updateLayout', _this.layout)
             },
-            onConfirm () {
+            onConfirm() {
               _this.$router.push('/home/selectCody/affirm')
               _this.$store.commit('UpdateNewNav', true)
             }
@@ -341,17 +417,17 @@
       }
     },
     computed: {
-      watchlotteryid () {
+      watchlotteryid() {
         return this.$store.state.lotteryid
       }
     },
-    beforeRouteLeave (to, from, next) {
+    beforeRouteLeave(to, from, next) {
       clearInterval(this.intervals)
       next(true)
     },
-    mounted () {
+    mounted() {
       this.dataList = this.$store.state.dataList
-      this.codeNum = this.$store.state.dataList.length > 0 ?  '选好了(' + this.$store.state.dataList.length+ ')' : '选好了'
+      this.codeNum = this.$store.state.dataList.length > 0 ? '选好了(' + this.$store.state.dataList.length + ')' : '选好了'
 
       this.getCodes()
       this._getOzd()
@@ -365,34 +441,34 @@
       })
     },
     methods: {
-      _yjfUl () {
+      _yjfUl() {
         let yjfSelect_hook = document.getElementsByClassName('yjfSelect_hook')
         if (yjfSelect_hook.length == 2) {
-          document.getElementsByClassName('yjfSelectUI')[0].style.top = -1.8+'rem'
-          document.getElementsByClassName('yjfSelectsj')[0].style.top = 1.6+'rem'
-        } else if (yjfSelect_hook.length == 3){
-          document.getElementsByClassName('yjfSelectUI')[0].style.top = -2.4+'rem'
-          document.getElementsByClassName('yjfSelectsj')[0].style.top = 2.2+'rem'
+          document.getElementsByClassName('yjfSelectUI')[0].style.top = -1.8 + 'rem'
+          document.getElementsByClassName('yjfSelectsj')[0].style.top = 1.6 + 'rem'
+        } else if (yjfSelect_hook.length == 3) {
+          document.getElementsByClassName('yjfSelectUI')[0].style.top = -2.4 + 'rem'
+          document.getElementsByClassName('yjfSelectsj')[0].style.top = 2.2 + 'rem'
         }
       },
-      _hideAll () {
+      _hideAll() {
         this.isCarteList = false
         this.showSelectList = false
         this.showSelectListYJF = false
       },
-      selectNum (p,j,idx) {
+      selectNum(p, j, idx) {
         p[j].style.background = '#c7202c'
         p[j].style.color = '#fff'
         p[j].style.borderColor = '#c7202c'
         let value = p[j].innerText
-        this.addcodes(idx,value)
+        this.addcodes(idx, value)
       },
-      unSelectNum (p,j) {
+      unSelectNum(p, j) {
         p[j].style.background = '#fff'
         p[j].style.color = '#d51623'
         p[j].style.borderColor = '#e5e5e5'
       },
-      _typeFun (params) {
+      _typeFun(params) {
         let el = params.event.target
         let siblingsLi = el.parentNode.children
         let idx = params.parentIndex
@@ -407,61 +483,62 @@
           }
         }
 
-          let ul = document.getElementsByClassName('ballBlock_number')[params.parentIndex]
-          let p = ul.getElementsByClassName('codysBall')
-          switch( params.item ){
-            case 'all'   :
-              for (let j = 0; j < p.length; j++) {
-                this.selectNum(p,j,idx)
+        let ul = document.getElementsByClassName('ballBlock_number')[params.parentIndex]
+        let p = ul.getElementsByClassName('codysBall')
+        switch (params.item) {
+          case 'all'   :
+            for (let j = 0; j < p.length; j++) {
+              this.selectNum(p, j, idx)
+            }
+            break;
+          case 'big'   :
+            for (let j = 0; j < p.length; j++) {
+              if (j >= this.noBigIndex) {
+                this.selectNum(p, j, idx)
+              } else {
+                this.unSelectNum(p, j)
               }
-              break;
-            case 'big'   :
-              for (let j = 0; j < p.length; j++) {
-                if( j >= this.noBigIndex ){
-                  this.selectNum(p,j,idx)
-                } else {
-                  this.unSelectNum(p,j)
-                }
+            }
+            break;
+          case 'small' :
+            for (let j = 0; j < p.length; j++) {
+              if (j < this.noBigIndex) {
+                this.selectNum(p, j, idx)
+              } else {
+                this.unSelectNum(p, j)
               }
-              break;
-            case 'small' :
-              for (let j = 0; j < p.length; j++) {
-                if( j < this.noBigIndex ){
-                  this.selectNum(p,j,idx)
-                } else {
-                  this.unSelectNum(p,j)
-                }
+            }
+            break;
+          case 'odd'   :
+            for (let j = 0; j < p.length; j++) {
+              if ((p[j].innerText) % 2 == 1) {
+                this.selectNum(p, j, idx)
+              } else {
+                this.unSelectNum(p, j)
               }
-             break;
-            case 'odd'   :
-              for (let j = 0; j < p.length; j++) {
-                if( (p[j].innerText) % 2 == 1 ){
-                  this.selectNum(p,j,idx)
-                }else{
-                  this.unSelectNum(p,j)
-                }
+            }
+            break;
+          case 'even'  :
+            for (let j = 0; j < p.length; j++) {
+              if ((p[j].innerText) % 2 == 0) {
+                this.selectNum(p, j, idx)
+              } else {
+                this.unSelectNum(p, j)
               }
-             break;
-            case 'even'  :
-              for (let j = 0; j < p.length; j++) {
-                if( (p[j].innerText) % 2 == 0 ){
-                  this.selectNum(p,j,idx)
-                }else{
-                  this.unSelectNum(p,j)
-                }
-              }
-              break;
-            case 'clean'  :
-              for (let j = 0; j < p.length; j++) {
-                this.unSelectNum(p,j)
-              }
-              break;
-            default : break;
-          }
-          this._calBet();
+            }
+            break;
+          case 'clean'  :
+            for (let j = 0; j < p.length; j++) {
+              this.unSelectNum(p, j)
+            }
+            break;
+          default :
+            break;
+        }
+        this._calBet();
       },
 
-      _showomit () {
+      _showomit() {
         if (this.showomit == '显示遗漏') {
           this.showomit = '隐藏遗漏'
           this.omit = false
@@ -470,22 +547,22 @@
           this.omit = true
         }
       },
-      _help () {
+      _help() {
         this.$router.push({path: '/userInfo/help'})
       },
-      _lotteryCentre () {
+      _lotteryCentre() {
         this.$router.push({path: '/lotteryCentre'})
       },
-      _chaseRecord () {
+      _chaseRecord() {
         this.$router.push({path: '/userInfo/chaseRecord'})
       },
-      _betRecord () {
+      _betRecord() {
         this.$router.push({path: '/userInfo/betRecord'})
       },
-      _home () {
+      _home() {
         this.$router.push({path: '/home'})
       },
-      _isRecordTable () {
+      _isRecordTable() {
         this.isRecordTable = !this.isRecordTable
         let clickDown = document.getElementsByClassName('clickDown')[0]
         if (this.isRecordTable) {
@@ -495,29 +572,31 @@
         }
 
       },
-      _isCarteList () {
+      _isCarteList() {
         this.isCarteList = !this.isCarteList
       },
-    	getCodes () {
-        this.nowLotteryId = this.mUtils.lotterytrans(this.$store.state.nav, 'code->id', this.$store.state.lotteryType)
+      getCodes() {
+        if (this.$store.state.lotteryType) {
+          this.nowLotteryId = this.mUtils.lotterytrans(this.$store.state.nav, 'code->id', this.$store.state.lotteryType)
+        }
         let dataTemp = this.$store.state.dataList
-        if(dataTemp.length > 0){
-          if(this.nowLotteryId == dataTemp[0]['lotteryid']){
-            this.codeNum = '选好了('+dataTemp.length+')'
+        if (dataTemp.length > 0) {
+          if (this.nowLotteryId == dataTemp[0]['lotteryid']) {
+            this.codeNum = '选好了(' + dataTemp.length + ')'
           }
         }
-    	},
-      onBlur () {
+      },
+      onBlur() {
         this.iSandroid = false
         document.body.scrollTo = 0
       },
-      selectedList () {
+      selectedList() {
         this.showSelectList = !this.showSelectList
       },
-      selectedListYJF () {
+      selectedListYJF() {
         this.showSelectListYJF = !this.showSelectListYJF
       },
-      showname (params) {
+      showname(params) {
         let ev = params.event
         this.status = ev.target.innerHTML
         for (let i = 0; i < this.omodels.length; i++) {
@@ -535,26 +614,66 @@
         }
       },
       // 选择号码
-      selectBall (params) {
+      selectBall(params) {
         let idx = params.parentIndex
         let value = params.it
         let el = params.event.target
-        if (el.style.background === 'rgb(199, 32, 44)') {
-          el.style.background = '#fff'
-          el.style.color = '#d51623'
-          el.style.borderColor = '#e5e5e5'
+        if (this.modelValue.indexOf('龙虎') > -1) {
+          if (el.style.background === 'rgb(199, 32, 44)') {
+            el.style.background = '#fff'
+            el.style.color = '#d51623'
+            el.style.borderColor = '#e5e5e5'
+          } else {
+            el.style.background = '#c7202c'
+            el.style.color = '#fff'
+            el.style.borderColor = '#c7202c'
+            for (let i = 0; i < 2; i++) {
+              if ($(el).siblings()[i].style.background === 'rgb(199, 32, 44)') {
+                this.addcodes(idx, $($(el).siblings()[i]).text().trim())
+                break
+              }
+            }
+            $(el).siblings().css({
+              background: '#fff',
+              color: '#d51623',
+              borderColor: '#e5e5e5'
+            })
+          }
+        } else if (this.methodid === 'zx') {
+          this.method = params.data
+          if (el.style.background === 'rgb(199, 32, 44)') {
+            $('.zx').css({
+              background: '#fff',
+              color: '#d51623',
+              borderColor: '#e5e5e5'
+            })
+          } else {
+            $('.zx').css({
+              background: '#fff',
+              color: '#d51623',
+              borderColor: '#e5e5e5'
+            })
+            el.style.background = '#c7202c'
+            el.style.color = '#fff'
+            el.style.borderColor = '#c7202c'
+          }
         } else {
-          el.style.background = '#c7202c'
-          el.style.color = '#fff'
-          el.style.borderColor = '#c7202c'
+          if (el.style.background === 'rgb(199, 32, 44)') {
+            el.style.background = '#fff'
+            el.style.color = '#d51623'
+            el.style.borderColor = '#e5e5e5'
+          } else {
+            el.style.background = '#c7202c'
+            el.style.color = '#fff'
+            el.style.borderColor = '#c7202c'
+          }
         }
-        this.addcodes(idx,value)
+        this.addcodes(idx, value)
       },
       // 将选中的号码push到codes中
-      addcodes (idx,value) {
+      addcodes(idx, value) {
         // 判断玩法的种类，然后根据特殊玩法做出相应处理
         let Lodid = this.methodid
-
         switch (Lodid) {
           case '2357':
             value = String(value)
@@ -646,6 +765,16 @@
             }
             this.model.codes[idx].splice(this.model.codes[idx].indexOf(value), 1)
             break
+          // 庄闲玩法
+          case 'zx':
+            if (this.model.codes.indexOf(value) < 0) {
+              this.model.codes = value
+              this.model.nums = 1
+            } else {
+              this.model.codes.splice(0)
+              this.model.nums = 0
+            }
+            break
           default:
             value = String(value)
             if (this.model.codes[idx].indexOf(value) == -1) {
@@ -659,7 +788,7 @@
         }
       },
       // 监听投注的注数
-      _calBet () {
+      _calBet() {
         if (this.model.type === 'input') {
           return
         }
@@ -670,7 +799,7 @@
         this.$store.commit('updateCodes', this.lotteryname)
       },
       // 选择元角分
-      getyjfSelect (params) {
+      getyjfSelect(params) {
         this.yjfSelect = params.index
         this.model.mode = params.item.modeid
         this.nmodel = params.item.rate
@@ -679,26 +808,32 @@
         this.showSelectListYJF = false
       },
       // 玩法切换时
-      _ozdChange (arr) {
+      _ozdChange(arr) {
         this.$nextTick(() => {
           this._yjfUl()
         })
         this._emptyCody()
         this.typeInput = undefined
-        let toStringArr = arr[arr.length - 1].toString()
-        if (toStringArr.indexOf('|') < 0) {
-          this.methodid = parseInt(arr[arr.length - 1])
+        // 处理庄闲
+        if (arr[0] !== '庄闲') {
+          let toStringArr = arr[arr.length - 1].toString()
+          if (toStringArr.indexOf('|') < 0) {
+            this.methodid = parseInt(arr[arr.length - 1])
+          } else {
+            let methodid = arr[arr.length - 1].split('|')
+            this.methodid = parseInt(methodid[0])
+            this.typeInput = methodid[1]
+          }
         } else {
-          let methodid = arr[arr.length - 1].split('|')
-          this.methodid = parseInt(methodid[0])
-          this.typeInput = methodid[1]
+          this.methodid = 'zx'
+          this.codyBall = false  // 庄闲 去除机选功能
         }
         // 提交mutation到Store
         this.$store.commit('updateTypeInput', this.typeInput)
         this._getMethodename(this.methodid, this.lotteryBet.lottery.method, this.$store.state.typeInput)
       },
       // 获取玩法
-      _getOzd () {
+      _getOzd() {
         let navinfoArr = this.$store.state.lotteryType
         this.lotteryBet.lottery.lotteryname = this.$store.state.nav
         if (this.$store.state.methodid == null) {
@@ -715,25 +850,36 @@
         this.$store.commit('updateMethodid', this.methodid)
         let data = this.$store.state._lotteryBet[this.$store.state.nav]
         this.lotteryBet.lottery.method = data
-        for (let i=0;i<data.length;i++) {
+        for (let i = 0; i < data.length; i++) {
           let ozd = {}
           ozd.name = data[i].title
           ozd.value = data[i].title
           ozd.parent = 0
           this.ozdList.push(ozd)
           let label_1 = data[i].label
-          for (let j =0;j< label_1.length;j++) {
-            let label_2 = label_1[j].label
-            for (let z=0;z< label_2.length;z++) {
-              let ozdChild = {}
-              ozdChild.name = label_2[z].name
-              ozdChild.parent = ozd.value
-              if (ozdChild.name.indexOf('单式') > -1 || ozdChild.name.indexOf('混合') > -1 || ozd.name.indexOf('单式') > -1) {
-                ozdChild.value = label_2[z].methodid + '|input'
-              } else {
-                ozdChild.value = label_2[z].methodid.toString()
+          if (data[i].title === '庄闲') {
+            let ozdChild = {}
+            ozdChild.name = '庄闲'
+            ozdChild.parent = ozd.value
+            this.ozdList.push(ozdChild)
+          } else {
+            for (let j = 0; j < label_1.length; j++) {
+              let label_2 = label_1[j].label
+              for (let z = 0; z < label_2.length; z++) {
+                let ozdChild = {}
+                if (data[i].title === '龙虎') {
+                  ozdChild.name = label_2[z].name.slice(0, 2)
+                } else {
+                  ozdChild.name = label_2[z].name
+                }
+                ozdChild.parent = ozd.value
+                if (ozdChild.name.indexOf('单式') > -1 || ozdChild.name.indexOf('混合') > -1 || ozd.name.indexOf('单式') > -1) {
+                  ozdChild.value = label_2[z].methodid + '|input'
+                } else {
+                  ozdChild.value = label_2[z].methodid.toString()
+                }
+                this.ozdList.push(ozdChild)
               }
-              this.ozdList.push(ozdChild)
             }
           }
         }
@@ -741,7 +887,7 @@
         this._getMethodename(this.methodid, data, this.$store.state.typeInput)
       },
       // 获取玩法的方法
-      _getMethodename (methodid, lotteryBet, typeInput) {
+      _getMethodename(methodid, lotteryBet, typeInput) {
         let _method = null,
           _lotteryname = null,
           _break = false
@@ -796,13 +942,74 @@
             }
           }
         }
-        this.methodid = _method.methodid
+        // 处理庄闲
+        if (methodid === 'zx') {
+          this.methodid = 'zx'
+        } else {
+          this.methodid = _method.methodid
+        }
         // 提交mutation到Store
         this.$store.commit('updateMethodid', this.methodid)
-
-        this.model.methodName = _lotteryname + '-' + _method.name
+        // 处理庄闲
+        if (methodid === 'zx') {
+          this.model.methodName = _lotteryname
+        } else {
+          this.model.methodName = _lotteryname + '-' + _method.name
+        }
         this.modelValue = []
         this.modelValue.push(_lotteryname)
+        // 处理庄闲 layout 数据 根据this.zxCode
+        if (methodid === 'zx') {
+          lotteryBet.forEach((value) => {
+            if (value.title === '庄闲' && !this.zxCode[0].item[0].methodid) {
+              value.label[0].label.forEach((value) => {
+                let i = 0, j = 0
+                switch (value.name) {
+                  case '庄赢':
+                    i = 0
+                    j = 0
+                    break
+                  case '闲赢':
+                    i = 0
+                    j = 1
+                    break
+                  case '和':
+                    i = 1
+                    j = 0
+                    break
+                  case '庄对子':
+                    i = 2
+                    j = 0
+                    break
+                  case '闲对子':
+                    i = 2
+                    j = 1
+                    break
+                  case '庄豹子':
+                    i = 3
+                    j = 0
+                    break
+                  case '闲豹子':
+                    i = 3
+                    j = 1
+                    break
+                  case '庄天王':
+                    i = 4
+                    j = 0
+                    break
+                  case '闲天王':
+                    i = 4
+                    j = 1
+                    break
+                }
+                this.zxCode[i].item[j] = Object.assign({}, {
+                  ...value
+                }, this.zxCode[i].item[j])
+              })
+            }
+          })
+          return false
+        }
         if (typeInput != undefined) {
           this.modelValue.push(this.methodid + '|input')
         } else {
@@ -813,26 +1020,35 @@
         this.isButton = this.method.selectarea.isButton
         if (this.method.selectarea.layout !== undefined) {
           this.layout = this.method.selectarea.layout
-          if(this.$store.state.selectLotteryNameFlag == this.$store.state.selectLotteryName) {
-              // 提交mutation到Store
+          this.layout.forEach((value) => {
+            // 处理龙虎
+            if (_lotteryname === '龙虎') {
+              value.title = value.title.slice(0, 2)
+              value.no = '龙|虎|和'
+              this.isButton = false
+            }
+          })
+          if (this.$store.state.selectLotteryNameFlag == this.$store.state.selectLotteryName) {
+            // 提交mutation到Store
             this.$store.commit('updateLayout', this.layout)
           }
         }
         this._genBallOrder(typeInput)
       },
       // 生成选号列表
-      _genBallOrder (type) {
+      _genBallOrder(type) {
         this.model.methodid = this.method.methodid
         this.model.menuid = this.method.menuid
-        if(this.model.methodid == 1010447 || this.model.methodid == 351 || this.model.methodid == 317 || this.model.methodid == 234){
-        		this.quwei = true
-        }else{
-        		this.quwei = false
+        if (this.model.methodid == 1010447 || this.model.methodid == 351 || this.model.methodid == 317 || this.model.methodid == 234) {
+          this.quwei = true
+        } else {
+          this.quwei = false
         }
         this.model.type = this.method.selectarea.type
         this.model.desc = this.method.desc
         this.omodels = [{
-          'vl': '奖金' + this.method.nfdprize.defaultprize + '-' + this.method.nfdprize.userdiffpoint + '%', 'ky': 1}, {'vl': '奖金' + this.method.nfdprize.levs + '-0%', 'ky': 2}]
+          'vl': '奖金' + this.method.nfdprize.defaultprize + '-' + this.method.nfdprize.userdiffpoint + '%', 'ky': 1
+        }, {'vl': '奖金' + this.method.nfdprize.levs + '-0%', 'ky': 2}]
         this.status = this.omodels[1].vl
         if (this.method.nfdprize.defaultprize === undefined) {
           this.showBonus = false
@@ -848,7 +1064,6 @@
           this.codyBall = true
           let no = ''
           let layout = this.layout
-
           this.model.codes = []
           for (let i = 0; i < layout.length; i++) {
             if (this.layout[i].place === 0) {
@@ -872,33 +1087,33 @@
           for (let i = this.layout.length - 1; i >= 0; i--) {
             this.model.contents[i] = []
           }
-          for(let i=0;i<this.layout.length;i++){
-          	this.model.codes[i] = []
+          for (let i = 0; i < this.layout.length; i++) {
+            this.model.codes[i] = []
           }
           this.codyItem = this.layout[0].no.split('|')
         }
       },
       // 历史奖期
-      getcq () {
+      getcq() {
         let httpurl = this.httpUrl('HISPRIZE')
-        this.httpAction(httpurl,(res) => {
+        this.httpAction(httpurl, (res) => {
           let data = res.data.issueNumbers
           for (var i in data) {
             if (i === this.postData.lotteryid.toString()) {
               this.hisprizeCodes = data[i]
             }
           }
-        },this.postData)
+        }, this.postData)
       },
-      getOnecq(){
-      	let httpurl = this.$store.state.server + '/mmc/?controller=mmcgameapi&action=play&sess='+this.$store.state.sess
-      	this.httpAction(httpurl,(res) => {
+      getOnecq() {
+        let httpurl = this.$store.state.server + '/mmc/?controller=mmcgameapi&action=play&sess=' + this.$store.state.sess
+        this.httpAction(httpurl, (res) => {
           let data = res.data
           this.hisprizeCodes = data
-        },{"flag":"getlastcode","lotteryid":23})
+        }, {"flag": "getlastcode", "lotteryid": 23})
       },
       // 获取url
-      httpUrl(val){
+      httpUrl(val) {
         let app = require('../../../static/ios_hc.json')
         let appData = app
         let serverList = appData.serverList
@@ -916,10 +1131,10 @@
           sess = sessionStorage.getItem('sess')
         }
 
-        return this.$store.state.server + this.mUtils.interFace(val)+'&sess='+sess;
+        return this.$store.state.server + this.mUtils.interFace(val) + '&sess=' + sess;
       },
       // 机选号码--方法
-      _setByRandom () {
+      _setByRandom() {
         this._emptyCody()
         let r = random(this.methodid)
         this.model.codes = []
@@ -957,7 +1172,7 @@
         this._calBet()
       },
       // 清空
-      _emptyCody () {
+      _emptyCody() {
         let all_li = document.getElementsByClassName('box_main')[0].getElementsByClassName('codysBall')
         let selectType = document.getElementsByClassName('selectType')
         for (let i = 0; i < all_li.length; i++) {
@@ -973,40 +1188,40 @@
         this.danshiBall = ""
         this.model.nums = 0
         this.model.codes = []
-        for(let i=0;i<this.layout.length;i++){
-          	this.model.codes[i] = []
+        for (let i = 0; i < this.layout.length; i++) {
+          this.model.codes[i] = []
         }
         this.model.contents = []
       },
       // 监听子组件倍数
-      _getCodeNumber (a) {
+      _getCodeNumber(a) {
         this.model.times = a
       },
 
       //添加投注
-      _addCode(){
-      	let flag = true
+      _addCode() {
+        let flag = true
         let codes = ''
         this.model['lotteryid'] = this.nowLotteryId
         if (this.model.nums == 0) {
-        	if(this.$store.state.dataList.length == 0){
-        			this.$vux.alert.show({
-			            title: '温馨提示',
-			            content: '请先选号'
-			        })
-        	}else{
-        			if(!this.isok){
-        					this.$router.push('/home/selectCody/affirm')
-        			}else{
-        					this.$vux.alert.show({
-					            title: '温馨提示',
-					            content: '请先添加号码'
-					        })
-        			}
-        	}
-        	this.isok = true
+          if (this.$store.state.dataList.length == 0) {
+            this.$vux.alert.show({
+              title: '温馨提示',
+              content: '请先选号'
+            })
+          } else {
+            if (!this.isok) {
+              this.$router.push('/home/selectCody/affirm')
+            } else {
+              this.$vux.alert.show({
+                title: '温馨提示',
+                content: '请先添加号码'
+              })
+            }
+          }
+          this.isok = true
           return
-        }else{
+        } else {
           if (this.$store.state.typeInput == 'input') {
             // 处理M对象
             let tempFlag = false
@@ -1029,129 +1244,134 @@
             this.model.contents = this.model.contents.substring(0, this.model.contents.length - 1) // 除去最后一个符号
             this.model.codes = codes
             this.model.menuid = this.method.menuid
-		        } else {
-		          	let Lodid = this.method['methodid']
-								let LodName = this.method['name']
-								let regd = /和值/
-								//第一步：这里处理各种不同的玩法
-								let r = this.model.codes
-								this.model.codes = []
-								for (let i = 0; i < this.method.selectarea.layout.length; i++) {
-									let l = []
-									r[i].forEach((val, index) => {
-										let b = String(val)
-										switch (Lodid) {
-											case '2433':
-												b = b.replace(/11/gi, 1).replace(/22/gi, 2).replace(/33/gi, 3).replace(/44/gi, 4).replace(/55/gi, 5).replace(/66/gi, 6)
-												break
-											case '2434':
-												b = b.replace(/11\*/gi, 1).replace(/22\*/gi, 2).replace(/33\*/gi, 3).replace(/44\*/gi, 4).replace(/55\*/gi, 5).replace(/66\*/gi, 6)
-												break
-											case '2439':
-												b = b.replace(/111/gi, 1).replace(/222/gi, 2).replace(/333/gi, 3).replace(/444/gi, 4).replace(/555/gi, 5).replace(/666/gi, 6)
-												break
-											default:
-												break
-										}
-										l.push(b)
-									});
-									this.model.codes.push(l)
-								}
-								//第三步，处理显示的投注号码和发送的内容
-								this.model.codes.forEach((item, index) => {
-									let stringKong = '';
-									/*号码排序*/
-									if (regd.test(LodName)) {
-										let itemK = [];
-										item.forEach((value, index) => {
-											if (value.length === 1) {
-												itemK.push("0" + value);
-											} else {
-												itemK.push(value)
-											}
-										});
-										itemK = itemK.sort()
-										itemK.forEach((value, index) => {
-											if (Number(value) < 10) {
-												codes += (value.split("")[1] + ",");
-											} else {
-												codes += (value + ",");
-											}
-										});
-									} else {
-										item = item.sort()
-										item.forEach((value, index) => {
-											codes += (value + ",");
-										});
-									}
-									if (item.length > 0) {
-										codes = codes.substring(0, codes.length - 1);
-									};
-									codes += "|";
-								});
-								codes = codes.substring(0, codes.length - 1); //除去最后一个竖线
-								this.model.contents = this.model.codes
-								this.model.codes = codes
-            this.model.menuid = this.method.menuid
-
-								//第四步，检测购物篮中是否已经存在m对象了。如果不存在则添加进入购物篮
-		        }
-		        if (this.$store.state.dataList.length != 0) {
-		          this.dataList = this.$store.state.dataList
-		          // 检测购物篮中是否已经存在m对象了。如果不存在则添加进入购物篮
-		          this.$store.state.dataList.forEach((item, index) => {
-		            if (item.type == this.model.type && item.methodid == this.model.methodid) {
-		              if (item.codes == codes) {
-		                this.$vux.alert.show({
-		                  title: '温馨提示',
-		                  content: '确认区已有相同的投注内容'
-		                })
-		                flag = false
-		                this.danshiBall = ''
-		                return
-		              }
-		            }
-		          })
-		          if (flag) {
-		            for (let i = 0; i < this.model.codes.length; i++) {
-		              if (this.model.codes[i].length === 0) {
-		                break
-		              } else {
-		              	this.model.money = this.model.nums * 100 * this.model.times * this.nmodel * 2 / 100
-		              	let tempModel = JSON.parse(JSON.stringify(this.model))
-		                this.dataList.unshift(tempModel)
-		                break
-		              }
-		            }
-		          }
-		        } else {
-		        	this.model.money = this.model.nums * 100 * this.model.times * this.nmodel * 2 / 100
-		        	var tempModel = JSON.parse(JSON.stringify(this.model))
-		          this.dataList.unshift(tempModel)
-		        }
-		        if (flag) {
-          		// 提交mutation到Store
-	      				this.$store.commit('updateDataList', this.dataList)
-		            this.$store.commit('updateLayout', this.layout)
-		            // 提交mutation到Store
-		            this.$store.commit('updateModel', JSON.parse(JSON.stringify(this.model)))
-          		if(!this.isok){
-			            this.$router.push('/home/selectCody/affirm')
-          		}else{
-          				this.codeNum = '选好了('+this.dataList.length+')'
-          		}
-          }else{
-          		if(!this.isok){
-          				this.$router.push('/home/selectCody/affirm')
-          		}
-		        }
-	          this._emptyCody()
+          } else {
+            if (this.methodid != 'zx') {
+              let Lodid = this.method['methodid']
+              let LodName = this.method['name']
+              let regd = /和值/
+              //第一步：这里处理各种不同的玩法
+              let r = this.model.codes
+              this.model.codes = []
+              for (let i = 0; i < this.method.selectarea.layout.length; i++) {
+                let l = []
+                r[i].forEach((val, index) => {
+                  let b = String(val)
+                  switch (Lodid) {
+                    case '2433':
+                      b = b.replace(/11/gi, 1).replace(/22/gi, 2).replace(/33/gi, 3).replace(/44/gi, 4).replace(/55/gi, 5).replace(/66/gi, 6)
+                      break
+                    case '2434':
+                      b = b.replace(/11\*/gi, 1).replace(/22\*/gi, 2).replace(/33\*/gi, 3).replace(/44\*/gi, 4).replace(/55\*/gi, 5).replace(/66\*/gi, 6)
+                      break
+                    case '2439':
+                      b = b.replace(/111/gi, 1).replace(/222/gi, 2).replace(/333/gi, 3).replace(/444/gi, 4).replace(/555/gi, 5).replace(/666/gi, 6)
+                      break
+                    default:
+                      break
+                  }
+                  l.push(b)
+                });
+                this.model.codes.push(l)
+              }
+              //第三步，处理显示的投注号码和发送的内容
+              this.model.codes.forEach((item, index) => {
+                let stringKong = '';
+                /*号码排序*/
+                if (regd.test(LodName)) {
+                  let itemK = [];
+                  item.forEach((value, index) => {
+                    if (value.length === 1) {
+                      itemK.push("0" + value);
+                    } else {
+                      itemK.push(value)
+                    }
+                  });
+                  itemK = itemK.sort()
+                  itemK.forEach((value, index) => {
+                    if (Number(value) < 10) {
+                      codes += (value.split("")[1] + ",");
+                    } else {
+                      codes += (value + ",");
+                    }
+                  });
+                } else {
+                  item = item.sort()
+                  item.forEach((value, index) => {
+                    codes += (value + ",");
+                  });
+                }
+                if (item.length > 0) {
+                  codes = codes.substring(0, codes.length - 1);
+                }
+                ;
+                codes += "|";
+              });
+              codes = codes.substring(0, codes.length - 1); //除去最后一个竖线
+              this.model.contents = this.model.codes
+              this.model.codes = codes
+              this.model.menuid = this.method.menuid
+            } else {
+              codes = this.model.codes
+              this.model.type = 'lhzx_zx'
+            }
+          }
+          //第四步，检测购物篮中是否已经存在m对象了。如果不存在则添加进入购物篮
+          if (this.$store.state.dataList.length != 0) {
+            this.dataList = this.$store.state.dataList
+            // 检测购物篮中是否已经存在m对象了。如果不存在则添加进入购物篮
+            this.$store.state.dataList.forEach((item, index) => {
+              if (item.type == this.model.type && item.methodid == this.model.methodid) {
+                if (item.codes == codes) {
+                  this.$vux.alert.show({
+                    title: '温馨提示',
+                    content: '确认区已有相同的投注内容'
+                  })
+                  flag = false
+                  this.danshiBall = ''
+                  return
+                }
+              }
+            })
+            if (flag) {
+              for (let i = 0; i < this.model.codes.length; i++) {
+                if (this.model.codes[i].length === 0) {
+                  break
+                } else {
+                  this.model.money = this.model.nums * 100 * this.model.times * this.nmodel * 2 / 100
+                  let tempModel = JSON.parse(JSON.stringify(this.model))
+                  this.dataList.unshift(tempModel)
+                  break
+                }
+              }
+            }
+          } else {
+            this.model.money = this.model.nums * 100 * this.model.times * this.nmodel * 2 / 100
+            var tempModel = JSON.parse(JSON.stringify(this.model))
+            this.dataList.unshift(tempModel)
+          }
+          if (flag) {
+            // 提交mutation到Store
+            this.$store.commit('updateDataList', this.dataList)
+            this.$store.commit('updateLayout', this.layout)
+            // 提交mutation到Store
+            this.$store.commit('updateModel', JSON.parse(JSON.stringify(this.model)))
+            if (!this.isok) {
+              this.$router.push('/home/selectCody/affirm')
+            } else {
+              this.codeNum = '选好了(' + this.dataList.length + ')'
+            }
+          } else {
+            if (!this.isok) {
+              this.$router.push('/home/selectCody/affirm')
+            }
+          }
+          this._emptyCody()
         }
       },
       // 选好了
-      _buttonOk () {
-      	this.isok = false
-      	this._addCode()
+      _buttonOk() {
+        this.isok = false
+        this._addCode()
         /*if(this.$store.state.dataList.length > 0){
           this.$router.push('/home/selectCody/affirm')
         }else{
@@ -1161,24 +1381,24 @@
           })
         }*/
       },
-      initBet () {
+      initBet() {
         this.lotteryBet.methodid = this.methodid
 
 //        this._getMethodename(this.lotteryBet.methodid, this.lotteryBet.lottery.method,undefined)
         this.postData.lotteryid = this.mUtils.lotterytrans(this.$store.state.nav, 'code->id', this.$store.state.lotteryType)
         // 提交mutation到Store
         this.$store.commit('updateIotteryid', this.postData.lotteryid)
-        if(this.postData.lotteryid == 23){
-        	this.mmcshow = false
-        	this.getOnecq() // 秒秒彩个人奖号
-        }else{
-        	this.mmcshow = true
-        	this.getcq() // 历史奖期
-        	this._restart_tick() // 投注截止时间
+        if (this.postData.lotteryid == 23) {
+          this.mmcshow = false
+          this.getOnecq() // 秒秒彩个人奖号
+        } else {
+          this.mmcshow = true
+          this.getcq() // 历史奖期
+          this._restart_tick() // 投注截止时间
           this.getnewcq()
         }
       },
-      getnewcq () {
+      getnewcq() {
         let map = {}
         map['nav'] = this.$store.state.nav
         let data = {}
@@ -1186,44 +1406,44 @@
         data.lotteryid = this.mUtils.lotterytrans(map['nav'], 'code->id', this.$store.state.lotteryType)
 
         let httpurl = this.$store.state.server + this.mUtils.interFace('CURRENTPRIZE') + '&nav=' + map['nav'] + '&sess=' + this.$store.state.sess
-        this.httpAction(httpurl,(res) => {
+        this.httpAction(httpurl, (res) => {
           this.issueTime = res.data
 
           // 提交mutation到Store
           this.$store.commit('updateIssueTime', this.issueTime)
 
 //          this.getList(data.lotteryid)
-        },data)
+        }, data)
       },
       // 获取遗漏数
-      getList(value){
+      getList(value) {
         let trendurl = this.httpUrl('TREND')
-        this.httpAction(trendurl,(res) => {
+        this.httpAction(trendurl, (res) => {
           let allData = res.data
           let appears = allData.appears //获得次数
           this.missnum = []
           for (let i = 0; i < appears.length; i++) {
-            for(let val in appears[i]){
+            for (let val in appears[i]) {
               let tempval = appears[i][val] == 0 ? 1 : appears[i][val]
-              this.missnum.push(Math.floor(100/tempval))
+              this.missnum.push(Math.floor(100 / tempval))
             }
           }
-        },{lotteryId:value,issueCount:100})
+        }, {lotteryId: value, issueCount: 100})
       },
 
       // 投注截止时间
-      _restart_tick () {
+      _restart_tick() {
         if (this.intervals) {
           clearInterval(this.intervals)
         }
         let httpurl = this.httpUrl('CURRENTPRIZE') + '&nav=' + this.$store.state.nav
-        this.httpAction(httpurl,(res) => {
+        this.httpAction(httpurl, (res) => {
           let data = res.data
           let tick = (new Date(data.saleend.replace(/\-/g, '/')) - new Date(data.nowtime.replace(/\-/g, '/'))) / 1000
           this._start_tick(tick)
-        },{'flag': 'read', 'lotteryid': this.postData.lotteryid})
+        }, {'flag': 'read', 'lotteryid': this.postData.lotteryid})
       },
-      _start_tick (val) {
+      _start_tick(val) {
         this.intervals = setInterval(() => {
           if (val == -1) {
             this.getnewcq()
@@ -1236,7 +1456,7 @@
         }, 1000)
       },
       // 监听单式内容
-      _danshiBall (newVal, oldVal) {
+      _danshiBall(newVal, oldVal) {
         if (this.danshiBall === null) {
           return
         }
@@ -1253,14 +1473,14 @@
           } else {
             document.getElementsByTagName('textarea')[0].blur()
             this.$vux.alert.show({
-							  content: '请不要输入字母，除[空格]以外的特殊字符'
-						})
+              content: '请不要输入字母，除[空格]以外的特殊字符'
+            })
             this.danshiBall = this.danshiBall.slice(0, -1)
           }
         }
       },
       // 单式，组选单式以及混合组选
-      selectBallDanshi (value) {
+      selectBallDanshi(value) {
         if (this.danshiBall === null) {
           return
         }
@@ -1268,13 +1488,13 @@
           valueArr, BellArr = [],
           Sid = null, // 这里是获取单式对应复式的一注的号码个数
           d = this.lotteryBet.lottery.lotteryname.search(/11/g),
-					dd = this.lotteryBet.lottery.lotteryname.search(/pk10/g),//pk时单式
+          dd = this.lotteryBet.lottery.lotteryname.search(/pk10/g),//pk时单式
           too = 1
         // 配置Sid开始
         // (1)一般的单式以及11选5部分单式，一中一
         if (d != -1 || dd != -1) {
-						too = 2;
-				}
+          too = 2;
+        }
         this.lotteryBet.lottery.method.forEach(function (item) {
           item.label.forEach(function (ite) {
             ite.label.forEach(function (i) {
@@ -1286,16 +1506,16 @@
         })
         // (2)11选5单式，混合组选，组选单式
         let IDarr = [
-          ['28', '26', '2391','2390','2386','190802','190801','2404', '2405', '2591', '2592', '289', '291','2340','2341','1205','1203','2205','2199','2203','3111598','3111597','1020501','1020500'], //时时彩2码 组选
-          ['15', '10', '2295', '2385', '2448', '139', '134', '2577', '2572', '2635', '278', '273','2379','2374','2423','190403','190303','191903','2330','2334','1194','2194','3111586','3111581','3111630','1010486','1010480','1010540'], //时时彩3码组选
-          ['226', '240', '343', '357', '309', '323','1010442','1010450'], //4  11选5的2码组选以及任选单式2中2
-          ['222', '243', '339', '359', '305', '325','1010440','1010451'], //6  11选5的3码组选以及任选单式3中3
-          ['246', '361', '327','1010452'], //8 11选5组选4中4
-          ['249', '363', '329','1010453'], //10 11选5组选5中5
-          ['252', '365', '331','1010454'], //12 11选5组选6中5
-          ['255', '367', '333','1010455'], //14 11选5组选7中5
-          ['258', '369', '335','1010456'], //16 11选5组选8中5
-          ['220', '224', '337', '341', '303', '307','1010439','1010441','3111007','3111008','3111024','3111025','3111027'] //这是11选5直选单式
+          ['28', '26', '2391', '2390', '2386', '190802', '190801', '2404', '2405', '2591', '2592', '289', '291', '2340', '2341', '1205', '1203', '2205', '2199', '2203', '3111598', '3111597', '1020501', '1020500'], //时时彩2码 组选
+          ['15', '10', '2295', '2385', '2448', '139', '134', '2577', '2572', '2635', '278', '273', '2379', '2374', '2423', '190403', '190303', '191903', '2330', '2334', '1194', '2194', '3111586', '3111581', '3111630', '1010486', '1010480', '1010540'], //时时彩3码组选
+          ['226', '240', '343', '357', '309', '323', '1010442', '1010450'], //4  11选5的2码组选以及任选单式2中2
+          ['222', '243', '339', '359', '305', '325', '1010440', '1010451'], //6  11选5的3码组选以及任选单式3中3
+          ['246', '361', '327', '1010452'], //8 11选5组选4中4
+          ['249', '363', '329', '1010453'], //10 11选5组选5中5
+          ['252', '365', '331', '1010454'], //12 11选5组选6中5
+          ['255', '367', '333', '1010455'], //14 11选5组选7中5
+          ['258', '369', '335', '1010456'], //16 11选5组选8中5
+          ['220', '224', '337', '341', '303', '307', '1010439', '1010441', '3111007', '3111008', '3111024', '3111025', '3111027'] //这是11选5直选单式
         ];
         let i = 0
         while (i < 9) {
@@ -1347,7 +1567,7 @@
           })
         } else if (d != -1 || dd != -1) { // 11选5去重复
           if (IDarr[9].indexOf(DanID) > -1) {
-            valueArr.forEach( (item, index) => {
+            valueArr.forEach((item, index) => {
               // 去除匹配数组项中长度小于或大于Sid的项
               if (item.length == Sid) {
                 let it = ' ',
@@ -1367,7 +1587,7 @@
               }
             })
           } else {
-            this.ArrayNoundDub(valueArr).forEach( (item, index) => {
+            this.ArrayNoundDub(valueArr).forEach((item, index) => {
               // 去除匹配数组项中长度小于或大于Sid的项
               if (item.length == Sid) {
                 let it = ' '
@@ -1403,7 +1623,7 @@
         DanID = valueArr = BellArr = Sid = d = too = null
       },
       // 11选5组选去重
-      ArrayNoundDub (a) {
+      ArrayNoundDub(a) {
         let re = []
         for (let i = 0, len = a.length; i < len; i++) {
           if (a[i].length >= 2) {
@@ -1425,12 +1645,12 @@
       },
       // 数组["010206","030506"]转换为可以投注的格式[[01,02,06],[03,05,06]]为实现
       // 字符串"010206"转换为数组格式['01','02','06']，只能用于数字
-      StringToArray (string) {
+      StringToArray(string) {
         let reg = /\d{2}/g, rs = string.match(reg)
         return rs
       },
       // 时时彩3码和2码组选去除重复以及不符合的号码，但是为去除3个相同的号码
-      ArrayNound (a) {
+      ArrayNound(a) {
         let re = []
         for (let i = 0, len = a.length; i < len; i++) {
           let d = a[i].split('').sort().join('')
@@ -1451,194 +1671,206 @@
 <style lang="less" scoped>
   @import '../../assets/css/style';
 
-  @historyshow_height:130px;
+  @historyshow_height: 130px;
 
-  .lottery_img{
+  .lottery_img {
     position: absolute;
     top: 54%;
     transform: translateY(-50%);
     /*margin-left: 1.5rem;*/
     left: 20%;
-    img{
-      width:0.5rem;
+    img {
+      width: 0.5rem;
     }
   }
-  .yjfSelect{
+
+  .yjfSelect {
     padding: 0 0.5rem 0 0.1rem !important;
   }
-  .select{
+
+  .select {
     position: relative;
     margin: 0.15rem 0.1rem 0 0;
   }
-  .setByRandom{
+
+  .setByRandom {
     padding: 0 0.3rem 0 0.5rem;
   }
 
-  .yjfSelectUI{
-    position:absolute;
+  .yjfSelectUI {
+    position: absolute;
     top: -2.4rem;
-    left:0;
+    left: 0;
     line-height: 0.6rem;
-    border:1px solid #c8c8c8;
+    border: 1px solid #c8c8c8;
     .borderRadius(0.1rem);
-    background:#fff;
+    background: #fff;
     z-index: 99;
     padding: 0.2rem 0;
-    li{
+    li {
       width: 1rem;
       text-align: center;
     }
 
-    .yjfSelectsj{
-      .triangle_down(2.2rem,0.35rem,0.2rem,#ccc);
+    .yjfSelectsj {
+      .triangle_down(2.2rem, 0.35rem, 0.2rem, #ccc);
     }
   }
-  .selectBox{
-    position:absolute;
+
+  .selectBox {
+    position: absolute;
     top: -1.8rem;
-    left:0;
-    border:1px solid #c8c8c8;
+    left: 0;
+    border: 1px solid #c8c8c8;
     .borderRadius(0.1rem);
-    background:#fff;
+    background: #fff;
     z-index: 99;
     padding: 0.2rem 0;
-    &:after{
-      .triangle_down(1.6rem,0.8rem,0.2rem,#ccc);
+    &:after {
+      .triangle_down(1.6rem, 0.8rem, 0.2rem, #ccc);
     }
-    li{
-      line-height:0.6rem;
-      height:0.6rem;
+    li {
+      line-height: 0.6rem;
+      height: 0.6rem;
       text-align: center;
-      padding:0 0.1rem;
+      padding: 0 0.1rem;
     }
   }
-  .activeStatus{
+
+  .activeStatus {
     background: #eee;
   }
-  .selectUl{
+
+  .selectUl {
     box-sizing: border-box;
     border: 1px solid #c8c8c8;
     padding: 0 0.3rem 0 0.05rem;
     height: 0.52rem;
     line-height: 0.52rem;
-    &:after{
-      .triangle_down(0.22rem,0.1rem,0.13rem,#7D7D7D);
+    &:after {
+      .triangle_down(0.22rem, 0.1rem, 0.13rem, #7D7D7D);
     }
   }
 
-  .carte_section{
+  .carte_section {
     position: absolute;
     top: 0.88rem;
     right: 0;
-    .wh(2.8rem,6rem);
-    overflow:hidden;
+    .wh(2.8rem, 6rem);
+    overflow: hidden;
     /*white-space:nowrap;*/
   }
+
   .carteshow-enter-active, .carteshow-leave-active {
     transition: .2s all ease;
-    opacity:1;
-    .wh(2.8rem,3.2rem);
-  }
-  .carteshow-enter ,.carteshow-leave-active{
-    opacity:0;
-    width:0;
-    height:0;
+    opacity: 1;
+    .wh(2.8rem, 3.2rem);
   }
 
-  .history_section{
-    width:100%;
-    height:@historyshow_height;
-    overflow:hidden;
+  .carteshow-enter, .carteshow-leave-active {
+    opacity: 0;
+    width: 0;
+    height: 0;
   }
+
+  .history_section {
+    width: 100%;
+    height: @historyshow_height;
+    overflow: hidden;
+  }
+
   .historyshow-enter-active, .historyshow-leave-active {
     transition: .2s all linear;
-    width:100%;
-    height:@historyshow_height;
-  }
-  .historyshow-enter ,.historyshow-leave-active{
-    width:100%;
-    height:0;
+    width: 100%;
+    height: @historyshow_height;
   }
 
-  .carte{
-    .wr(0.58rem,0.2rem);
-    padding:0.2rem 0 0.2rem 0.4rem;
+  .historyshow-enter, .historyshow-leave-active {
+    width: 100%;
+    height: 0;
+  }
+
+  .carte {
+    .wr(0.58rem, 0.2rem);
+    padding: 0.2rem 0 0.2rem 0.4rem;
     .jz;
   }
-  .carte_list{
+
+  .carte_list {
     box-sizing: border-box;
     position: absolute;
-    top:0.52rem;
-    right:0.2rem;
-    background:#fff;
-    .wh(2.26rem,4rem);
-    box-shadow:0 0 0.05rem #adadad;
-    li:first-child{
-      &:before{
+    top: 0.52rem;
+    right: 0.2rem;
+    background: #fff;
+    .wh(2.26rem, 4rem);
+    box-shadow: 0 0 0.05rem #adadad;
+    li:first-child {
+      &:before {
         border: 0;
       }
     }
-    li{
+    li {
       .hl(1rem);
       text-align: center;
-      color:#666;
+      color: #666;
       font-size: 0.28rem;
-      &:before{
-        .border-1px(80%,solid,#ddd);
+      &:before {
+        .border-1px(80%, solid, #ddd);
         margin-left: 10%;
       }
-      &:active{
-        background:#ddd;
+      &:active {
+        background: #ddd;
       }
-      img{
-        width:0.34rem;
+      img {
+        width: 0.34rem;
         vertical-align: middle;
-        margin-right:0.22rem;
+        margin-right: 0.22rem;
       }
     }
   }
-  .ballBlock{
-    margin:0 0 2rem;
-    .timePeriod{
+
+  .ballBlock {
+    margin: 0 0 2rem;
+    .timePeriod {
       position: relative;
-      .clickDown{
+      .clickDown {
         box-sizing: border-box;
-        width:2rem;
-        padding:0 0.2rem 0.2rem 0.2rem;
+        width: 2rem;
+        padding: 0 0.2rem 0.2rem 0.2rem;
         .cl;
-        top:0.5rem;
-        z-index:1;
+        top: 0.5rem;
+        z-index: 1;
       }
-      .timePeriod_end{
-        position:absolute;
+      .timePeriod_end {
+        position: absolute;
         width: 100%;
         /*text-align: center;*/
-        color:#515151;
-        background:#fff;
+        color: #515151;
+        background: #fff;
         .hl(0.5rem);
         z-index: 9;
-        span{
-          color:@color_c7202c;
+        span {
+          color: @color_c7202c;
         }
-        &:after{
+        &:after {
           top: 0.5rem;
-          .border-1px(100%,solid,#D9D9D9)
+          .border-1px(100%, solid, #D9D9D9)
         }
       }
     }
-    .box_main{
-      margin:0.6rem 0.2rem 3rem;
-      .explain{
-        margin:0.4rem 0;
-        p{
-          color:#999999;
-          padding:0.1rem 0;
+    .box_main {
+      margin: 0.6rem 0.2rem 3rem;
+      .explain {
+        margin: 0.4rem 0;
+        p {
+          color: #999999;
+          padding: 0.1rem 0;
         }
       }
-      .textareaLong{
+      .textareaLong {
         box-sizing: border-box;
         .borderRadius(0.05rem);
-        .wh(100%,5rem);
+        .wh(100%, 5rem);
         overflow: auto;
         margin: 0 auto;
         display: block;
@@ -1654,166 +1886,178 @@
       .textareaLong:focus {
         outline: none;
       }
-      .selectedType{
+      .selectedType {
         float: right;
-        li{
+        li {
           float: left;
-          .wh(0.38rem,0.38rem);
+          .wh(0.38rem, 0.38rem);
           line-height: 0.38rem;
           text-align: center;
-          margin-right:0.2rem;
+          margin-right: 0.2rem;
           border: 1px solid #c7202c;
           .borderRadius(0.1rem);
           background: #fff;
           color: #c7202c;
         }
       }
-      .parentBox{
+      .parentBox {
         position: relative;
-        background:#fff;
+        background: #fff;
         width: 100%;
         box-sizing: border-box;
         border-radius: 0.2rem;
         margin: 0.14rem 0;
-        padding:0.15rem 0 0.15rem 0.45rem;
-        span{
+        padding: 0.15rem 0 0.15rem 0.45rem;
+        span {
           display: inline-block;
-          width:9%;
+          width: 9%;
           margin: 0.3rem 0.3rem 0 0;
-          color:#656565;
+          color: #656565;
 
-          font-size:0.28rem;
+          font-size: 0.28rem;
           vertical-align: top;
         }
-        .ballBlock_number{
+        .ballBlock_number {
           display: inline-block;
-          width:84%;
-          .codysBall{
+          width: 84%;
+          .codysBall {
             box-sizing: border-box;
-            border:1px solid #e5e5e5;
-            .wh(0.75rem,0.75rem);
+            border: 1px solid #e5e5e5;
+            .wh(0.75rem, 0.75rem);
             line-height: 0.74rem;
-            text-align:center;
-            border-radius:50%;
-            margin:0.19rem 0.3rem 0 0;
+            text-align: center;
+            border-radius: 50%;
+            margin: 0.19rem 0.3rem 0 0;
             font-size: 0.3rem;
-            color:#d51623;
+            color: #d51623;
           }
-          .omit{
+          .zx {
+            .wh(auto, 0.75rem);
+            border-radius: 0.375rem;
+            padding: 0 .25rem;
+          }
+          .omit {
             width: 0.75rem;
             text-align: center;
             margin-top: 0.14rem;
-            color:#999;
+            color: #999;
             font-size: 0.2rem;
           }
-          li.other{
-          	width: auto;
-				    border-radius: 0.1rem;
-				    padding: 0.1rem 0.2rem;
-				    height: auto;
-				    line-height: 1;
+          li.other {
+            width: auto;
+            border-radius: 0.1rem;
+            padding: 0.1rem 0.2rem;
+            height: auto;
+            line-height: 1;
           }
-          .checked{
-            background:#c7202c;
-            color:#fff;
-            border-color:#c7202c;
+          .checked {
+            background: #c7202c;
+            color: #fff;
+            border-color: #c7202c;
           }
         }
       }
     }
   }
-  .footer{
+
+  .footer {
     position: fixed;
-    left:0;
-    right:0;
+    left: 0;
+    right: 0;
     bottom: 0;
     box-shadow: 0 -0.4rem 0.4rem #f2f2f2;
-    background:#fff;
+    background: #fff;
     z-index: 20;
-    .code_number{
-      color:#494949;
-      height:26px;
+    .code_number {
+      color: #494949;
+      height: 26px;
       margin-top: 0.15rem;
-      div{
-        float:left;
-        &:first-child, &:last-child{
-          height:0.5rem;
+      div {
+        float: left;
+        &:first-child, &:last-child {
+          height: 0.5rem;
         }
       }
     }
-    .yjf{
+    .yjf {
       margin-top: 0.15rem;
-      li{
+      li {
         float: left;
-        text-align:center;
-        background:#e8e8e8;
-        .wh(0.47rem,0.47rem);
+        text-align: center;
+        background: #e8e8e8;
+        .wh(0.47rem, 0.47rem);
         line-height: 0.48rem;
-        color:#474747;
-        margin-left:0.05rem;
+        color: #474747;
+        margin-left: 0.05rem;
         border-radius: 0.1rem;
-        &:first-child{
+        &:first-child {
           margin-left: 0;
         }
       }
-      .yjf_select{
-        background:#c7202c;
-        color:#fff;
+      .yjf_select {
+        background: #c7202c;
+        color: #fff;
       }
     }
-    .random_number{
+    .random_number {
       box-sizing: border-box;
       .hl(0.8rem);
-      padding:0 0.2rem;
+      padding: 0 0.2rem;
       width: 100%;
-      white-space:nowrap;
+      white-space: nowrap;
     }
-    .foot_affirm{
-      width:100%;
-      .footer_money{
+    .foot_affirm {
+      width: 100%;
+      .footer_money {
         .hl(1rem);
-        strong{
+        strong {
           font-weight: normal;
-          color:@color_font;
-          span{
-            color:@color_c7202c;
+          color: @color_font;
+          span {
+            color: @color_c7202c;
           }
         }
       }
     }
   }
-  .android{
-    position:relative !important;
-    bottom:2rem;
+
+  .android {
+    position: relative !important;
+    bottom: 2rem;
   }
-  .footer_list{
+
+  .footer_list {
     position: relative;
     height: 1rem;
     padding: 0 0.2rem;
-    &:before{
-      .border-1px(100%,solid,#D9D9D9)
+    &:before {
+      .border-1px(100%, solid, #D9D9D9)
     }
 
-    .foot_select{
-      .wh(120px,25px)
+    .foot_select {
+      .wh(120px, 25px)
     }
-    .foot_bonus{
+    .foot_bonus {
       padding-top: 0.3rem;
     }
   }
-  .buttonOk{
-    margin-top:0.13rem
-  }
-  .button_select{
-    margin: 0.13rem 0.2rem 0 0;
-  }
-  .vux-cell-box:before{
-    border-top:0;
+
+  .buttonOk {
+    margin-top: 0.13rem
   }
 
-  .vux-popup-picker-select{
-   width:102% !important;
+  .button_select {
+    margin: 0.13rem 0.2rem 0 0;
   }
+
+  .vux-cell-box:before {
+    border-top: 0;
+  }
+
+  .vux-popup-picker-select {
+    width: 102% !important;
+  }
+
   .vux-popup-picker-value {
     display: inline-block;
     max-width: 3rem;

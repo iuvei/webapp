@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="time_period header_app_v main-body" v-else>
-    	<div class="clear">
+      <div class="clear">
         <p class="left">
           <span v-text="this.$store.state.selectLotteryName"></span>
         </p>
@@ -46,7 +46,8 @@
                 <div class="number_style">
                   <div class="number_text" v-text="item.codes"></div>
                   <div>
-                    <span class="left" style="color:#666;" v-text="item.methodName"></span>
+                    <span class="left" style="color:#666;"
+                          v-text="item.methodName.indexOf('龙虎')>-1?item.methodName.slice(0,5):item.methodName"></span>
                     <span class="right" style="color:#363636;">{{item.nums}}注{{item.money}}元</span>
                   </div>
                 </div>
@@ -66,18 +67,18 @@
           <div class="affirm_select_number clear">
             <div class="multiple">
               <div>投</div>
-              <selectNumber min = 1 minuss = 1 @getCodeNumber="onTimesSame"></selectNumber>
+              <selectNumber min=1 minuss=1 @getCodeNumber="onTimesSame"></selectNumber>
               <div>倍</div>
             </div>
-            <div class="multiple"  v-show='mmcshow'>
+            <div class="multiple" v-show='mmcshow'>
               <div>追</div>
-              <selectNumber min = 0 minuss = 1 @getCodeNumber="onCountInput"></selectNumber>
+              <selectNumber min=0 minuss=1 @getCodeNumber="onCountInput"></selectNumber>
               <div>期</div>
             </div>
-            <div class="multiple"  v-show='!mmcshow'>
-            <div>连续开</div>
-            <selectNumber min = 1 minuss = 1 @getCodeNumber="onCountMMC"></selectNumber>
-            <div>期</div>
+            <div class="multiple" v-show='!mmcshow'>
+              <div>连续开</div>
+              <selectNumber min=1 minuss=1 @getCodeNumber="onCountMMC"></selectNumber>
+              <div>期</div>
             </div>
             <transition name="slideLeft">
               <div class="right" v-show="isStopshow">
@@ -102,16 +103,16 @@
             <buttonView buttonTitle="确认投注" height="0.7"></buttonView>
           </div>
         </div>
-	    	<div class="mmcdiv" id='mmcdiv' style="display: none;">
-	    		<div class="mmcoverlay"></div>
-	    		<div class="mmcdialog">
-	    			<div class="mmctitle">连续开奖</div>
-	    			<div class="mmccontent">
-	    				<div class='mmcctt' id='mmcctt'></div>
-	    			</div>
-	    			<div class="mmcstop" id='mmcstop' @click='topmmc'></div>
-	    		</div>
-	    	</div>
+        <div class="mmcdiv" id='mmcdiv' style="display: none;">
+          <div class="mmcoverlay"></div>
+          <div class="mmcdialog">
+            <div class="mmctitle">连续开奖</div>
+            <div class="mmccontent">
+              <div class='mmcctt' id='mmcctt'></div>
+            </div>
+            <div class="mmcstop" id='mmcstop' @click='topmmc'></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -120,15 +121,16 @@
   import headTop from '../../header/Header.vue'
   import selectNumber from '../../common/selectNumber.vue'
   import buttonView from '../../common/button.vue'
-  import { random, checkNum } from '../merge'
+  import {random, checkNum} from '../merge'
+  import mUtils from "../../../assets/js/mUtils";
 
   export default {
-    data () {
+    data() {
       return {
-      	mmcshow: false,
+        mmcshow: false,
         isStopshow: false,
         stopText: '中奖追停',
-				avinul:'',
+        avinul: '',
         money: this.$store.state.money, // 账户余额
         dataList: [], // 投注信息
         tickWord: '', // 截止时间
@@ -148,14 +150,46 @@
         isStopStyle: false,
         lt_trace_stop: 'yes',
         init: undefined,
-        mmctime:1,
-        mmcStop:true,
-        mmcbonus:0
+        mmctime: 1,
+        mmcStop: true,
+        mmcbonus: 0,
+        lh_obj: {
+          'wql': 'l1h2',
+          'wqt': 'h1l2',
+          'wqh': 'wqh',
+          'wbl': 'l1h3',
+          'wbt': 'h1l3',
+          'wbh': 'wbh',
+          'wsl': 'l1h4',
+          'wst': 'h1l4',
+          'wsh': 'wsh',
+          'wgl': 'l1h5',
+          'wgt': 'h1l5',
+          'wgh': 'wgh',
+          'qbl': 'l2h3',
+          'qbt': 'h2l3',
+          'qbh': 'qbh',
+          'qsl': 'l2h4',
+          'qst': 'h2l4',
+          'qsh': 'qsh',
+          'qgl': 'l2h5',
+          'qgt': 'h2l5',
+          'qgh': 'qgh',
+          'bsl': 'l3h4',
+          'bst': 'h3l4',
+          'bsh': 'bsh',
+          'bgl': 'l3h5',
+          'bgt': 'h3l5',
+          'bgh': 'bgh',
+          'sgl': 'l4h5',
+          'sgt': 'h4l5',
+          'sgh': 'sgh',
+        }
       }
     },
     watch: {
       dataList: {
-        handler (newValue, oldValue) {
+        handler(newValue, oldValue) {
           // 提交mutation到Store
           this.$store.commit('updateDataList', this.dataList)
           this._allMoney()
@@ -166,34 +200,34 @@
         deep: true
       }
     },
-    beforeRouteLeave (to, from, next) {
+    beforeRouteLeave(to, from, next) {
       clearInterval(this.interval)
       next(true)
     },
-    created () {
+    created() {
       this._iSselect()
       if (this.$store.state.navflag) {
         this._newNav()
         this.$store.commit('UpdateNewNav', false)
       }
     },
-    mounted () {
+    mounted() {
       this._showCodes()
-      if(this.$store.state.lotteryid == 23){
-      	this.mmcshow = false
-      	document.getElementById('mmcstop').innerHTML = '停止'
-      }else{
-      	this.mmcshow = true
-      	this._restart_tick()
-     		this._getAvailableissue()
+      if (this.$store.state.lotteryid == 23) {
+        this.mmcshow = false
+        document.getElementById('mmcstop').innerHTML = '停止'
+      } else {
+        this.mmcshow = true
+        this._restart_tick()
+        this._getAvailableissue()
       }
     },
     methods: {
-      _break () {
+      _break() {
         this.$router.go(-1)
       },
       // 重定义nav
-      _newNav () {
+      _newNav() {
         let lotteryType = this.$store.state.lotteryType
         for (let i = 0; i < lotteryType.length; i++) {
           if (lotteryType[i].cnname == this.$store.state.selectLotteryName) {
@@ -204,7 +238,7 @@
           }
         }
       },
-      _isStop () {
+      _isStop() {
         if (!this.isStopStyle) {
           this.lt_trace_stop = 'no'
           this.isStopStyle = true
@@ -213,7 +247,7 @@
           this.isStopStyle = false
         }
       },
-      _iSselect () {
+      _iSselect() {
         if (this.$store.state.dataList[0].methodName.indexOf('单式') > -1 || this.$store.state.dataList[0].methodName.indexOf('混合') > -1) {
           this.isSelect = false
         } else {
@@ -221,8 +255,8 @@
         }
       },
       // 处理投注号码
-      _showCodes () {
-      	/*
+      _showCodes() {
+        /*
         let model = this.$store.state.dataList
         for (let i = 0; i < model.length; i++) {
           if (typeof model[i].codes === 'string') {
@@ -238,8 +272,8 @@
         this.dataList = this.$store.state.dataList
       },
       // 机选号码
-      _addRandomBet () {
-        if (this.$store.state.dataList.length !=0 && (this.$store.state.dataList[0].methodName.indexOf('单式') > -1 || this.$store.state.dataList[0].methodName.indexOf('混合') > -1)) {
+      _addRandomBet() {
+        if (this.$store.state.dataList.length != 0 && (this.$store.state.dataList[0].methodName.indexOf('单式') > -1 || this.$store.state.dataList[0].methodName.indexOf('混合') > -1)) {
           return
         }
         let tempfalg = true
@@ -324,7 +358,8 @@
           }
           if (item.length > 0) {
             codes = codes.substring(0, codes.length - 1);
-          };
+          }
+          ;
           codes += "|";
         });
         codes = codes.substring(0, codes.length - 1); //除去最后一个竖线
@@ -367,7 +402,7 @@
         }
       },
       // 计算总共投注金额, 总注数
-      _allMoney () {
+      _allMoney() {
         let flagMoney = 0
         let flagNums = 0
         this.dataList.forEach((item, index) => {
@@ -378,22 +413,22 @@
         this.allNums = flagNums
       },
       // 删除
-      _delCodes (params) {
+      _delCodes(params) {
         let index = params.index
         let _this = this
         this.$vux.confirm.show({
           title: '温馨提示',
           content: '确定要删除当前投注吗',
           // 组件除show外的属性
-          onCancel () {
+          onCancel() {
           },
-          onConfirm () {
+          onConfirm() {
             _this.dataList.splice(index, 1)
           }
         })
       },
       // 确认投注
-      _goConfirm () {
+      _goConfirm() {
         let _this = this
         if (this.dataList.length == 0) {
           this.$vux.alert.show({
@@ -404,30 +439,62 @@
           this.$vux.confirm.show({
             title: '提示',
             content: '确认投注?',
-            onCancel () {
+            onCancel() {
               return
             },
-            onConfirm () {
+            onConfirm() {
               _this.$vux.loading.show({
                 text: '正在投注'
               })
-            	if(_this.$store.state.lotteryid == 23){
-	            		_this.mmcStop = true
-	  							_this.mmctime = 1
-	  							_this.mmcbonus = 0
-	            		_this.paymmcbet()
-            	}else{
-            		_this.paybet()
-            	}
+              if (_this.$store.state.lotteryid == 23) {
+                _this.mmcStop = true
+                _this.mmctime = 1
+                _this.mmcbonus = 0
+                _this.paymmcbet()
+              } else {
+                _this.paybet()
+              }
             }
           })
         }
       },
-      paybet () {
+      paybet() {
         this.bets.lt_project = JSON.parse(JSON.stringify(this.dataList))
         let mm = 0
         this.bets.lt_project.forEach((item, index) => {
-          item.codes = item.codes.replace(/,/g, '&')
+          let data = this.$store.state._lotteryBet[this.$store.state.nav]
+          if (item.type === 'lhzx_lh') {
+            item.desc = item.desc.slice(0, 2) + item.codes
+            item.methodName = item.methodName.slice(0, 5) + item.codes
+            let str = item.desc.slice(0, 2).concat(item.codes).replace('万', 'w').replace('千', 'q').replace('白', 'b').replace('十', 's').replace('个', 'g').replace('龙', 'l').replace('虎', 't').replace('和', 'h')
+            item.codes = this.lh_obj[str]
+            data.forEach((value) => {
+              if (value.title === '龙虎') {
+                value.label[0].label.find((val) => {
+                  if (val.desc === item.desc) {
+                    item.methodid = val.methodid
+                    return
+                  }
+                })
+              }
+            })
+          } else if (item.methodName === '庄闲') {
+            data.forEach((value) => {
+              if (value.title === '庄闲') {
+                value.label[0].label.find((val) => {
+                  if (item.codes.indexOf(val.desc) > -1) {
+                    item.methodid = val.methodid
+                    return
+                  }
+                })
+              }
+            })
+            item.type = 'lhzx_zx'
+            item.desc = [`龙虎庄闲_${item.codes}`]
+            item.codes = this.mUtils.lhzx_trans(item.codes)
+          } else {
+            item.codes = item.codes.replace(/,/g, '&')
+          }
         })
         // 追号
         if (this.bets.lt_trace_count_input > 0) {
@@ -475,184 +542,184 @@
         this.bets.play_source = 5
         this.bets.flag = 'save'
         let tempBets = JSON.parse(JSON.stringify(this.bets))
-        for(let i=0;i<tempBets.lt_project.length;i++){
-            delete tempBets.lt_project[i]['lotteryid']
+        for (let i = 0; i < tempBets.lt_project.length; i++) {
+          delete tempBets.lt_project[i]['lotteryid']
         }
         let httpurl = this.$store.state.server + this.mUtils.interFace('PAYBET') + '&curmid=' + map['curmid'] + '&sess=' + this.$store.state.sess
-	        this.httpAction(httpurl,(res) => {
-	          this.$vux.loading.hide()
-	          if (res.data.msg == 'success') {
-	            let _this = this
-	            this.$vux.alert.show({
-	              title: '提示',
-	              content: '购买成功',
-	              onHide () {
-	                _this.dataList = []
-	                _this.$store.state.dataList = [] // 清空投注
-                  clearInterval(_this.interval)
-	                _this.$router.replace('/home/selectCody')
-	              }
-	            })
-	          } else if (res.data.h5statuscode == '889') {
-	            this.$vux.alert.show({
-	              title: '提示',
-	              content: res.data.msg.content[0]
-	            })
-              this.bets = {}
-	          } else {
-	            this.$vux.alert.show({
-	              title: '提示',
-	              content: res.data.msg
-	            })
-              this.bets = {}
-	          }
-
-	        },tempBets)
-      },
-      topmmc(e){
-    			if(e.target.innerHTML == '停止'){
-    					this.mmcStop = false
-    					document.getElementById("mmcstop").style.background = '#c5c5c5'
-    					document.getElementById("mmcstop").style.color = '#fff'
-    			}else{
-    					document.getElementById("mmcstop").innerHTML = '停止'
-    					document.getElementById("mmcdiv").style.display = 'none'
-    			}
-    	},
-      paymmcbet(){
-      		this.bets.lt_project = JSON.parse(JSON.stringify(this.dataList))
-	        this.bets.lt_project.forEach((item, index) => {
-	          	item.codes = item.codes.replace(/,/g, '&')
-	        })
-	        let lotteryid = this.mUtils.lotterytrans(this.$store.state.nav, 'code->id', this.$store.state.lotteryType)
-	        this.bets.lotteryid = lotteryid
-	        this.bets.mid = 311700
-	        this.bets.mids = 666
-	        this.bets.times = this.mmctime
-	        if(this.bets.lt_trace_count_input == undefined){
-	        		this.bets.lt_trace_count_input = 1
-	        }
-					if (this.lt_trace_stop == 'yes' && this.bets.lt_trace_count_input > 1) {
-            	this.bets.lt_trace_stop = this.lt_trace_stop
-          }else{
-          		delete this.bets.lt_trace_stop
+        this.httpAction(httpurl, (res) => {
+          this.$vux.loading.hide()
+          if (res.data.msg == 'success') {
+            let _this = this
+            this.$vux.alert.show({
+              title: '提示',
+              content: '购买成功',
+              onHide() {
+                _this.dataList = []
+                _this.$store.state.dataList = [] // 清空投注
+                clearInterval(_this.interval)
+                _this.$router.replace('/home/selectCody')
+              }
+            })
+          } else if (res.data.h5statuscode == '889') {
+            this.$vux.alert.show({
+              title: '提示',
+              content: res.data.msg.content[0]
+            })
+            this.bets = {}
+          } else {
+            this.$vux.alert.show({
+              title: '提示',
+              content: res.data.msg
+            })
+            this.bets = {}
           }
-	        for (let i = 0, dataList = this.dataList; i < dataList.length; i++) {
-		          this.bets.lt_total_nums += dataList[i].nums // 代表投注注数
-		          this.bets.lt_total_money += dataList[i].money // 代表投注金额
-	        }
-	        this.bets.play_source = 5
-	        this.bets.flag = 'save'
-	        let tempBets = JSON.parse(JSON.stringify(this.bets))
-	        for(let i=0;i<tempBets.lt_project.length;i++){
-	            delete tempBets.lt_project[i]['lotteryid']
-	        }
-	        delete tempBets['lt_issue_start']
-	        let httpurl = this.$store.state.server + '/mmc/?controller=mmcgameapi&action=play&sess=' + this.$store.state.sess
-	        this.httpAction(httpurl,(res) => {
+
+        }, tempBets)
+      },
+      topmmc(e) {
+        if (e.target.innerHTML == '停止') {
+          this.mmcStop = false
+          document.getElementById("mmcstop").style.background = '#c5c5c5'
+          document.getElementById("mmcstop").style.color = '#fff'
+        } else {
+          document.getElementById("mmcstop").innerHTML = '停止'
+          document.getElementById("mmcdiv").style.display = 'none'
+        }
+      },
+      paymmcbet() {
+        this.bets.lt_project = JSON.parse(JSON.stringify(this.dataList))
+        this.bets.lt_project.forEach((item, index) => {
+          item.codes = item.codes.replace(/,/g, '&')
+        })
+        let lotteryid = this.mUtils.lotterytrans(this.$store.state.nav, 'code->id', this.$store.state.lotteryType)
+        this.bets.lotteryid = lotteryid
+        this.bets.mid = 311700
+        this.bets.mids = 666
+        this.bets.times = this.mmctime
+        if (this.bets.lt_trace_count_input == undefined) {
+          this.bets.lt_trace_count_input = 1
+        }
+        if (this.lt_trace_stop == 'yes' && this.bets.lt_trace_count_input > 1) {
+          this.bets.lt_trace_stop = this.lt_trace_stop
+        } else {
+          delete this.bets.lt_trace_stop
+        }
+        for (let i = 0, dataList = this.dataList; i < dataList.length; i++) {
+          this.bets.lt_total_nums += dataList[i].nums // 代表投注注数
+          this.bets.lt_total_money += dataList[i].money // 代表投注金额
+        }
+        this.bets.play_source = 5
+        this.bets.flag = 'save'
+        let tempBets = JSON.parse(JSON.stringify(this.bets))
+        for (let i = 0; i < tempBets.lt_project.length; i++) {
+          delete tempBets.lt_project[i]['lotteryid']
+        }
+        delete tempBets['lt_issue_start']
+        let httpurl = this.$store.state.server + '/mmc/?controller=mmcgameapi&action=play&sess=' + this.$store.state.sess
+        this.httpAction(httpurl, (res) => {
           this.$vux.loading.hide()
           if (res.data.stats == 'success') {
-	          	if(this.mmctime < this.bets.lt_trace_count_input){
-                document.getElementById("mmcstop").innerHTML = '停止'
-	          			if(res.data.data.bonus > 0){
-	          					this.mmcbonus += (+res.data.data.bonus)
-	          					let tempVal = '<div>第'+this.mmctime+'次,共'+this.bets.lt_trace_count_input+'次</div>' +
-	          					'<div>【第'+this.mmctime+'次中奖'+res.data.data.bonus+'元】</div>'+
-	          					'<div>共中奖'+this.mmcbonus+'元</div>'
-	          					document.getElementById("mmcctt").innerHTML = tempVal
-	          					if(this.bets.lt_trace_stop){
-	          							document.getElementById("mmcstop").innerHTML = '中奖了游戏停止'
-	          							document.getElementById("mmcdiv").style.display = 'block'
-	          							return
-	          					}
-	          			}else{
-	          					if(this.mmcbonus > 0){
-	          							let tempVal = '<div>第'+this.mmctime+'次,共'+this.bets.lt_trace_count_input+'次</div>' +
-			          					'<div>共中奖'+this.mmcbonus+'元</div>'
-			          					document.getElementById("mmcctt").innerHTML = tempVal
-	          					}else{
-	          							document.getElementById("mmcctt").innerHTML = '<div>第'+this.mmctime+'次,共'+this.bets.lt_trace_count_input+'次</div>'
-	          					}
-	          			}
-			        		document.getElementById("mmcdiv").style.display = 'block'
-	          			this.mmctime++
-	          			setTimeout(() => {
-	          					if(this.mmcStop){
-	          							this.paymmcbet()
-	          					}else{
-	          						if(this.mmcbonus > 0){
-	          								let tempVal = '<div>共游戏'+(this.mmctime-1)+'次</div>' +
-				          							'<div>共中奖'+this.mmcbonus+'元</div>'
-				          					document.getElementById("mmcctt").innerHTML = tempVal
-	          						}
-	          						this.clearOk()
-	          					}
-	          			},1000)
-	          			return
-	          	}
-	          	if(this.mmctime == this.bets.lt_trace_count_input && this.mmctime > 1){
-	          			if(this.mmcbonus > 0){
-	          					let tempVal = '<div>第'+this.mmctime+'次,共'+this.bets.lt_trace_count_input+'次</div>' +
-			          					'<div>共中奖'+this.mmcbonus+'元</div>'
-			          			document.getElementById("mmcctt").innerHTML = tempVal
-	          			}else{
-	          					document.getElementById("mmcctt").innerHTML = '<div>第'+this.mmctime+'次,共'+this.bets.lt_trace_count_input+'次</div>'
-	          			}
-	          			setTimeout(()=>{
-	          					if(this.mmcbonus > 0){
-	          							let tempVal = '<div>共游戏'+this.bets.lt_trace_count_input+'次</div>' +
-	          							'<div>共中奖'+this.mmcbonus+'元</div>'
-					          			document.getElementById("mmcctt").innerHTML = tempVal
-			          			}else{
-			          					document.getElementById("mmcctt").innerHTML = '<div>共游戏'+this.bets.lt_trace_count_input+'次</div>'
-			          			}
-			          			this.clearOk()
-	          			},1000)
-	          			return
-	          	}
-	          	this.clearOk()
-	            let _this = this
-	            this.$vux.alert.show({
-		              title: '提示',
-		              content: '购买成功',
-		              onHide () {
-		               /* _this.dataList = []
-		                _this.$store.state.dataList = [] // 清空投注
-		                _this.$router.replace('/home/selectCody')*/
-		              }
-	            })
-	          } else if (res.data.h5statuscode == '889') {
-	            this.$vux.alert.show({
-		              title: '提示',
-		              content: res.data.msg.content[0]
-	            })
-	          } else {
-	          	let msg = ''
-	          	if(res.data.data){
-	          			msg = res.data.data
-	          	}else{
-	          			msg = res.data.msg
-	          	}
-	            this.$vux.alert.show({
-		              title: '提示',
-		              content: msg
-	            })
-	          }
-        },tempBets,()=>{
-        			this.clearOk()
-        },()=>{
-        			this.clearOk()
+            if (this.mmctime < this.bets.lt_trace_count_input) {
+              document.getElementById("mmcstop").innerHTML = '停止'
+              if (res.data.data.bonus > 0) {
+                this.mmcbonus += (+res.data.data.bonus)
+                let tempVal = '<div>第' + this.mmctime + '次,共' + this.bets.lt_trace_count_input + '次</div>' +
+                  '<div>【第' + this.mmctime + '次中奖' + res.data.data.bonus + '元】</div>' +
+                  '<div>共中奖' + this.mmcbonus + '元</div>'
+                document.getElementById("mmcctt").innerHTML = tempVal
+                if (this.bets.lt_trace_stop) {
+                  document.getElementById("mmcstop").innerHTML = '中奖了游戏停止'
+                  document.getElementById("mmcdiv").style.display = 'block'
+                  return
+                }
+              } else {
+                if (this.mmcbonus > 0) {
+                  let tempVal = '<div>第' + this.mmctime + '次,共' + this.bets.lt_trace_count_input + '次</div>' +
+                    '<div>共中奖' + this.mmcbonus + '元</div>'
+                  document.getElementById("mmcctt").innerHTML = tempVal
+                } else {
+                  document.getElementById("mmcctt").innerHTML = '<div>第' + this.mmctime + '次,共' + this.bets.lt_trace_count_input + '次</div>'
+                }
+              }
+              document.getElementById("mmcdiv").style.display = 'block'
+              this.mmctime++
+              setTimeout(() => {
+                if (this.mmcStop) {
+                  this.paymmcbet()
+                } else {
+                  if (this.mmcbonus > 0) {
+                    let tempVal = '<div>共游戏' + (this.mmctime - 1) + '次</div>' +
+                      '<div>共中奖' + this.mmcbonus + '元</div>'
+                    document.getElementById("mmcctt").innerHTML = tempVal
+                  }
+                  this.clearOk()
+                }
+              }, 1000)
+              return
+            }
+            if (this.mmctime == this.bets.lt_trace_count_input && this.mmctime > 1) {
+              if (this.mmcbonus > 0) {
+                let tempVal = '<div>第' + this.mmctime + '次,共' + this.bets.lt_trace_count_input + '次</div>' +
+                  '<div>共中奖' + this.mmcbonus + '元</div>'
+                document.getElementById("mmcctt").innerHTML = tempVal
+              } else {
+                document.getElementById("mmcctt").innerHTML = '<div>第' + this.mmctime + '次,共' + this.bets.lt_trace_count_input + '次</div>'
+              }
+              setTimeout(() => {
+                if (this.mmcbonus > 0) {
+                  let tempVal = '<div>共游戏' + this.bets.lt_trace_count_input + '次</div>' +
+                    '<div>共中奖' + this.mmcbonus + '元</div>'
+                  document.getElementById("mmcctt").innerHTML = tempVal
+                } else {
+                  document.getElementById("mmcctt").innerHTML = '<div>共游戏' + this.bets.lt_trace_count_input + '次</div>'
+                }
+                this.clearOk()
+              }, 1000)
+              return
+            }
+            this.clearOk()
+            let _this = this
+            this.$vux.alert.show({
+              title: '提示',
+              content: '购买成功',
+              onHide() {
+                /* _this.dataList = []
+                     _this.$store.state.dataList = [] // 清空投注
+                     _this.$router.replace('/home/selectCody')*/
+              }
+            })
+          } else if (res.data.h5statuscode == '889') {
+            this.$vux.alert.show({
+              title: '提示',
+              content: res.data.msg.content[0]
+            })
+          } else {
+            let msg = ''
+            if (res.data.data) {
+              msg = res.data.data
+            } else {
+              msg = res.data.msg
+            }
+            this.$vux.alert.show({
+              title: '提示',
+              content: msg
+            })
+          }
+        }, tempBets, () => {
+          this.clearOk()
+        }, () => {
+          this.clearOk()
         })
       },
-      clearOk(){
-      		this.mmcStop = true
-					this.mmctime = 1
-					this.mmcbonus = 0
-					document.getElementById("mmcstop").style.background = '#fff'
-					document.getElementById("mmcstop").style.color = '#c7202c'
-					document.getElementById("mmcstop").innerHTML = '确定'
+      clearOk() {
+        this.mmcStop = true
+        this.mmctime = 1
+        this.mmcbonus = 0
+        document.getElementById("mmcstop").style.background = '#fff'
+        document.getElementById("mmcstop").style.color = '#c7202c'
+        document.getElementById("mmcstop").innerHTML = '确定'
       },
-      onCountInput (val) {
+      onCountInput(val) {
         this.bets.lt_trace_count_input = val
         if (this.bets.lt_trace_count_input > 0 && this.mmcshow) {
           this.isStopshow = true
@@ -661,7 +728,7 @@
           this.isStopshow = false
         }
       },
-      onCountMMC (val) {
+      onCountMMC(val) {
         this.bets.lt_trace_count_input = val
         if (this.bets.lt_trace_count_input > 1 && !this.mmcshow) {
           this.isStopshow = true
@@ -670,11 +737,11 @@
           this.isStopshow = false
         }
       },
-      onTimesSame (val) {
+      onTimesSame(val) {
         this.bets.lt_trace_times_same = val
       },
       // 获取可追期数
-      _getAvailableissue () {
+      _getAvailableissue() {
         let map = {}
         map['nav'] = this.$store.state.nav
         map['task'] = 'issue'
@@ -684,21 +751,21 @@
 //        data.flag = 'read'
 //        data.lotteryid = this.bets.lotteryid
         let httpurl = this.$store.state.server + this.mUtils.interFace('AVAILABLEISSUE') + '&nav=' + map['nav'] + '&task=' + map['task'] + '&play_source =' + map['play_source'] + '&sess=' + this.$store.state.sess
-        this.httpAction(httpurl,(res) => {
-          this.allowPeriods = res.data.today.concat( res.data.tomorrow)
+        this.httpAction(httpurl, (res) => {
+          this.allowPeriods = res.data.today.concat(res.data.tomorrow)
         })
       },
       // 清空投注
-      emptyDataList () {
+      emptyDataList() {
         let _this = this
         if (this.$store.state.dataList.length != 0) {
           this.$vux.confirm.show({
             title: '温馨提示',
             content: '确定清空所有投注吗',
             // 组件除show外的属性
-            onCancel () {
+            onCancel() {
             },
-            onConfirm () {
+            onConfirm() {
               _this.dataList = []
               _this.$store.state.dataList = [] // 清空投注
             }
@@ -706,7 +773,7 @@
         }
       },
       // 获取url
-      httpUrl(val){
+      httpUrl(val) {
         let app = require('../../../../static/ios_hc.json')
         let appData = app
         if (this.$store.state.server == null) {
@@ -721,15 +788,15 @@
         } else {
           sess = sessionStorage.getItem('sess')
         }
-        return this.$store.state.server + this.mUtils.interFace(val)+'&sess='+sess;
+        return this.$store.state.server + this.mUtils.interFace(val) + '&sess=' + sess;
       },
       // 投注截止时间
-      _restart_tick () {
+      _restart_tick() {
         if (this.interval) {
           clearInterval(this.interval)
         }
         let httpurl = this.httpUrl('CURRENTPRIZE') + '&nav=' + this.$store.state.nav
-        this.httpAction(httpurl,(res) => {
+        this.httpAction(httpurl, (res) => {
           let data = res.data
           this.avinul = data.issue
           if (this.init != undefined && this.$store.state.dataList.length != 0) {
@@ -739,11 +806,11 @@
           } else {
             this.init = 'init'
           }
-            let tick = (new Date(data.saleend.replace(/\-/g, '/')) - new Date(data.nowtime.replace(/\-/g, '/'))) / 1000
+          let tick = (new Date(data.saleend.replace(/\-/g, '/')) - new Date(data.nowtime.replace(/\-/g, '/'))) / 1000
           this._start_tick(tick)
-        },{'flag': 'read', 'lotteryid': this.$store.state.lotteryid})
+        }, {'flag': 'read', 'lotteryid': this.$store.state.lotteryid})
       },
-      _start_tick (val) {
+      _start_tick(val) {
         this.interval = setInterval(() => {
           if (val == -1) {
             this._getAvailableissue()
@@ -765,219 +832,232 @@
 <style lang="less" scoped>
   @import '../../../assets/css/style';
 
-  @fontColor:#4c4c4c;
-	.mmcoverlay{
-			position: fixed;
-	    z-index: 1000;
-	    top: 0;
-	    right: 0;
-	    left: 0;
-	    bottom: 0;
-	    background:#333;
-	    opacity: 0.6;
-	    -webkit-opacity:0.6;
-	    -moz-opacity:0.6;
-	}
-	.mmcdialog{
-			position: fixed;
-	    z-index: 5000;
-	    width: 80%;
-	    max-width: 300px;
-	    top: 50%;
-	    left: 50%;
-	    -webkit-transform: translate(-50%, -50%);
-	    transform: translate(-50%, -50%);
-	    background-color: #FFFFFF;
-	    text-align: center;
-	    border-radius: 3px;
-	    overflow: hidden;
-	}
-	.mmctitle{
-			width:100%;
-			height: 0.7rem;
-			line-height: 0.7rem;
-			background: #c7202c;
-			font-size: 0.36rem;
-			color:#fff;
-	}
-	.mmccontent{
-			text-align: center;
-			padding:0.4rem 0;
-			font-size: 0.36rem;
-	}
-	.mmcstop{
-			width: 100%;
-			height: 0.96rem;
-			line-height: 0.96rem;
-			font-size: 0.36rem;
-			color:#c7202c;
-			text-align: center;
-	}
-	.mmcstop:before{
-		.border-1px(100%,solid,#cdcdcd)
-	}
+  @fontColor: #4c4c4c;
+  .mmcoverlay {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background: #333;
+    opacity: 0.6;
+    -webkit-opacity: 0.6;
+    -moz-opacity: 0.6;
+  }
+
+  .mmcdialog {
+    position: fixed;
+    z-index: 5000;
+    width: 80%;
+    max-width: 300px;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    background-color: #FFFFFF;
+    text-align: center;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .mmctitle {
+    width: 100%;
+    height: 0.7rem;
+    line-height: 0.7rem;
+    background: #c7202c;
+    font-size: 0.36rem;
+    color: #fff;
+  }
+
+  .mmccontent {
+    text-align: center;
+    padding: 0.4rem 0;
+    font-size: 0.36rem;
+  }
+
+  .mmcstop {
+    width: 100%;
+    height: 0.96rem;
+    line-height: 0.96rem;
+    font-size: 0.36rem;
+    color: #c7202c;
+    text-align: center;
+  }
+
+  .mmcstop:before {
+    .border-1px(100%, solid, #cdcdcd)
+  }
+
   .slideLeft-enter-active, .slideLeft-leave-active {
     opacity: 1;
     -webkit-transition: all .2s linear;
     transition: all .2s linear;
     transform: translate3d(0, 0, 0);
   }
+
   .slideLeft-enter, .slideLeft-leave-active {
     opacity: 0;
     transform: translate3d(100%, 0, 0);
   }
-  .stop{
+
+  .stop {
     box-sizing: border-box;
     .wh(1.3rem, 0.52rem);
     line-height: 0.52rem;
     border: 1px solid #c7202c;
     border-radius: 0.1rem;
-    background:#c7202c;
-    color:#fff;
+    background: #c7202c;
+    color: #fff;
     font-size: 0.28rem;
     text-align: center;
   }
-  .stopStyle{
-    background:#fff;
+
+  .stopStyle {
+    background: #fff;
     color: #c7202c;
   }
-  .time_period{
-    padding:0 0.3rem;
-    background:#fff;
+
+  .time_period {
+    padding: 0 0.3rem;
+    background: #fff;
     .hl(0.5rem);
-    color:@fontColor;
-    strong{
-      color:@color_c7202c;
+    color: @fontColor;
+    strong {
+      color: @color_c7202c;
       font-weight: normal;
     }
-    &:after{
-      .border-1px(100%,solid,#ddd)
+    &:after {
+      .border-1px(100%, solid, #ddd)
     }
   }
-  .times{
+
+  .times {
     position: relative;
-    span{
+    span {
       position: absolute;
-      top:0;
-      right:50px;
+      top: 0;
+      right: 50px;
       width: 60px;
     }
   }
-  .select_cody{
-    position:relative;
+
+  .select_cody {
+    position: relative;
     margin-top: 0.2rem;
-    .select_cody_top{
+    .select_cody_top {
       .wh(95%, 0.25rem);
       line-height: 0.25rem;
-      border:1px solid #ddd;
+      border: 1px solid #ddd;
       .borderRadius(0.125rem);
       margin: 0 auto;
       text-align: center;
-      span{
+      span {
         display: inline-block;
-        float:left;
+        float: left;
         .wh(98%, 1px);
         box-shadow: 0 0.1rem 0.1rem #c0c0c0;
         z-index: 9999;
       }
-      i{
+      i {
         display: inline-block;
         .wh(98%, 0.14rem);
-        border:1px solid #ddd;
+        border: 1px solid #ddd;
         .borderRadius(0.07rem);
         margin: 0 auto;
       }
     }
-    .select_cody_number{
-      position:absolute;
-      top:0.15rem;
-      left:0.38rem;
-      width:90%;
+    .select_cody_number {
+      position: absolute;
+      top: 0.15rem;
+      left: 0.38rem;
+      width: 90%;
       z-index: 0;
-      .select_cody_number_list{
-        background:#fff;
+      .select_cody_number_list {
+        background: #fff;
         padding-top: 0.35rem;
         max-height: 5rem;
         /*overflow-y: scroll;*/
         overflow: auto;
       }
-      .number_list_li{
+      .number_list_li {
         position: relative;
-        .circle{
+        .circle {
           display: inline-block;
           .wh(0.2rem, 0.2rem);
           .borderRadius(50%);
           background: #f6f6f6;
         }
-        .left_c{
+        .left_c {
           position: absolute;
-          top:-0.1rem;
+          top: -0.1rem;
           left: -0.1rem;
         }
-        .right_c{
+        .right_c {
           position: absolute;
-          top:-0.1rem;
-          right:-0.1rem;
+          top: -0.1rem;
+          right: -0.1rem;
         }
-        .number_details{
-          padding:0 0.2rem 0.2rem;
+        .number_details {
+          padding: 0 0.2rem 0.2rem;
           img {
             /*box-sizing: border-box;*/
-            width:0.31rem;
+            width: 0.31rem;
             vertical-align: middle;
-            padding:0.5rem 0.25rem 0.5rem 0;
+            padding: 0.5rem 0.25rem 0.5rem 0;
           }
         }
-        .number_style{
+        .number_style {
           display: inline-block;
           .number_text {
-            color:@color_c7202c;
-            width:5.6rem;
-            word-wrap:break-word;
+            color: @color_c7202c;
+            width: 5.6rem;
+            word-wrap: break-word;
             padding-bottom: 0.3rem;
           }
         }
-        &:before{
-          .border-1px(100%,dashed,#999);
+        &:before {
+          .border-1px(100%, dashed, #999);
         }
       }
 
     }
-    .affirm_foot_empty{
+    .affirm_foot_empty {
       text-align: center;
       .hl(0.72rem);
-      background:#fbfbfb;
+      background: #fbfbfb;
       font-weight: normal;
       font-size: 0.28rem;
-      border-radius:0 0 0.2rem 0.2rem;
+      border-radius: 0 0 0.2rem 0.2rem;
       box-shadow: 0 0.1rem 0.1rem #ddd;
     }
   }
-  .select_button{
+
+  .select_button {
     padding-top: 0.2rem;
     text-align: center;
-    strong{
+    strong {
       font-size: 0.4rem;
       font-weight: normal;
     }
-    span{
+    span {
       position: relative;
       display: inline-block;
-      .wh(3.1rem,0.55rem);
+      .wh(3.1rem, 0.55rem);
       text-align: center;
-      line-height:0.56rem;
+      line-height: 0.56rem;
       font-size: 0.28rem;
       font-weight: normal;
-      color:@fontColor;
-      border:1px solid #ccc;
+      color: @fontColor;
+      border: 1px solid #ccc;
       border-radius: 0.08rem;
-      &:first-child{
-        margin-right:0.2rem;
+      &:first-child {
+        margin-right: 0.2rem;
       }
-      &:active{
-        background:#eee;
+      &:active {
+        background: #eee;
       }
-      &:before{
+      &:before {
         content: "+";
         position: absolute;
         font-size: 0.4rem;
@@ -986,47 +1066,48 @@
       }
     }
   }
-  .affirm_foot{
-    position:fixed;
-    bottom:0;
-    width:100%;
-    .affirm_foot_finally{
+
+  .affirm_foot {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    .affirm_foot_finally {
       position: relative;
-      .affirm_foot_number{
+      .affirm_foot_number {
         padding: 0 0.1rem;
-        &:before{
-          .border-1px(100%,solid,#999);
+        &:before {
+          .border-1px(100%, solid, #999);
         }
-        &:after{
-          .border-1px(100%,solid,#999);
+        &:after {
+          .border-1px(100%, solid, #999);
         }
         .affirm_select_number {
-          padding:0.2rem 0;
+          padding: 0.2rem 0;
         }
-        .multiple{
-          float:left;
-          margin-right:0.2rem;
-          div{
-            float:left;
-            &:first-child, &:last-child{
-              padding-top:5px;
+        .multiple {
+          float: left;
+          margin-right: 0.2rem;
+          div {
+            float: left;
+            &:first-child, &:last-child {
+              padding-top: 5px;
             }
           }
         }
       }
     }
-    .affirm_foot_money{
-      height:1rem;
-      .foot_money{
+    .affirm_foot_money {
+      height: 1rem;
+      .foot_money {
         display: inline-block;
-        padding:0.2rem 0.8rem 0.2rem 0.25rem;
+        padding: 0.2rem 0.8rem 0.2rem 0.25rem;
         text-align: center;
       }
     }
-    .button_p{
-      position:absolute;
-      right:0.2rem;
-      bottom:0.15rem;
+    .button_p {
+      position: absolute;
+      right: 0.2rem;
+      bottom: 0.15rem;
     }
   }
 </style>
