@@ -639,6 +639,21 @@
               borderColor: '#e5e5e5'
             })
           }
+          // 修改 选龙 虎 和 三种情况下的 奖金
+          let data = this.$store.state._lotteryBet[this.$store.state.nav]
+          data.forEach((item) => {
+            if (item.title === '龙虎') {
+              item.label[0].label.find((val) => {
+                if (val.desc === (this.method.desc.slice(0, 2) + value)) {
+                  this.omodels = [{
+                    'vl': '奖金' + val.nfdprize.defaultprize + '-' + val.nfdprize.userdiffpoint + '%', 'ky': 1
+                  }, {'vl': '奖金' + val.nfdprize.levs + '-0%', 'ky': 2}]
+                  return
+                }
+              })
+            }
+          })
+          this.status = this.omodels[1].vl
         } else if (this.methodid === 'zx') {
           this.method = params.data
           if (el.style.background === 'rgb(199, 32, 44)') {
@@ -657,6 +672,23 @@
             el.style.color = '#fff'
             el.style.borderColor = '#c7202c'
           }
+          // 修改 庄闲 奖金
+          let data = this.$store.state._lotteryBet[this.$store.state.nav]
+          this.method.desc = this.method.desc.slice(0, 2) + value
+          data.forEach((val) => {
+            if (val.title === '庄闲') {
+              val.label[0].label.find((v) => {
+                if (value.indexOf(v.desc) > -1) {
+                  this.method = {...v}
+                  this.omodels = [{
+                    'vl': '奖金' + v.nfdprize.defaultprize + '-' + v.nfdprize.userdiffpoint + '%', 'ky': 1
+                  }, {'vl': '奖金' + v.nfdprize.levs + '-0%', 'ky': 2}]
+                  return
+                }
+              })
+            }
+          })
+          this.status = this.omodels[1].vl
         } else {
           if (el.style.background === 'rgb(199, 32, 44)') {
             el.style.background = '#fff'
@@ -869,6 +901,7 @@
                 let ozdChild = {}
                 if (data[i].title === '龙虎') {
                   ozdChild.name = label_2[z].name.slice(0, 2)
+                  if (z > 9) break // 去除后台分类的 万千和 万千虎等 只留万千
                 } else {
                   ozdChild.name = label_2[z].name
                 }

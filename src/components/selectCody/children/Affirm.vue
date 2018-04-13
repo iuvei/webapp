@@ -248,7 +248,7 @@
         }
       },
       _iSselect() {
-        if (this.$store.state.dataList[0].methodName.indexOf('单式') > -1 || this.$store.state.dataList[0].methodName.indexOf('混合') > -1) {
+        if (this.$store.state.dataList[0].methodName.indexOf('单式') > -1 || this.$store.state.dataList[0].methodName.indexOf('混合') > -1 || this.$store.state.methodid === 'zx' || (this.$store.state.methodid >= 3110666 && this.$store.state.methodid <= 3110675)) {
           this.isSelect = false
         } else {
           this.isSelect = true
