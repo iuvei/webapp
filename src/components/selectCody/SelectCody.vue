@@ -99,7 +99,7 @@
             <p class="setByRandom right" v-tap="{ methods: _setByRandom }"
                v-show="codyBall">
               <img style="vertical-align: middle;width:0.5rem;" src="./img/iphone.png" alt="">
-              <span style="color:#c7202c">机选{{modelValue}}</span>
+              <span style="color:#c7202c">机选</span>
             </p>
           </div>
           <img class="clickDown" src="./img/down.png" v-tap="{ methods: _isRecordTable }">
