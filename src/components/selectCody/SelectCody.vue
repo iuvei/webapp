@@ -674,12 +674,10 @@
           }
           // 修改 庄闲 奖金
           let data = this.$store.state._lotteryBet[this.$store.state.nav]
-          this.method.desc = this.method.desc.slice(0, 2) + value
           data.forEach((val) => {
             if (val.title === '庄闲') {
               val.label[0].label.find((v) => {
                 if (value.indexOf(v.desc) > -1) {
-                  this.method = {...v}
                   this.omodels = [{
                     'vl': '奖金' + v.nfdprize.defaultprize + '-' + v.nfdprize.userdiffpoint + '%', 'ky': 1
                   }, {'vl': '奖金' + v.nfdprize.levs + '-0%', 'ky': 2}]
@@ -977,6 +975,16 @@
         }
         // 处理庄闲
         if (methodid === 'zx') {
+          lotteryBet.forEach((val) => {
+            if (val.title === '庄闲') {
+              this.method = {...val.label[0].label[0]}
+            }
+          })
+          this.yjfmodel = this.method.modes[this.indexYJF].name
+          this.omodels = [{
+            'vl': '奖金' + this.method.nfdprize.defaultprize + '-' + this.method.nfdprize.userdiffpoint + '%', 'ky': 1
+          }, {'vl': '奖金' + this.method.nfdprize.levs + '-0%', 'ky': 2}]
+          this.status = this.omodels[1].vl
           this.methodid = 'zx'
         } else {
           this.methodid = _method.methodid
