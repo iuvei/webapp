@@ -6,11 +6,14 @@
       <div class="log-user" @keydown='keyDownLogin'>
         <p class="userName">
           <span></span>
-          <input type="text" placeholder="用户名" :class="'log-input' + (account==''?' log-input-empty':'')" v-model="account" autocapitalize="off" autocorrect="off">
+          <input type="text" placeholder="用户名" :class="'log-input' + (account==''?' log-input-empty':'')"
+                 v-model="account" autocapitalize="off" autocorrect="off">
         </p>
         <div class="passWord">
           <span></span>
-          <input ref="opneEyes" type="password" placeholder="密码" :class="'log-input' + (password==''?' log-input-empty':'')" v-model="password" autocapitalize="off" autocorrect="off">
+          <input ref="opneEyes" type="password" placeholder="密码"
+                 :class="'log-input' + (password==''?' log-input-empty':'')" v-model="password" autocapitalize="off"
+                 autocorrect="off">
           <div class="bigEyes" v-tap="{methods:openPassword}">
             <div :class="['openPs',{'displayPw':openPw}]"></div>
           </div>
@@ -18,18 +21,19 @@
             <div class="Clear"></div>
           </div>
         </div>
-      <div>
-        <div class="remberPw clear">
-          <div class="right" v-tap="{methods: remberPassword}">
-            <div style="display: inline-block;vertical-align: middle" :class="['remberPw_check',{'remberPw_checked':checkPw}]"></div>
-            <span style="vertical-align:middle;">记住密码</span>
-          </div>
-          <!--<div class="right" v-tap="{methods: register}">-->
+        <div>
+          <div class="remberPw clear">
+            <div class="right" v-tap="{methods: remberPassword}">
+              <div style="display: inline-block;vertical-align: middle"
+                   :class="['remberPw_check',{'remberPw_checked':checkPw}]"></div>
+              <span style="vertical-align:middle;">记住密码</span>
+            </div>
+            <!--<div class="right" v-tap="{methods: register}">-->
             <!--<div style="display: inline-block;vertical-align: middle" class="registerStyle"></div>-->
             <!--<span style="vertical-align:middle; text-decoration:underline">快速注册</span>-->
-          <!--</div>-->
+            <!--</div>-->
+          </div>
         </div>
-      </div>
         <a href="javascript:;" class="log-btn" v-tap="{ methods:login }" disabled>
           {{loginText}}
         </a>
@@ -51,7 +55,7 @@
 </template>
 
 <script>
-import { md5 } from 'vux'
+  import {md5} from 'vux'
 
   export default {
     data() {
@@ -78,15 +82,15 @@ import { md5 } from 'vux'
       }
     },
     mounted() {
-      if(sessionStorage.getItem('sess')) {
+      if (sessionStorage.getItem('sess')) {
         sessionStorage.removeItem('sess')
       }
 
-    // 是否记住密码展示密码
+      // 是否记住密码展示密码
       if (this.mUtils.getStore('userName') && this.mUtils.getStore('pswd')) {
         this.account = this.mUtils.getStore('userName');
         this.password = this.mUtils.getStore('pswd');
-        this.checkPw=true
+        this.checkPw = true
       }
       this.$store.dispatch('hideNavbar')
       this.loginText = '登录'
@@ -101,7 +105,7 @@ import { md5 } from 'vux'
       })
     },
     methods: {
-      _pc () {
+      _pc() {
         let urlList = [
           'https://www.slxwhg.com',
           'https://xtkjcc.com',
@@ -120,17 +124,17 @@ import { md5 } from 'vux'
       },
 
       // 记住密码
-      remberPassword () {
+      remberPassword() {
         this.checkPw = !this.checkPw
         this.$store.commit('remberPassword', this.checkPw)
       },
       // 展示密码
-      openPassword (params) {
+      openPassword(params) {
         this.openPw = !this.openPw
         this.openPw ? this.$refs.opneEyes.type = "text" : this.$refs.opneEyes.type = "password"
       },
       // 清除密码
-      clearPassword (params) {
+      clearPassword(params) {
         this.$refs.opneEyes.value = ""
         this.password = ""
         this.valueFlag = true
@@ -140,12 +144,12 @@ import { md5 } from 'vux'
           this.login()
         }
       },
-      _getUpdate () {
+      _getUpdate() {
         if (this.$store.state.ifLink == null) {
           let appData = require('../../static/ios_hc.json')
           this.$store.commit('updateIflink', 1)
           this.available = appData.app_ver.available
-          if (this.available == '0'){
+          if (this.available == '0') {
             this.appUpdata = false
             this.$vux.alert.show({
               title: '提示',
@@ -155,11 +159,11 @@ import { md5 } from 'vux'
               }
             })
           } else {
-            let serverList = appData.serverList
-            let j = Math.floor(Math.random() * serverList.length) // webapp下用
-            this.$store.commit('updateServer', serverList[j]) // webapp下用
+            // let serverList = appData.serverList
+            // let j = Math.floor(Math.random() * serverList.length) // webapp下用
+            // this.$store.commit('updateServer', serverList[j]) // webapp下用
 
-//            this.$store.commit('updateServer', window.location.origin) // m下用
+            this.$store.commit('updateServer', window.location.origin) // m下用
 
             this.version = appData.app_ver.version
             this.lotteryType = appData.lotteryType
@@ -170,7 +174,7 @@ import { md5 } from 'vux'
         }
       },
       // 登录逻辑
-      login () {
+      login() {
         if (this.account !== '' && this.password !== '') {
           this.toLogin()
         } else if (this.account === '') {
@@ -186,7 +190,7 @@ import { md5 } from 'vux'
         }
       },
       // 登录请求
-      toLogin () {
+      toLogin() {
         if (this.clickFlag) {
           this.clickFlag = false
           if (this.available == '0') {
@@ -194,7 +198,7 @@ import { md5 } from 'vux'
             this.$vux.alert.show({
               title: '提示',
               content: '系统维护中',
-              onHide () {
+              onHide() {
                 _this.clickFlag = true
               }
             })
@@ -230,7 +234,7 @@ import { md5 } from 'vux'
                 })
               }
               this.times++
-            },1000)
+            }, 1000)
             return
           }
           let httpurl = this.$store.state.server + this.mUtils.interFace('LOGIN')
@@ -250,9 +254,9 @@ import { md5 } from 'vux'
               // 提交mutation到Store
               this.$store.commit('updateUsertype', res.data.usertype)
               if (this.checkPw) {
-                this.mUtils.setStore('userName',this.account);
-                this.mUtils.setStore('pswd',this.password);
-              }else{
+                this.mUtils.setStore('userName', this.account);
+                this.mUtils.setStore('pswd', this.password);
+              } else {
                 this.mUtils.removeStore('pswd')
               }
               let bank = {
@@ -281,50 +285,50 @@ import { md5 } from 'vux'
           })
         }
       },
-      register () {
+      register() {
         this.$router.push('/Regist')
       }
-  }
+    }
   }
 </script>
 
 <style lang="less" scoped>
-@import '../assets/css/style';
+  @import '../assets/css/style';
 
-.selectPc_web{
-  position: relative;
-}
-.pc_web_list{
-  .cl;
-  li{
-    float:left;
-    text-align: center;
-    padding-top:0.75rem;
-    color: #363636;
-    &:last-child{
-      margin-left: 0.77rem;
-    }
-    span{
-      font-size: 14px;
-    }
+  .selectPc_web {
+    position: relative;
   }
-  .line{
+
+  .pc_web_list {
     .cl;
-    height: 10px;
-    border-left: 1px solid #8E8E8E;
+    li {
+      float: left;
+      text-align: center;
+      padding-top: 0.75rem;
+      color: #363636;
+      &:last-child {
+        margin-left: 0.77rem;
+      }
+      span {
+        font-size: 14px;
+      }
+    }
+    .line {
+      .cl;
+      height: 10px;
+      border-left: 1px solid #8E8E8E;
+    }
+    .web_style {
+      background: url('./img/icon_web.png') no-repeat center top;
+      background-size: 0.7rem auto;
+    }
+    .pc_style {
+      background: url('./img/icon_pc.png') no-repeat center top;
+      background-size: 0.7rem auto;
+    }
   }
-  .web_style{
-    background:url('./img/icon_web.png') no-repeat center top;
-    background-size: 0.7rem auto;
-  }
-  .pc_style{
-    background:url('./img/icon_pc.png') no-repeat center top;
-    background-size: 0.7rem auto;
-  }
-}
 
-
-.remberPw {
+  .remberPw {
     padding: 0.34rem 0 0;
     width: 80%;
     font-size: 0.26rem;
@@ -332,18 +336,18 @@ import { md5 } from 'vux'
     margin: 0 auto;
     margin-bottom: 0.5rem;
     .remberPw_check {
-        box-sizing: border-box;
-        width: 0.4rem;
-        height: 0.4rem;
-        border-radius: 0.2rem;
-        border: 1px solid #999;
+      box-sizing: border-box;
+      width: 0.4rem;
+      height: 0.4rem;
+      border-radius: 0.2rem;
+      border: 1px solid #999;
     }
     .remberPw_checked {
-        width: 0.4rem;
-        height: 0.4rem;
-        background: url("../assets/images/choose.png");
-        background-size: cover;
-        border: 1px solid #fff;
+      width: 0.4rem;
+      height: 0.4rem;
+      background: url("../assets/images/choose.png");
+      background-size: cover;
+      border: 1px solid #fff;
     }
     .registerStyle {
       width: 0.32rem;
@@ -353,29 +357,33 @@ import { md5 } from 'vux'
       border: 1px solid #fff;
     }
 
-}
-.bigEyes{
-  width: .8rem;
-  height:.8rem;
-  position: absolute;
-  right: 0.55rem;
-  top: 0rem;
-}
-.openPs {
+  }
+
+  .bigEyes {
+    width: .8rem;
+    height: .8rem;
+    position: absolute;
+    right: 0.55rem;
+    top: 0rem;
+  }
+
+  .openPs {
     width: 0.29rem;
     height: 0.15rem;
     background: url("../assets/images/unsee.png");
     background-size: cover;
     position: absolute;
     right: 0;
-    top:.4rem
+    top: .4rem
   }
-  .bigClear{
+
+  .bigClear {
     width: .5rem;
-    height:.8rem;
+    height: .8rem;
     position: absolute;
     right: 0;
   }
+
   .Clear {
     width: 0.3rem;
     height: 0.3rem;
@@ -383,9 +391,10 @@ import { md5 } from 'vux'
     background-size: cover;
     position: absolute;
     right: 0;
-    top:.3rem;
+    top: .3rem;
 
   }
+
   .displayPw {
     width: 0.35rem;
     height: 0.22rem;
@@ -393,8 +402,9 @@ import { md5 } from 'vux'
     background-size: cover;
     position: absolute;
     right: 0;
-    top:.35rem
+    top: .35rem
   }
+
   .login {
     position: fixed;
     top: 0;
@@ -405,6 +415,7 @@ import { md5 } from 'vux'
     background: #fff url("./img/bg.png") no-repeat;
     background-size: 100% auto;
   }
+
   .log-logo {
     margin: 0.5rem auto 0.5rem;
     text-align: center;
@@ -429,6 +440,7 @@ import { md5 } from 'vux'
     background-color: #c72023;
     .borderRadius(0.41rem);
   }
+
   .register-btn {
     position: relative;
     width: 90%;
@@ -443,6 +455,7 @@ import { md5 } from 'vux'
     text-align: center;
     border: 1px solid #333;
   }
+
   .log-user {
     text-align: center;
     margin: 0.4rem 0 0.6rem;
@@ -453,7 +466,9 @@ import { md5 } from 'vux'
     text-align: center;
   }
 
-  .log-input-empty {}
+  .log-input-empty {
+  }
+
   .userName {
     width: 80%;
     margin-left: 10%;
@@ -476,6 +491,7 @@ import { md5 } from 'vux'
       color: #999;
     }
   }
+
   .passWord {
     width: 80%;
     margin-left: 10%;
@@ -510,9 +526,11 @@ import { md5 } from 'vux'
     border: none;
     .borderRadius(0.08rem);
   }
+
   input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 1000px white inset;
   }
+
   .copyright {
     position: relative;
     bottom: -1.6rem;
