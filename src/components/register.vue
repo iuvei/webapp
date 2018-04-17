@@ -288,7 +288,7 @@
       },
       _getUpdate() {
         if (this.$store.state.ifLink == null) {
-          let appData = require('../../static/ios_hc.json')
+          let appData = require('../../static/hc.json')
           this.$store.commit('updateIflink', 1)
           this.version = appData.app_ver.version
           this.lotteryType = appData.lotteryType

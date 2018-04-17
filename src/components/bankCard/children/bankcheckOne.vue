@@ -22,121 +22,128 @@
 </template>
 <script>
   import headTop from '../../header/Header.vue'
-  export default {
-      components:{
-        headTop,
-      },
-      data(){
-          return{
-          	openname:'',
-          	banknumber:''
-          }
-      },
-      mounted(){
-      },
-      methods: {
-      		ok(){
-            let bkurl = this.httpUrl('GETCITYLIST');
-            let param = {flag:'checklast',account_name:this.openname,account:this.banknumber};
-            this.$vux.loading.show({
-              text: '正在提交'
-            })
-      				this.httpAction(bkurl,(res)=>{
-                this.$vux.loading.hide()
-                let tempData = res.data;
-                if(tempData.status == 200){
-                  this.$store.commit('getCheck', tempData.data.check);
-                  this.$router.push('/userInfo/bankList/identityConfirmation');
-                }else{
-                  this.$vux.alert.show({
-                      content: tempData.msg
-                  })
-                }
-            	},param)
-      		},
-					//获取url
-          httpUrl(val){
-          let app = require('../../../../static/ios_hc.json')
-          let appData = app
-          let serverList = appData.serverList
-          let j = Math.floor(Math.random() * serverList.length)
-          if (this.$store.state.server == null) {
-            this.$store.commit('updateServer', window.location.origin)
-          }
-          if (this.$store.state.lotteryType == null) {
-            this.$store.commit('updateLotteryType', appData.lotteryType)
-          }
-          let sess
-          if (this.$store.state.sess != null) {
-            sess = this.$store.state.sess
-          } else {
-            sess = sessionStorage.getItem('sess')
-          }
 
-          return this.$store.state.server + this.mUtils.interFace(val)+'&sess='+sess;
-        },
+  export default {
+    components: {
+      headTop,
+    },
+    data() {
+      return {
+        openname: '',
+        banknumber: ''
       }
+    },
+    mounted() {
+    },
+    methods: {
+      ok() {
+        let bkurl = this.httpUrl('GETCITYLIST');
+        let param = {flag: 'checklast', account_name: this.openname, account: this.banknumber};
+        this.$vux.loading.show({
+          text: '正在提交'
+        })
+        this.httpAction(bkurl, (res) => {
+          this.$vux.loading.hide()
+          let tempData = res.data;
+          if (tempData.status == 200) {
+            this.$store.commit('getCheck', tempData.data.check);
+            this.$router.push('/userInfo/bankList/identityConfirmation');
+          } else {
+            this.$vux.alert.show({
+              content: tempData.msg
+            })
+          }
+        }, param)
+      },
+      //获取url
+      httpUrl(val) {
+        let app = require('../../../../static/hc.json')
+        let appData = app
+        let serverList = appData.serverList
+        let j = Math.floor(Math.random() * serverList.length)
+        if (this.$store.state.server == null) {
+          this.$store.commit('updateServer', window.location.origin)
+        }
+        if (this.$store.state.lotteryType == null) {
+          this.$store.commit('updateLotteryType', appData.lotteryType)
+        }
+        let sess
+        if (this.$store.state.sess != null) {
+          sess = this.$store.state.sess
+        } else {
+          sess = sessionStorage.getItem('sess')
+        }
+
+        return this.$store.state.server + this.mUtils.interFace(val) + '&sess=' + sess;
+      },
+    }
 
   }
 
 </script>
 <style lang="less" scoped>
- @import '../../../assets/css/style';
+  @import '../../../assets/css/style';
 
-	p select{
-		text-indent: 0.4rem;
-	}
-	p input{
-		width: 100%;
-	}
-  .tips{
-    line-height:0.7rem;
+  p select {
+    text-indent: 0.4rem;
+  }
+
+  p input {
+    width: 100%;
+  }
+
+  .tips {
+    line-height: 0.7rem;
     padding-left: 10%;
-    background:#fff2bb url(../img/tanhao.png) no-repeat 0.28rem center;
-    background-size:auto 50%;
+    background: #fff2bb url(../img/tanhao.png) no-repeat 0.28rem center;
+    background-size: auto 50%;
     color: #c09743;
   }
-  br{
-    line-height:0;
-    height:0px;
+
+  br {
+    line-height: 0;
+    height: 0px;
   }
-  .userBox>li{
-      overflow: hidden;
-      width:100%;
-      line-height:0.7rem;
-      height:auto;
-      border-top:1px solid #dddddd;
-      border-bottom:1px solid #dddddd;
-      background: #fff;
-      margin-top:0.2rem;
+
+  .userBox > li {
+    overflow: hidden;
+    width: 100%;
+    line-height: 0.7rem;
+    height: auto;
+    border-top: 1px solid #dddddd;
+    border-bottom: 1px solid #dddddd;
+    background: #fff;
+    margin-top: 0.2rem;
 
   }
 
-  li>p{
+  li > p {
     float: left;
     line-height: 0.7rem;
-    height:0.7rem;
+    height: 0.7rem;
     font-size: 0.28rem;
   }
-  .rechargetit{
-    width:28%;
+
+  .rechargetit {
+    width: 28%;
     text-indent: 0.28rem;
   }
-  .rechargetR{
-    width:72%;
+
+  .rechargetR {
+    width: 72%;
   }
 
-  .sure{
-    height:0.8rem;
-    line-height:0.8rem;
+  .sure {
+    height: 0.8rem;
+    line-height: 0.8rem;
     color: #fff;
     border-radius: 3px;
-    background:#c7202c;
-    text-align:center;
-    font-size:0.28rem;
+    background: #c7202c;
+    text-align: center;
+    font-size: 0.28rem;
     margin-top: 0.4rem;
-    width:94%;
+    width: 94%;
     margin-left: 3%;
   }
 
-  </style>
+</style>

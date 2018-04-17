@@ -136,7 +136,7 @@
       	},
       	//获取url
         httpUrl(val){
-          let app = require('../../../../static/ios_hc.json')
+          let app = require('../../../../static/hc.json')
           let appData = app
           let serverList = appData.serverList
           let j = Math.floor(Math.random() * serverList.length)
