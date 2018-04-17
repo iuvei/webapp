@@ -1,0 +1,21 @@
+.header_app {
+  margin-top: 1.5rem !important;
+}
+
+.header_app_v {
+  margin-top: 1.28rem;
+}
+
+.main-body {
+  margin-top: 1.28rem !important;
+}
+
+.main-body_userInfo {
+  margin-bottom: 0.8rem;
+}
+/*报表管理中head定位*/
+.p_fixed{
+     position: fixed;
+     top: 1.25rem;
+     z-index: -1;
+   }
