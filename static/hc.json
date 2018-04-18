@@ -1,6 +1,7 @@
 {
   "app_ver": {
     "version": "1.0",
+    "iosStore": true,
     "updateFlag": 0,
     "available": 1,
     "url": "https://dn-scmobile.qbox.me/hc_mobile_dlh5.html"

@@ -2,8 +2,8 @@
 <template>
   <div class="login" id="login">
     <main>
-      <div class="log-logo"><img :src='img.logo'></div>
-      <div class="log-user" @keydown='keyDownLogin'>
+      <div class="log-logo" :class="playPlatform"><img :src='img.logo'></div>
+      <div class="log-user" :class="playPlatform" @keydown='keyDownLogin'>
         <p class="userName">
           <span></span>
           <input type="text" placeholder="用户名" :class="'log-input' + (account==''?' log-input-empty':'')"
@@ -22,7 +22,7 @@
           </div>
         </div>
         <div>
-          <div class="remberPw clear">
+          <div class="remberPw clear" :class="playPlatform">
             <div class="right" v-tap="{methods: remberPassword}">
               <div style="display: inline-block;vertical-align: middle"
                    :class="['remberPw_check',{'remberPw_checked':checkPw}]"></div>
@@ -39,7 +39,7 @@
         </a>
       </div>
     </main>
-    <div class="selectPc_web">
+    <div class="selectPc_web" v-if="playPlatform==='web'">
       <ul class="pc_web_list clear">
         <li class="web_style">
           <span class="font_size">手机版</span>
@@ -50,7 +50,7 @@
         </li>
       </ul>
     </div>
-    <p id="copyright" class="copyright">Copyright &copy; 2014 - 2017 恒彩娱乐版权所有</p>
+    <p id="copyright" class="copyright" :class="playPlatform">Copyright &copy; 2014 - 2017 恒彩娱乐版权所有</p>
   </div>
 </template>
 
@@ -69,20 +69,20 @@
         account: this.mUtils.getStore('userName'),
         password: '',
         sess: '',
-        version: 0, // 版本号
-        lotteryType: [], // 彩种类型
         valueFlag: false,
         checkPw: this.$store.state.checkPw,
         openPw: false,
         clear: '',
         times: 0,
-        available: '', //是否在维护中
         appUpdata: false,
         clickFlag: true
       }
     },
     mounted() {
-      if (sessionStorage.getItem('sess')) {
+      // if(window.plus){}else{
+      //   document.addEventListener('plusready',function () {})
+      // }
+      if (sessionStorage.getItem('sess') && this.playPlatform === 'web') {
         sessionStorage.removeItem('sess')
       }
 
@@ -101,10 +101,47 @@
       this.$store.commit('updateAjax', true)
 
       this.$nextTick(() => {
-        this._getUpdate()
+        this.clickFlag = this._getUpdate()
+        if (this.playPlatform !== 'web') {
+          this.objBlur()
+          this.$store.commit('updateHttpFlag', false)
+        }
       })
     },
     methods: {
+      objBlur(times) {
+        let obj = document.getElementsByTagName('input'),
+          timess = times || 300,
+          docTouchend = function (event) {
+            if (event.target.tagName.toLocaleLowerCase() != 'input') {
+              setTimeout(function () {
+                for (let i = 0; i < obj.length; i++) {
+                  obj[i].blur()
+                  document.body.scrollTop = 0
+                }
+                document.removeEventListener('touchend', docTouchend, false)
+              }, timess);
+            } else {
+              document.removeEventListener('touchend', docTouchend, false)
+            }
+          }
+        if (obj) {
+          for (let i = 0; i < obj.length; i++) {
+            obj[i].addEventListener('focus', function () {
+              document.addEventListener('touchend', docTouchend, false)
+            }, false)
+            obj[i].addEventListener('keyup', function (e) {
+              if (event.keyCode == 13) {
+                setTimeout(function () {
+                  for (let i = 0; i < obj.length; i++) {
+                    obj[i].blur()
+                  }
+                }, 300);
+              }
+            })
+          }
+        }
+      },
       _pc() {
         let urlList = [
           'https://www.slxwhg.com',
@@ -144,35 +181,6 @@
           this.login()
         }
       },
-      _getUpdate() {
-        if (this.$store.state.ifLink == null) {
-          let appData = require('../../static/hc.json')
-          this.$store.commit('updateIflink', 1)
-          this.available = appData.app_ver.available
-          if (this.available == '0') {
-            this.appUpdata = false
-            this.$vux.alert.show({
-              title: '提示',
-              content: '系统维护中',
-              onHide() {
-                this.clickFlag = false
-              }
-            })
-          } else {
-            // let serverList = appData.serverList
-            // let j = Math.floor(Math.random() * serverList.length) // webapp下用
-            // this.$store.commit('updateServer', serverList[j]) // webapp下用
-
-            this.$store.commit('updateServer', window.location.origin) // m下用
-
-            this.version = appData.app_ver.version
-            this.lotteryType = appData.lotteryType
-
-            this.$store.commit('updateLotteryType', this.lotteryType)
-            this.appUpdata = true
-          }
-        }
-      },
       // 登录逻辑
       login() {
         if (this.account !== '' && this.password !== '') {
@@ -193,7 +201,7 @@
       toLogin() {
         if (this.clickFlag) {
           this.clickFlag = false
-          if (this.available == '0') {
+          if (this.$store.getters.getAvailable == '0' && this.playPlatform === 'web') {
             let _this = this
             this.$vux.alert.show({
               title: '提示',
@@ -245,14 +253,7 @@
             let data = res.data
             this.sess = res.data.sess
             if (data.sess) {
-              // 提交mutation到Store
-              this.$store.commit('updateSess', this.sess)
-              sessionStorage.setItem('sess', this.sess)
 
-              // 提交mutation到Store
-              this.$store.commit('updateUserName', this.account.toLocaleLowerCase())
-              // 提交mutation到Store
-              this.$store.commit('updateUsertype', res.data.usertype)
               if (this.checkPw) {
                 this.mUtils.setStore('userName', this.account);
                 this.mUtils.setStore('pswd', this.password);
@@ -276,7 +277,15 @@
                   _this.loginText = '登录'
                 }
               })
-              return
+            }
+            // 提交mutation到Store
+            this.$store.commit('updateSess', this.sess)
+            // 提交mutation到Store
+            this.$store.commit('updateUserName', this.account.toLocaleLowerCase())
+            // 提交mutation到Store
+            this.$store.commit('updateUsertype', res.data.usertype)
+            if (this.playPlatform === 'web') {
+              sessionStorage.setItem('sess', this.sess)
             }
           }, {
             'username': this.account,
@@ -359,6 +368,10 @@
 
   }
 
+  .remberPw.ios {
+    width: 90%;
+  }
+
   .bigEyes {
     width: .8rem;
     height: .8rem;
@@ -427,6 +440,10 @@
     }
   }
 
+  .log-logo.ios {
+    margin: 1rem auto 0.8rem;
+  }
+
   .log-btn {
     position: relative;
     width: 80%;
@@ -459,6 +476,10 @@
   .log-user {
     text-align: center;
     margin: 0.4rem 0 0.6rem;
+  }
+
+  .log-user.ios {
+    margin: 0.4rem 0 2rem;
   }
 
   .log-user .log-btn {
@@ -541,4 +562,8 @@
     text-align: center;
   }
 
+  .copyright.ios {
+    position: fixed;
+    bottom: 0.2rem;
+  }
 </style>

@@ -36,7 +36,8 @@
           </ul>
         </li>
       </ul>
-      <div class="tips">
+      <div class="tips" v-if="playPlatform==='ios'">最大充值金额<i>{{loadmax}}</i>元,最小可充值金额<i>{{loadmin}}</i>元</div>
+      <div class="tips" v-else>
         <p>最大充值金额<i>{{loadmax}}</i>元,最小可充值金额<i>{{loadmin}}</i>元</p>
         <p :style="alplayInfo.name == 'zhifubaoc9' ? 'display: block' : 'display: none'">金额必须是<i>10</i>的倍数并且大于<i>500</i>时必须是<i>50</i>的倍数
         </p>
@@ -47,11 +48,12 @@
 </template>
 <script>
   import headTop from '../../header/Header.vue'
+
   export default {
     components: {
       headTop
     },
-    data () {
+    data() {
       return {
         username: '',
         show: false,
@@ -67,18 +69,23 @@
         loadmin: 0,
       }
     },
-    mounted () {
+    mounted() {
       this.username = this.$store.state.account
+      // if (window.plus) {
+      // } else {
+      //   document.addEventListener('plusready', function () {
+      //   })
+      // }
       this.getBankList()
     },
     methods: {
-      _show () {
+      _show() {
         this.show = !this.show
       },
-      _isshow () {
+      _isshow() {
         this.isshow = !this.isshow
       },
-      addred (params) {
+      addred(params) {
         let obj = params.item
         let ev = params.event
         this.alplayInfo = obj
@@ -100,7 +107,7 @@
           _this.className = 'active'
         }
       },
-      getBankList () {
+      getBankList() {
         let pwdurl = this.httpUrl('GETBANKLIST')
         this.httpAction(pwdurl, (res) => {
           let tempData = res.data
@@ -132,9 +139,8 @@
           }
         })
       },
-      nextAction () {
-        let inputMoney = this.inputMoney
-        if (inputMoney == '') {
+      nextAction() {
+        if (this.inputMoney == '') {
           this.$vux.alert.show({
             content: '请输入充值金额'
           })
@@ -148,9 +154,9 @@
             return
           }
         }
-        if (this.alplayInfo.name == 'zhifubaoc9') {
-          if (inputMoney <= parseFloat(this.loadmax) && inputMoney >= parseFloat(this.loadmin)) {
-            if (!((inputMoney <= 500 && inputMoney % 10 == 0) || (inputMoney > 500 && inputMoney % 50 == 0))) {
+        if (this.alplayInfo.name == 'zhifubaoc9' && this.playPlatform === 'web') {
+          if (this.inputMoney <= parseFloat(this.loadmax) && this.inputMoney >= parseFloat(this.loadmin)) {
+            if (!((this.inputMoney <= 500 && this.inputMoney % 10 == 0) || (this.inputMoney > 500 && this.inputMoney % 50 == 0))) {
               this.$vux.alert.show({
                 content: '充值金额格式不正确'
               })
@@ -179,9 +185,11 @@
           amount: this.inputMoney,
           Ruleset: 'deposit-hcp',
           alipayName: this.alplayname,
-          'play_source': 5
+          'play_source': this.playSource
         }
-        let windowOpen = window.open()
+        if (this.playPlatform === 'web') {
+          var windowOpen = window.open()
+        }
         this.httpAction(pwdurl, (res) => {
           this.$vux.loading.hide()
           let tempData = res.data
@@ -190,12 +198,17 @@
             if (tempData.data['updateMoneyFloat'] != undefined && tempData.data['updateMoneyFloat'] == 1) {
               this.$vux.alert.show({
                 content: '随机改变充值金额 : 为了避免您的支付限额，系统默认对您填写的整数金额随机减少' + tempData.data['moneyFloatLimitStart'] + '-' + tempData.data['moneyFloatLimitEnd'] + '元！',
-                onHide () {
+                onHide() {
                   if (tempData.data.urlMiddleman == "") {
                     let param = tempData.data
                     _this.$router.push({path: '/userInfo/RechargeDetail', query: {'data': param}})
                   } else {
-                    windowOpen.location = tempData.data.urlMiddleman
+                    if (this.playPlatform === 'web') {
+                      windowOpen.location = tempData.data.urlMiddleman
+                    } else {
+                      let actionurl = tempData.data.urlMiddleman
+                      plus.runtime.openURL(actionurl)
+                    }
                   }
                 }
               })
@@ -204,7 +217,12 @@
                 let param = tempData.data
                 _this.$router.push({path: '/userInfo/RechargeDetail', query: {'data': param}});
               } else {
-                windowOpen.location = tempData.data.urlMiddleman
+                if (this.playPlatform === 'web') {
+                  windowOpen.location = tempData.data.urlMiddleman
+                } else {
+                  let actionurl = tempData.data.urlMiddleman
+                  plus.runtime.openURL(actionurl)
+                }
               }
             }
           } else {
@@ -213,30 +231,8 @@
             })
           }
         }, obj)
-      },
-      // 获取url
-      httpUrl(val){
-        let app = require('../../../../static/hc.json')
-        let appData = app
-        let serverList = appData.serverList
-        let j = Math.floor(Math.random() * serverList.length)
-        if (this.$store.state.server == null) {
-          this.$store.commit('updateServer', window.location.origin)
-        }
-        if (this.$store.state.lotteryType == null) {
-          this.$store.commit('updateLotteryType', appData.lotteryType)
-        }
-        let sess
-        if (this.$store.state.sess != null) {
-          sess = this.$store.state.sess
-        } else {
-          sess = sessionStorage.getItem('sess')
-        }
-
-        return this.$store.state.server + this.mUtils.interFace(val) + '&sess=' + sess;
-      },
+      }
     }
-
   }
 
 </script>

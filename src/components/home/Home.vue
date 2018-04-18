@@ -5,7 +5,7 @@
       <loading v-model="loading"></loading>
     </div>
 
-    <div v-transfer-dom>
+    <div v-transfer-dom v-if="playPlatform==='web'">
       <x-dialog v-model="showToast" hide-on-blur
                 :dialog-style="{'max-width': '100%', width: '100%', height: '50%', 'background-color': 'transparent'}">
         <div class="img-box" style="position: relative;">
@@ -196,8 +196,10 @@
       next(true)
     },
     mounted() {
-      this.httpUrl()
-      this._getaccout()
+      if (this.playPlatform === 'web') {
+        this.httpUrl()
+        this._getaccout()
+      }
       this._enshrine()
       this._getlocalStorage()
     },
@@ -390,28 +392,6 @@
           }
           this.cqcody = codes[0].code.split('')
         }, {lotteryid: '0', type: '1'})
-      },
-      // 获取url
-      httpUrl(val) {
-        let app = require('../../../static/hc.json')
-        let appData = app
-        let serverList = appData.serverList
-        let j = Math.floor(Math.random() * serverList.length)
-        if (this.$store.state.server == null) {
-          this.$store.commit('updateServer', window.location.origin)
-        }
-        if (this.$store.state.lotteryType == null) {
-          this.$store.commit('updateLotteryType', appData.lotteryType)
-        }
-        let sess
-
-        if (this.$store.state.sess != null) {
-          sess = this.$store.state.sess
-        } else {
-          sess = sessionStorage.getItem('sess')
-        }
-        this.$store.commit('updateSess', sess)
-        return this.$store.state.server + this.mUtils.interFace(val) + '&sess=' + sess;
       },
       // 添加彩种
       _add_lottery() {
@@ -667,7 +647,7 @@
     width: 1.82rem;
     margin-top: -0.64rem;
     height: 0.62rem;
-    line-height: 0.64rem;
+    line-height: 0.63rem;
     text-align: center;
     background: #C7202C;
     border-radius: 0.1rem;

@@ -16,7 +16,7 @@
           <li>
             <p class="linkL">自身保留返点</p>
             <p>
-              <input type="number" step="0.1" @blur="_blur" v-model="keeppoint" placeholder="自身至少保留0.1" >
+              <input type="number" step="0.1" @blur="_blur" v-model="keeppoint" placeholder="自身至少保留0.1">
             </p>
             <br class="clear">
           </li>
@@ -40,8 +40,8 @@
           <div class="left" style="width: 2rem; font-size: 0.28rem;">您的链接地址：</div>
           <div class="link left" style="width: 71%;" id="kwd" v-text="url"></div>
           <div class="select_copy">
-            <p  @click="_copys('url_hook',url)" class="button_copy url_hook left">点击复制链接</p>
-            <p @click="_code"  class="button_copy right">生成二维码</p>
+            <p @click="_copys('url_hook',url)" class="button_copy url_hook left">点击复制链接</p>
+            <p @click="_code" class="button_copy right">生成二维码</p>
           </div>
         </div>
       </div>
@@ -58,7 +58,7 @@
         <div class="img-box">
           <div id="qrcode"></div>
         </div>
-        <div  class="close">
+        <div class="close">
           <span class="vux-close" @click="close">关闭</span>
           <a id="downloadLink" target="_blank"></a>
           <span class="vux-close" @click="downloadClick">下载</span>
@@ -69,7 +69,8 @@
 </template>
 <script>
   import headTop from '../../header/Header.vue'
-  import { XDialog, TransferDomDirective as TransferDom } from 'vux'
+  import {XDialog, TransferDomDirective as TransferDom} from 'vux'
+
   export default {
     directives: {
       TransferDom
@@ -78,7 +79,7 @@
       headTop,
       XDialog
     },
-    data () {
+    data() {
       return {
         usertype: 0,
         isActiveType: 1,
@@ -110,19 +111,19 @@
       usertype: {
         deep: true,
         handler: function (val, oldVal) {
-          this.url = this.urlflag+'&usertype='+val
+          this.url = this.urlflag + '&usertype=' + val
         }
       }
     },
-    beforeRouteLeave (to, from, next) {
+    beforeRouteLeave(to, from, next) {
       this.$vux.toast.hide()
       next(true)
     },
-    mounted () {
+    mounted() {
       this._getLinks()
     },
     methods: {
-      downloadClick () {
+      downloadClick() {
         // 获取base64的图片节点
         let img = document.getElementById('qrcode').getElementsByTagName('canvas')[0];
         // 构建画布
@@ -139,70 +140,73 @@
         downloadLink.click();
       },
       close() {
-        this.showNoScroll=false
+        this.showNoScroll = false
         clearTimeout(times)
-        let times = setTimeout(function(){
+        let times = setTimeout(function () {
           let qrcode = document.getElementById('qrcode')
           let childs = qrcode.childNodes
           qrcode.removeChild(childs[0])
-        },200)
+        }, 200)
       },
       _code() {
         $("#qrcode").qrcode({
-          render : "canvas",
-          text : this.url,
-          width : "236",
-          height : "200",
-          background : "#ffffff",
-          foreground : "#000000",
+          render: "canvas",
+          text: this.url,
+          width: "236",
+          height: "200",
+          background: "#ffffff",
+          foreground: "#000000",
           src: require('../img/icon.png')
         });
-        this.showNoScroll=true
+        this.showNoScroll = true
       },
-      setCurM () {
+      setCurM() {
         this.isActiveType = 1
         this.usertype = 0
       },
-      setCurA () {
+      setCurA() {
         this.isActiveType = 0
         this.usertype = 1
       },
-      _copys(_class,val){
+      _copys(_class, val) {
         let _this = this
-        let clipboard = new Clipboard('.'+ _class,{
-          text:function() {
+        let clipboard = new Clipboard('.' + _class, {
+          text: function () {
             return val;
           }
         });
-        clipboard.on('success', function(e) {
+        clipboard.on('success', function (e) {
           _this.$vux.toast.show({
             text: '复制成功'
           })
         });
-        clipboard.on('error', function(e) {
+        clipboard.on('error', function (e) {
           _this.$vux.toast.show({
             text: '复制失败'
           })
         });
       },
       // 请求推广链接
-      _getLinks () {
+      _getLinks() {
         let httpurl = this.httpUrl('MARKETING')
-        this.httpAction(httpurl,(res) => {
+        this.httpAction(httpurl, (res) => {
           this.lotterysList = res.data.aLotteryData
           if (res.data.domainList[0] == undefined) {
             this.iSLinkUrl = false
           } else {
             this.iSLinkUrl = true
-//            this.urlflag = res.data.domainList[0]+'/_api/registeracount.php?roset='+res.data.encodeuid+'&nomobile=1'
+            if (this.playPlatform === 'web') {
+              this.urlflag = window.location.origin + '/m/activity/index.html?roset=' + res.data.encodeuid
+            } else {
+              this.urlflag = res.data.domainList[0] + '/_api/registeracount.php?roset=' + res.data.encodeuid + '&nomobile=1'
+            }
 //            this.url = this.urlflag+'&usertype='+this.usertype
-            this.urlflag = window.location.origin+'/m/activity/index.html?roset='+res.data.encodeuid
-            this.url = this.urlflag+'&usertype='+this.usertype
+            this.url = this.urlflag + '&usertype=' + this.usertype
           }
           this._getInputData()
         })
       },
-      _getInputData () {
+      _getInputData() {
         let TempAllLotterys = this.lotterysList
         for (let i = 0; i < TempAllLotterys.length; i++) {
           if (TempAllLotterys[i].lotteryid == '1') {
@@ -239,7 +243,7 @@
         }
         this.AllLotterys = TempAllLotterys
       },
-      _blur () {
+      _blur() {
         this.selfSubPoint = (this.selfPoint - this.keeppoint).toFixed(1) + '%'
         if (this.selfSubPoint.indexOf('-') > -1 || parseFloat((this.selfPoint - this.keeppoint).toFixed(1)) > parseFloat(this.global_limitpoints) || this.selfSubPoint == 'NaN%' || this.selfSubPoint < 0) {
           this.selfSubPoint = ''
@@ -248,7 +252,7 @@
         this.keeppoint = parseFloat(this.keeppoint).toFixed(1)
       },
       // 生成链接
-      submit (e) {
+      submit(e) {
         this.selfSubPoint = (this.selfPoint - this.keeppoint).toFixed(1) + '%'
         if (this.keeppoint == '' || this.keeppoint == 'NaN') {
           this.$vux.alert.show({
@@ -286,7 +290,7 @@
         let formData = this.formser(e.target)
         formData.lotteryid = formData.lotteryid.split(',')
         let httpurl = this.httpUrl('MARKETING')
-        this.httpAction(httpurl,(res) => {
+        this.httpAction(httpurl, (res) => {
           this.affirm = '确认'
           if (res.data.status == 1) {
             this.$vux.alert.show({
@@ -299,9 +303,9 @@
               content: res.data.msg
             })
           }
-        },formData)
+        }, formData)
       },
-      formser (form) {
+      formser(form) {
         let arr = {}
         for (let i = 0; i < form.elements.length; i++) {
           let feled = form.elements[i]
@@ -328,177 +332,168 @@
           }
         }
         return arr
-      },
-      // 获取url
-      httpUrl(val){
-        let app = require('../../../../static/hc.json')
-        let appData = app
-        let serverList = appData.serverList
-        let j = Math.floor(Math.random() * serverList.length)
-        if (this.$store.state.server == null) {
-          this.$store.commit('updateServer', window.location.origin)
-        }
-        if (this.$store.state.lotteryType == null) {
-          this.$store.commit('updateLotteryType', appData.lotteryType)
-        }
-        let sess
-        if (this.$store.state.sess != null) {
-          sess = this.$store.state.sess
-        } else {
-          sess = sessionStorage.getItem('sess')
-        }
-        return this.$store.state.server + this.mUtils.interFace(val)+'&sess='+sess;
       }
     }
   }
 </script>
 <style lang="less" scoped>
   @import '../../../assets/css/style';
-  .vux-close{
+
+  .vux-close {
     display: inline-block;
     width: 48%;
-    &:last-child{
+    &:last-child {
       border-left: 1px solid #797979;
     }
   }
-  #qrcode{
+
+  #qrcode {
     position: relative;
-    padding:10px;
+    padding: 10px;
   }
-  #codeico{
+
+  #codeico {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index:9999999;
-    width:50px;
-    height:50px;
+    z-index: 9999999;
+    width: 50px;
+    height: 50px;
     background: url('../img/icon.png');
     background-size: 100%;
   }
-  .registerType{
+
+  .registerType {
     margin-bottom: 0.2rem;
-    span{
-      float:left;
+    span {
+      float: left;
       box-sizing: border-box;
       text-indent: 0;
-      height:0.5rem;
-      line-height:0.5rem;
+      height: 0.5rem;
+      line-height: 0.5rem;
       margin-top: 0.1rem;
-      background:#fff;
-      border:1px solid #cbcbcb;
+      background: #fff;
+      border: 1px solid #cbcbcb;
       text-align: center;
       width: 1rem;
     }
-    .activeType{
-      background:#c7202a;
-      color:#fff;
-      border:1px solid #c7202a
+    .activeType {
+      background: #c7202a;
+      color: #fff;
+      border: 1px solid #c7202a
     }
-    .r_member{
+    .r_member {
       border-top-left-radius: 4px;
-      border-bottom-left-radius:4px;
-      border-right:0;
+      border-bottom-left-radius: 4px;
+      border-right: 0;
     }
-    .r_agent{
+    .r_agent {
       border-top-right-radius: 4px;
-      border-bottom-right-radius:4px;
-      border-left:0;
+      border-bottom-right-radius: 4px;
+      border-left: 0;
     }
   }
-  .close{
+
+  .close {
     width: 100%;
     height: 0.8rem;
     line-height: 0.8rem;
     background: #a9acb1;
-    color:#fff;
+    color: #fff;
     font-size: 0.28rem;
   }
-  .linkBox{
-    margin-top:0.2rem;
+
+  .linkBox {
+    margin-top: 0.2rem;
   }
-  .linkBox li{
+
+  .linkBox li {
     border-top: 1px solid #dddddd;
     border-bottom: 1px solid #dddddd;
-    height:0.7rem;
+    height: 0.7rem;
     background: #fff;
     text-indent: 0.32rem;
-    line-height:0.7rem;
-    p{
+    line-height: 0.7rem;
+    p {
       float: left;
       height: 0.7rem;
       line-height: 0.7rem;
       color: #333;
       font-size: 0.28rem;
     }
-    .selfRebate{
+    .selfRebate {
       color: #c7202a;
     }
-    .subordinateRebate{
+    .subordinateRebate {
       color: #c7202a;
     }
-    .linkL{
-      width:30%;
+    .linkL {
+      width: 30%;
     }
   }
-  .linkBox .minMax{
-    background:none;
+
+  .linkBox .minMax {
+    background: none;
     color: #a4a4a4;
-    border:none;
+    border: none;
   }
-  .generateLinks{
-    height:0.8rem;
-    line-height:0.81rem;
+
+  .generateLinks {
+    height: 0.8rem;
+    line-height: 0.81rem;
     border-radius: 3px;
-    background:#c7202a;
-    text-align:center;
+    background: #c7202a;
+    text-align: center;
     margin-top: 0.4rem;
-    width:94%;
+    width: 94%;
     margin-left: 3%;
-    input{
-      color:#fff;
-      font-size:0.28rem;
-      .wh(100%,100%);
+    input {
+      color: #fff;
+      font-size: 0.28rem;
+      .wh(100%, 100%);
     }
   }
-  .select_copy{
+
+  .select_copy {
     .cl;
     margin-top: 1.7rem;
     width: 5rem;
-    .button_copy{
+    .button_copy {
       box-sizing: border-box;
-      border:1px solid #c7202c;
+      border: 1px solid #c7202c;
       background: #c7202c;
-      color:#fff;
-      width:2rem;
+      color: #fff;
+      width: 2rem;
       height: 0.6rem;
       line-height: 0.61rem;
       .borderRadius(0.3rem);
       font-size: 0.28rem;
       text-align: center;
       margin-right: 10px;
-      &:active{
+      &:active {
         background: #C74F5A;
       }
     }
   }
-  .linkUrl{
+
+  .linkUrl {
     display: inline-block;
     //.hl(1rem);
-    width:100%;
-    background:#fff;
-    margin-top:0.5rem;
+    width: 100%;
+    background: #fff;
+    margin-top: 0.5rem;
     border-top: 1px solid #dddddd;
     border-bottom: 1px solid #dddddd;
-    font-size:0.28rem;
+    font-size: 0.28rem;
     padding: 0 0.2rem;
     box-sizing: border-box;
-    .link{
+    .link {
       /*text-decoration: underline;*/
       text-indent: 0;
       display: inline-block;
       width: 70%;
-      word-wrap:break-word;
+      word-wrap: break-word;
       font-size: 0.28rem;
       /*display: -webkit-box;*/
       /*-webkit-box-orient: vertical;*/

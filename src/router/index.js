@@ -1,3 +1,4 @@
+import Welcome from '../components/welcome/welcome.vue'
 import Login from '../components/login.vue'
 import Regist from '../components/register.vue'
 import LotteryCentre from '../components/lotteryCenter/LotteryCentre.vue'
@@ -73,44 +74,49 @@ import Settkpwd from '../components/bankCard/children/Settkpwd.vue'
 import SecSetpwd from '../components/bankCard/children/SecSetpwd.vue'
 import Help from '../components/help/help.vue'
 
-export default[
+export default [
+  {
+    path: '/welcome/welcome',
+    component: Welcome,
+    meta: {keepAlive: false}
+  },
   {
     // 设置
     path: '/userInfo/recharge',
     component: Recharge,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 彩票帐变
     path: '/userInfo/lotteryChange',
     component: LotteryChange,
-    meta: { keepAlive: false }
+    meta: {keepAlive: false}
   },
   {
-  	// 彩票帐变详情
-  	path:'/userInfo/lotteryChangeDetails',
-  	component:LotteryChangeDetails,
-    meta: { keepAlive: true }
+    // 彩票帐变详情
+    path: '/userInfo/lotteryChangeDetails',
+    component: LotteryChangeDetails,
+    meta: {keepAlive: true}
   },
   {
     // 充值记录
     path: '/userInfo/rechargeRecord',
     component: RechargeRecord,
-    meta: { keepAlive: false }
+    meta: {keepAlive: false}
 
   },
   {
     // 充值记录详情
     path: '/userInfo/recordDetails',
     component: RecordDetails,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
     // 充值记录详情
     path: '/userInfo/rechargeDetail',
     component: RechargeDetail,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   // {
@@ -122,409 +128,409 @@ export default[
     // 团队报表
     path: '/userInfo/teamReport',
     component: TeamReport,
-    meta: { keepAlive: false }
+    meta: {keepAlive: false}
 
   },
   {
     // 团队报表
     path: '/userInfo/teamReport/TeamReportDetails',
     component: TeamReportDetails,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
     // 团队报表
     path: '/userInfo/teamReport/TeamReportDetailsFlag',
     component: TeamReportDetailsFlag,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
     // 团队总表
     path: '/userInfo/TeamTable',
     component: TeamTable,
-    meta: { keepAlive: false }
+    meta: {keepAlive: false}
   },
   {
     // 团队报表 按时间查询
     path: '/userInfo/TeamTableTime',
     component: TeamTableTime,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 团队报表 按用户名查询
     path: '/userInfo/TeamTableUsername',
     component: TeamTableUsername,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 团队报表 按用户名查询
     path: '/userInfo/TeamTableUsernameFlag',
     component: TeamTableUsernameFlag,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 日工资TeamTable
     path: '/userInfo/DayWage',
     component: DayWage,
-    meta: { keepAlive: false }
+    meta: {keepAlive: false}
   },
   {
     // 下级日工资
     path: '/userInfo/DayWageClickUser',
     component: DayWageClickUser,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 下级日工资Flag
     path: '/userInfo/DayWageClickUserFlag',
     component: DayWageClickUserFlag,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 日亏损佣金
     path: '/userInfo/DayLoss',
     component: DayLoss,
-    meta: { keepAlive: false }
+    meta: {keepAlive: false}
   },
   {
     // 日亏损佣金详情
     path: '/userInfo/DayLossBrokerage',
     component: DayLossBrokerage,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 日工资协议
     path: '/userInfo/Agreement',
     component: Agreement,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 历史日工资
     path: '/userInfo/HistoryDayWage',
     component: HistoryDayWage,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 日工资协议说明
     path: '/userInfo/Agreement/AgreementExplain',
     component: AgreementExplain,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 团队分红
     path: '/userInfo/Dividend',
     component: Dividend,
-    meta: { keepAlive: false }
+    meta: {keepAlive: false}
   },
   {
     // 分红管理
     path: '/userInfo/HistoryDividend',
     component: HistoryDividend,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 分红管理
     path: '/userInfo/DividendManage',
     component: DividendManage,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     path: '/userInfo/help',
     component: Help,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
     // 团队报表
     path: '/userInfo/teamSecondaryReport',
     component: TeamSecondaryReport,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
     // 团队报表
     path: '/userInfo/sponsoredLinks',
     component: SponsoredLinks,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
     // 设置
     path: '/userInfo/bankList/setCard',
     component: SetCard,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
     // 设置提款密码
     path: '/userInfo/withdrawals',
     component: Withdrawals,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {// 设置密保
     path: '/settings/setquestion',
     component: Setquestion,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
-  // 回答问题
+    // 回答问题
     path: '/settings/findPwd',
     component: FindPwd,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
     // 设置提款密码
     path: '/userInfo/noPassword',
     component: NoPassword,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
     // 输入提款密码
     path: '/userInfo/enterPwd',
     component: EnterPwd,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
     // 输入提款密码进入银行列表
     path: '/userInfo/enterPwdBank',
     component: EnterPwdBank,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
     // 输入提款密码
     path: '/userInfo/bankList/identityConfirmation',
     component: IdentityConfirmation,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
     // 设置提款密码
     path: '/userInfo/setpwd',
     component: Setpwd,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
     // 再次设置提款密码
     path: '/userInfo/secSetpwd',
     component: SecSetpwd,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
     // 设置提款密码之修改资金密码
     path: '/userInfo/settkpwd',
     component: Settkpwd,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
     // 添加银行卡跳转
     path: '/userInfo/bankcheckOne',
     component: BankcheckOne,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
     // 锁定银行卡跳转
     path: '/userInfo/bankcheckTwo',
     component: BankcheckTwo,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
     // 删除银行卡跳转
     path: '/userInfo/bankcheckThree',
     component: BankcheckThree,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
     // 登录页SetCard
     path: '/login',
     component: Login,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 注册页
     path: '/regist',
     component: Regist,
-    meta: { keepAlive: false }
+    meta: {keepAlive: false}
 
   },
   {
     // 购彩大厅
     path: '/home',
     component: Home,
-    meta: { keepAlive: false }
+    meta: {keepAlive: false}
   },
   {
     path: '/notice/noticeDetails', // 公告
     component: NoticeDetails,
-    meta: { keepAlive: false }
+    meta: {keepAlive: false}
   },
   {
     path: '/notice/notiDetail', // 公告详情
     component: NotiDetail,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
     path: '/notice/message', // 消息
     component: Message,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     path: '/notice/messageDetails', // 消息详情
     component: MessageDetails,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
 
   },
   {
     // 走势预测
     path: '/trend',
     component: Trend,
-    meta: { keepAlive: false }
+    meta: {keepAlive: false}
   },
   {
     // 开奖中心
     path: '/lotteryCentre',
     component: LotteryCentre,
-    meta: { keepAlive: false }
+    meta: {keepAlive: false}
   },
   {
     path: '/lotteryCentre/lotteryDetails', // 开奖详情
     component: LotteryDetails,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     path: '/lotteryCentre/lotteryDetails/lotteryMore',
     component: lotteryMore,
-    meta: { keepAlive: false }
+    meta: {keepAlive: false}
   },
   {
     path: '/lotteryCentre/lotteryDetails/lotteryMore/lotteryDetailsList',
     component: lotteryDetailsList,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     path: '/activity', // 活动中心
     component: Activity,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     path: '/activity/activityDetails', // 活动详情
     component: ActivityDetails,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 我的恒彩
     path: '/userInfo',
     component: UserInfo,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 团队管理用户名
-    path:'/userInfo/secondaryAgent',
-    component:SecondaryAgent,
-    meta: { keepAlive: true }
+    path: '/userInfo/secondaryAgent',
+    component: SecondaryAgent,
+    meta: {keepAlive: true}
   },
   {
     // 追号记录
     path: '/userInfo/chaseRecord',
     component: ChaseRecord,
-    meta: { keepAlive: false }
+    meta: {keepAlive: false}
   },
   {
     // 追号详情
-    path:'/userInfo/chaseDetails',
-    component:ChaseDetails,
-    meta: { keepAlive: true }
+    path: '/userInfo/chaseDetails',
+    component: ChaseDetails,
+    meta: {keepAlive: true}
   },
   {
     // 追号终止详情
-    path:'/userInfo/chaseDetailIn',
-    component:ChaseDetailIn,
-    meta: { keepAlive: true }
+    path: '/userInfo/chaseDetailIn',
+    component: ChaseDetailIn,
+    meta: {keepAlive: true}
   },
   {
     // 查看团队管理
-    path:'/userInfo/teamDetails',
-    component:TeamDetails,
-    meta: { keepAlive: true }
+    path: '/userInfo/teamDetails',
+    component: TeamDetails,
+    meta: {keepAlive: true}
   },
   {
     // 设置
-    path:'/settings',
-    component:Settings,
-    meta: { keepAlive: true }
+    path: '/settings',
+    component: Settings,
+    meta: {keepAlive: true}
   },
   {
     // 修改登录密码
-    path:'/settings/modifyPwd',
-    component:ModifyPwd,
-    meta: { keepAlive: true }
+    path: '/settings/modifyPwd',
+    component: ModifyPwd,
+    meta: {keepAlive: true}
   },
   {
     // 修改提款密码
     path: '/settings/duplicatePwd',
     component: DuplicatePwd,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 账户信息
     path: '/userInfo/accountInfo',
     component: AccountInfo,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 投注记录
     path: '/userInfo/betRecord',
     component: BetRecord,
-    meta: { keepAlive: false }
+    meta: {keepAlive: false}
   },
   {
     // 投注记录详情
     path: '/userInfo/betRecordDetails',
     component: BetRecordDetails,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 投注记录详情
     path: '/userInfo/RecordDetails',
     component: RecordDetails,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 下级注册
     path: '/userInfo/subordinateRegistration',
     component: SubordinateRegistration,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 设置银行卡
     path: '/userInfo/bankList',
     component: BankList,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 选号
     path: '/home/SelectCody',
     component: SelectCody,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 投注确认
     path: '/home/SelectCody/affirm',
     component: Affirm,
-    meta: { keepAlive: true }
+    meta: {keepAlive: true}
   },
   {
     // 根目录时跳转

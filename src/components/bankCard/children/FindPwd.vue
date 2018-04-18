@@ -115,27 +115,7 @@
         					return false;
         			}
         			return true;
-        	},
-        httpUrl(val){
-          let app = require('../../../../static/hc.json')
-          let appData = app
-          let serverList = appData.serverList
-          let j = Math.floor(Math.random() * serverList.length)
-          if (this.$store.state.server == null) {
-            this.$store.commit('updateServer', window.location.origin)
-          }
-          if (this.$store.state.lotteryType == null) {
-            this.$store.commit('updateLotteryType', appData.lotteryType)
-          }
-          let sess
-          if (this.$store.state.sess != null) {
-            sess = this.$store.state.sess
-          } else {
-            sess = sessionStorage.getItem('sess')
-          }
-
-          return this.$store.state.server + this.mUtils.interFace(val)+'&sess='+sess;
-        },
+        	}
       }
 
   }

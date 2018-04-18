@@ -109,26 +109,7 @@
 										})
 						  		}
             	},{check:checknumber,username:this.username,flag:'confirm',cardid:bankInfoId,money:this.inputMoney,ruleset:"withdrawal-hcp"})
-        },
-        //获取url
-        httpUrl(val){
-          let app = require('../../../../static/hc.json')
-          let appData = app
-          if (this.$store.state.server == null) {
-            this.$store.commit('updateServer', window.location.origin)
-          }
-          if (this.$store.state.lotteryType == null) {
-            this.$store.commit('updateLotteryType', appData.lotteryType)
-          }
-          let sess
-          if (this.$store.state.sess != null) {
-            sess = this.$store.state.sess
-          } else {
-            sess = sessionStorage.getItem('sess')
-          }
-
-          return this.$store.state.server + this.mUtils.interFace(val)+'&sess='+sess;
-        },
+        }
       }
 
   }

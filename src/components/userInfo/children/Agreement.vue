@@ -69,8 +69,10 @@
         <span class="delete_stall right" v-tap="{ methods: _stall, item: 'delete' }">删除档位</span>
       </div>
       <div class="tips">温馨提示：当日投注金额≥1000元，计为一个活跃用户</div>
-      <div class="button_save" v-tap="{ methods: _save, item: true }" v-show="operation">保存</div>
-      <div class="button_save" v-tap="{ methods: _agreement, item: true }" v-show="agree">同意协议</div>
+      <div class="button_save" :class="{playPlatform}" v-tap="{ methods: _save, item: true }" v-show="operation">保存
+      </div>
+      <div class="button_save" :class="{playPlatform}" v-tap="{ methods: _agreement, item: true }" v-show="agree">同意协议
+      </div>
     </div>
   </div>
 </template>
@@ -88,7 +90,7 @@
       PopupPicker,
       buttonView
     },
-    data () {
+    data() {
       return {
         userName: [this.$route.query.username],
         dataList: [],
@@ -122,7 +124,7 @@
 //      this.userList[0] = []
 //      this.$vux.loading.hide()
 //    },
-    mounted () {
+    mounted() {
       this._getSelfStall()
       if (this.userName[0] == this.$store.state.account) {
         this.operation = false
@@ -137,7 +139,7 @@
       }
     },
     methods: {
-      _stall (params) {
+      _stall(params) {
         if (params.item === 'add') {
           if (this.dataList.length >= 6) {
             this.$vux.alert.show({
@@ -158,14 +160,14 @@
             this.$vux.alert.show({
               title: '提示',
               content: '确定要删除最后的一个档位吗？',
-              onHide () {
+              onHide() {
                 _this.dataList.pop()
               }
             })
           }
         }
       },
-      _getSelfStall () {
+      _getSelfStall() {
         let datas = {
           userid: this.$store.state.selfUserid,
           username: this.$store.state.account
@@ -202,7 +204,7 @@
           }
         }, datas)
       },
-      onChange (value) {
+      onChange(value) {
         this.userName = []
         this.userName.push(value[0])
         this._getSecondaryAgent()
@@ -256,7 +258,7 @@
         }, datas)
       },
       // 获取日工资列表
-      _getSecondaryAgent (val) {
+      _getSecondaryAgent(val) {
         this.$vux.loading.show({
           text: '正在加载'
         })
@@ -312,25 +314,6 @@
           }
         }, datas)
       },
-      // 获取url
-      httpUrl (val) {
-        let app = require('../../../../static/hc.json')
-        let appData = app
-        if (this.$store.state.server == null) {
-          this.$store.commit('updateServer', window.location.origin)
-        }
-        if (this.$store.state.lotteryType == null) {
-          this.$store.commit('updateLotteryType', appData.lotteryType)
-        }
-        let sess
-        if (this.$store.state.sess != null) {
-          sess = this.$store.state.sess
-        } else {
-          sess = sessionStorage.getItem('sess')
-        }
-
-        return this.$store.state.server + this.mUtils.interFace(val) + '&sess=' + sess;
-      }
     }
   }
 </script>
@@ -376,6 +359,14 @@
     margin-right: 0.1rem;
   }
 
+  .tips {
+    height: 0.7rem;
+    line-height: 0.71rem;
+    background: #F3E2B6;
+    color: #8C6607;
+    text-align: center;
+  }
+
   .stall {
     color: @color_c7202c;
     height: 0.7rem;
@@ -389,14 +380,6 @@
       padding-left: 15px;
       background: url(../img/delete.png) no-repeat center left;
     }
-  }
-
-  .tips {
-    height: 0.7rem;
-    line-height: 0.71rem;
-    background: #F3E2B6;
-    color: #8C6607;
-    text-align: center;
   }
 
   .button_save {
@@ -414,6 +397,10 @@
     &:active {
       background: #8F2F2F;
     }
+  }
+
+  .button_save.ios {
+    margin: 0.5rem 0;
   }
 
   .wage_table {

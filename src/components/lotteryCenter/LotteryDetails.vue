@@ -168,28 +168,7 @@
         if (isHaveMore.length !== null && isHaveMore.length === 0) {
           this.allLoaded = true // true是禁止上拉加载
         }
-      },
-      // 获取url
-      httpUrl(val){
-        let app = require('../../../static/hc.json')
-        let appData = app
-        let serverList = appData.serverList
-        let j = Math.floor(Math.random() * serverList.length)
-        if (this.$store.state.server == null) {
-          this.$store.commit('updateServer', window.location.origin)
-        }
-        if (this.$store.state.lotteryType == null) {
-          this.$store.commit('updateLotteryType', appData.lotteryType)
-        }
-        let sess
-        if (this.$store.state.sess != null) {
-          sess = this.$store.state.sess
-        } else {
-          sess = sessionStorage.getItem('sess')
-        }
-
-        return this.$store.state.server + this.mUtils.interFace(val)+'&sess='+sess;
-      },
+      }
     },
     components: {
       headTop,
@@ -229,7 +208,7 @@
     float:left;
     width:0.75rem;
     height:0.75rem;
-    line-height:0.77rem;
+    line-height:0.76rem;
     text-align: center;
     font-size: 0.38rem;
     color:#fff;

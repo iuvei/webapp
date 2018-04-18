@@ -4,28 +4,30 @@
     <headTop headTitle="彩票账变" goBack='true'></headTop>
     <div class="header_app_v"></div>
     <transition name="slideDown">
-    <div class="main" v-if="show">
-      <dateSelectView :starttime="postData.starttime" :endtime="postData.endtime" @getStartTime="onGetStartTime" @getEndtime="onGetEndtime"></dateSelectView>
-      <div class="inputBox">
-        <p class="searchtit">展示彩种</p>
-        <p class="caizhong">
-          <span v-tap="{ methods:allLottery }" :class="{active: isActive === 1}" :type="1">全彩种</span>
-          <span v-tap="{ methods:oftenLottery }" :class="{active: isActive === 2}" :type="2">常玩彩种</span>
-        </p>
-        <br class="clear">
-      </div>
-      <div class="inputBox">
-        <p class="searchtit">帐变类型</p>
-        <div class="select">
-          <select name="ordertype" id="ordertype" v-model="selected">
-            <option :value="item.value" v-for="(item,index) in optionData" :key="index" v-text="item.text"></option>
-          </select>
+      <div class="main" v-if="show">
+        <dateSelectView :starttime="postData.starttime" :endtime="postData.endtime" @getStartTime="onGetStartTime"
+                        @getEndtime="onGetEndtime"></dateSelectView>
+        <div class="inputBox">
+          <p class="searchtit" :class="playPlatform">展示彩种</p>
+          <p class="caizhong">
+            <span v-tap="{ methods:allLottery }" :class="{active: isActive === 1}" :type="1">全彩种</span>
+            <span v-tap="{ methods:oftenLottery }" :class="{active: isActive === 2}" :type="2">常玩彩种</span>
+          </p>
+          <br class="clear">
+        </div>
+        <div class="inputBox">
+          <p class="searchtit" :class="playPlatform">帐变类型</p>
+          <div class="select">
+            <select name="ordertype" id="ordertype" v-model="selected">
+              <option :value="item.value" v-for="(item,index) in optionData" :key="index" v-text="item.text"></option>
+            </select>
+          </div>
         </div>
       </div>
-    </div>
     </transition>
     <div class="main-body_userInfo" :style="{'-webkit-overflow-scrolling': scrollMode}">
-      <mt-loadmore :top-method="loadTop" :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" :auto-fill="false" ref="loadmore">
+      <mt-loadmore :top-method="loadTop" :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" :auto-fill="false"
+                   ref="loadmore">
         <div style="min-height:11rem;">
           <table class="record_table" width="100%" border="0" cellspacing="0" cellpadding="2">
             <thead style="background:#fff;">
@@ -37,24 +39,25 @@
             </tr>
             <tr class="dropdown" v-tap="{ methods:_clickDropDown }" style="background:none">
               <p>
-                <img ref="dropdown" src="../img/dropDown.png" />
+                <img ref="dropdown" src="../img/dropDown.png"/>
               </p>
             </tr>
             </thead>
             <tbody>
-              <tr v-tap="{ methods:_lotteryChangeDetails, item: item }" style=" height: 1.2rem;" align="center" v-for="(item,index) in dataList">
-                <td>{{index+1}}</td>
-                <td>
-                  <p v-text="item.lotteryname"></p>
-                  <p v-text="item.times"></p>
-                </td>
-                <td v-text="item.title"></td>
-                <td style="position: relative;">
-                  <span v-if="item.operations==0" style="color:#e20000;">-{{item.amount | tofixed('元')}}</span>
-                  <span  v-else style="color:#07a83c;">+{{item.amount | tofixed('元')}}</span>
-                  <span class="icon_right"></span>
-                </td>
-              </tr>
+            <tr v-tap="{ methods:_lotteryChangeDetails, item: item }" style=" height: 1.2rem;" align="center"
+                v-for="(item,index) in dataList">
+              <td>{{index+1}}</td>
+              <td>
+                <p v-text="item.lotteryname"></p>
+                <p v-text="item.times"></p>
+              </td>
+              <td v-text="item.title"></td>
+              <td style="position: relative;">
+                <span v-if="item.operations==0" style="color:#e20000;">-{{item.amount | tofixed('元')}}</span>
+                <span v-else style="color:#07a83c;">+{{item.amount | tofixed('元')}}</span>
+                <span class="icon_right"></span>
+              </td>
+            </tr>
             </tbody>
           </table>
           <noDate v-show="nodate"></noDate>
@@ -68,7 +71,7 @@
   import headTop from '../../header/Header.vue'
   import dateSelectView from '../../common/dateSelect.vue'
   import noDate from '../../nodata/noDate.vue'
-  import { LoadMore } from 'vux'
+  import {LoadMore} from 'vux'
 
   export default {
     name: 'lotteryChange',
@@ -77,9 +80,9 @@
       dateSelectView,
       noDate
     },
-    data () {
+    data() {
       return {
-      	nodate: false,
+        nodate: false,
         allLoaded: false, // 是否可以上拉属性，false可以上拉，true为禁止上拉，就是不让往上划加载数据
         scrollMode: 'auto', // 移动端弹性滚动效果，touch为弹性滚动，auto是非弹性滚动
         selected: '0', // 默认所有类型
@@ -151,20 +154,22 @@
         }
       }
     },
-    activated () {
+    activated() {
       if (this.$store.state.betRecordFlag) {
         this.postData.p = 1
         this.postData.lotteryid = '0'
         this.postData.ordertype = ''
-        this.postData.starttime = this.mUtils.setDateTime(0) + ' 2:00:00',
-        this.postData.endtime = this.mUtils.setDateTime(1) + ' 2:00:00',
+        this.postData.starttime = this.mUtils.setDateTime(0) + ' 2:00:00'
+        this.postData.endtime = this.mUtils.setDateTime(1) + ' 2:00:00'
         this._getData()
-        this.$nextTick(function(){
-          window.scroll(0, 0)
-        })
+        if (this.playPlatform === 'ios') {
+          this.$nextTick(function () {
+            window.scroll(0, 0)
+          })
+        }
       }
     },
-    deactivated () {
+    deactivated() {
       this.show = false
       let clickDown = this.$refs.dropdown
       clickDown.src = require('../img/dropDown.png')
@@ -173,15 +178,15 @@
         this.dataList = []
       }
     },
-    mounted () {
+    mounted() {
 //      this._getData()
     },
     methods: {
-      _lotteryChangeDetails (params) {
+      _lotteryChangeDetails(params) {
         this.$router.push({path: '/userInfo/LotteryChangeDetails', query: {data: params.item}})
         this.$store.commit('updateUserInfoChildFlag', false)
       },
-      oftenLottery () {
+      oftenLottery() {
         this.isActive = 2
         let enshrine = this.$store.state.enshrine
         let flag = ''
@@ -192,13 +197,13 @@
         this.postData.p = 1
         this._getData()
       },
-      allLottery () {
+      allLottery() {
         this.isActive = 1
         this.postData.lotteryid = 0
         this.postData.p = 1
         this._getData()
       },
-      _clickDropDown () {
+      _clickDropDown() {
         this.show = !this.show
         let clickDown = this.$refs.dropdown
         if (this.show) {
@@ -208,13 +213,13 @@
         }
       },
       // 获取彩票帐变
-      _getData () {
+      _getData() {
         this.$vux.loading.show({
           text: '正在加载'
         })
         this.postData.ordertype = parseInt(this.selected)
         let httpurl = this.httpUrl('LOTTERYCHECK')
-        this.httpAction(httpurl,(res) => {
+        this.httpAction(httpurl, (res) => {
           this.$vux.loading.hide()
           if (this.postData.p !== 1) {
             // 将数组插入
@@ -226,7 +231,7 @@
           }
           if (this.dataList.length == 0) {
             this.nodate = true
-        	} else {
+          } else {
             this.nodate = false
           }
           // 是否还有下一页，加个方法判断，没有下一页要禁止上拉
@@ -234,134 +239,121 @@
           this.$nextTick(function () {
             this.scrollMode = 'touch'
           })
-        },this.postData)
+        }, this.postData)
       },
-      onGetStartTime (val) {
+      onGetStartTime(val) {
         this.postData.starttime = val
         this.postData.p = 1
         this._getData()
       },
-      onGetEndtime (val) {
+      onGetEndtime(val) {
         this.postData.endtime = val
         this.postData.p = 1
         this._getData()
       },
-      loadTop () { // 组件提供的下拉触发方法
+      loadTop() { // 组件提供的下拉触发方法
         this.postData.p = 1
         // 下拉加载
         this._getData()
         this.$refs.loadmore.onTopLoaded() // 固定方法，查询完要调用一次，用于重新定位
       },
-      loadBottom () {
+      loadBottom() {
         // 上拉加载
         this.more() // 上拉触发的分页查询
         this.$refs.loadmore.onBottomLoaded() // 固定方法，查询完要调用一次，用于重新定位
       },
-      more () {
+      more() {
         // 分页查询
         this.postData.p = parseInt(this.postData.p) + 1
         this._getData()
       },
-      isHaveMore (isHaveMore) {
+      isHaveMore(isHaveMore) {
         // 是否还有下一页，如果没有就禁止上拉刷新
         this.allLoaded = false
         if (isHaveMore.length !== null && isHaveMore.length === 0) {
           this.allLoaded = true // true是禁止上拉加载
         }
-      },
-      // 获取url
-      httpUrl(val){
-        let app = require('../../../../static/hc.json')
-        let appData = app
-        if (this.$store.state.server == null) {
-          this.$store.commit('updateServer', window.location.origin)
-        }
-        if (this.$store.state.lotteryType == null) {
-          this.$store.commit('updateLotteryType', appData.lotteryType)
-        }
-        let sess
-        if (this.$store.state.sess != null) {
-          sess = this.$store.state.sess
-        } else {
-          sess = sessionStorage.getItem('sess')
-        }
-
-        return this.$store.state.server + this.mUtils.interFace(val)+'&sess='+sess;
       }
     }
   }
 </script>
 <style lang="less" scoped>
- @import '../../../assets/css/style';
+  @import '../../../assets/css/style';
 
- @slideDown_height:2.2rem;
+  @slideDown_height: 2.2rem;
 
-  .main{
-    width:100%;
+  .main {
+    width: 100%;
     margin: 0;
-    height:@slideDown_height;
-    overflow:auto;
-    padding-bottom:20px;
-    background:#fff;
-    border-bottom:1px solid #dddddd
+    height: @slideDown_height;
+    overflow: auto;
+    padding-bottom: 20px;
+    background: #fff;
+    border-bottom: 1px solid #dddddd
   }
+
   .slideDown-enter-active, .slideDown-leave-active {
     transition: .3s all linear;
-    width:100%;
-    height:@slideDown_height;
+    width: 100%;
+    height: @slideDown_height;
   }
-  .slideDown-enter ,.slideDown-leave-active{
-    width:100%;
-    height:0;
+
+  .slideDown-enter, .slideDown-leave-active {
+    width: 100%;
+    height: 0;
   }
-  .inputBox{
-    height:0.52rem;
-    padding:0.12rem 0;
-    p{
-      float:left;
-      line-height:0.52rem;
-      height: 0.52rem
-    }
-    .searchtit{
-      width:20%;
-      text-indent: 3%;
-    }
-    span{
-      float: left;
-      height:0.52rem;
-      line-height:0.52rem;
-      border-radius:3px;
-      border:1px solid #c8c8c8;
-      padding:0px 4px;
-      margin-right: 5px
-    }
-    .active{
-      border:1px solid #c7202a;
-      color: #c7202a;
-      background:#ffebec;
-    }
-    input{
+
+  .inputBox {
+    height: 0.52rem;
+    padding: 0.12rem 0;
+    p {
       float: left;
       line-height: 0.52rem;
-      height:0.52rem;
-      border:1px solid #c8c8c8;
+      height: 0.52rem
+    }
+    .searchtit {
+      width: 20%;
+      text-indent: 3%;
+    }
+    .searchtit.ios {
+      text-indent: 5%;
+    }
+    span {
+      float: left;
+      height: 0.52rem;
+      line-height: 0.52rem;
+      border-radius: 3px;
+      border: 1px solid #c8c8c8;
+      padding: 0px 4px;
+      margin-right: 5px
+    }
+    .active {
+      border: 1px solid #c7202a;
+      color: #c7202a;
+      background: #ffebec;
+    }
+    input {
+      float: left;
+      line-height: 0.52rem;
+      height: 0.52rem;
+      border: 1px solid #c8c8c8;
       border-radius: 3px;
       width: 35%;
-      text-indent:4px;
+      text-indent: 4px;
       font-size: 0.24rem;
     }
-    .select{
+    .select {
       position: relative;
       float: left;
       box-sizing: border-box;
       /*margin-top:0.08rem;*/
-      border:1px solid #c8c8c8;
+      border: 1px solid #c8c8c8;
       .borderRadius(0.05rem);
-      height:0.54rem;
+      height: 0.54rem;
       line-height: 0.55rem;
-      padding:0 0.1rem;
-      select{
-        width:100%;
+      padding: 0 0.1rem;
+      select {
+        width: 100%;
       }
     }
   }

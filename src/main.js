@@ -11,6 +11,7 @@ import {Loadmore} from 'mint-ui'
 import './assets/js/clipboard.min'
 import {AlertPlugin, ConfirmPlugin, LoadingPlugin, DatetimePlugin, ToastPlugin} from 'vux'
 import tap from 'v-tap'
+import Velocity from 'velocity-animate'
 import iosPlugin from './assets/ios'
 import androidPlugin from './assets/android'
 import webPlugin from './assets/web'
@@ -28,13 +29,15 @@ Vue.prototype.mUtils = mUtils
 
 // 引入ios、Android、web 插件
 if (true) {
-  Vue.use(iosPlugin)
+  Vue.use(webPlugin)
+  import('./assets/web/index.css')
 } else if (false) {
   Vue.use(androidPlugin)
+  import('./assets/android/index.css')
 } else {
-  Vue.use(webPlugin)
+  Vue.use(iosPlugin)
+  import('./assets/ios/index.css')
 }
-
 if (Vue.prototype.httpAction == undefined) {
   let createxmlHttpRequest = () => {
     if (window.ActiveXObject) {
@@ -156,58 +159,74 @@ new Vue({
   mounted() {
     _this = this.$store
     // if (sessionStorage.getItem('sess') == null) {
-    this.checkLogin()
+    // this.checkLogin()
     // }
   },
   methods: {
     checkLogin() {
-      let roset = window.location.href.indexOf('roset')
-      let sess = window.location.href.indexOf('sess')
-      if (roset > -1) {
-        this.$router.push('/regist')
-      } else {
-        if (sess > -1) {
-          let appData = require('../static/hc.json')
-          this.$store.commit('updateIflink', 1)
+      if (this.playPlatform === 'web') {
+        let roset = window.location.href.indexOf('roset')
+        let sess = window.location.href.indexOf('sess')
+        if (roset > -1) {
+          this.$router.push('/regist')
+        } else {
+          if (sess > -1) {
+            let appData = require('../static/hc.json')
+            this.$store.commit('updateIflink', 1)
 
-          let serverList = appData.serverList
-          let j = Math.floor(Math.random() * serverList.length) // webapp下用
-          this.$store.commit('updateServer', serverList[j]) // webapp下用
+            let serverList = appData.serverList
+            let j = Math.floor(Math.random() * serverList.length) // webapp下用
+            this.$store.commit('updateServer', serverList[j]) // webapp下用
 
-          // this.$store.commit('updateServer', window.location.origin) // m下用
+            // this.$store.commit('updateServer', window.location.origin) // m下用
 
-          this.$store.commit('updateLotteryType', appData.lotteryType)
+            this.$store.commit('updateLotteryType', appData.lotteryType)
 
-          let httpurl = this.$store.state.server + this.mUtils.interFace('LOGIN') + '&sess=' + this.GetQueryString('sess')
-          this.httpAction(httpurl, (res) => {
-            this.$store.commit('updateHttpFlag', true)
-            let data = res.data
-            if (data.sess) {
-              // 提交mutation到Store
-              this.$store.commit('updateSess', data.sess)
-              sessionStorage.setItem('sess', data.sess)
+            let httpurl = this.$store.state.server + this.mUtils.interFace('LOGIN') + '&sess=' + this.GetQueryString('sess')
+            this.httpAction(httpurl, (res) => {
+              this.$store.commit('updateHttpFlag', true)
+              let data = res.data
+              if (data.sess) {
+                // 提交mutation到Store
+                this.$store.commit('updateSess', data.sess)
+                sessionStorage.setItem('sess', data.sess)
 
-              // 提交mutation到Store
-              this.$store.commit('updateUserName', data.username)
-              // 提交mutation到Store
-              this.$store.commit('updateUsertype', data.usertype)
-              let bank = {
-                'issuebank': data.issetbank,
-                'setquestion': data.setquestion,
-                'setsecurity': data.setsecurity
+                // 提交mutation到Store
+                this.$store.commit('updateUserName', data.username)
+                // 提交mutation到Store
+                this.$store.commit('updateUsertype', data.usertype)
+                let bank = {
+                  'issuebank': data.issetbank,
+                  'setquestion': data.setquestion,
+                  'setsecurity': data.setsecurity
+                }
+                this.$store.commit('updatebanks', bank)
+                this.mUtils.setStore('userName', data.username)
+                this.$router.push('/home')
+              } else {
+                this.$vux.alert.show({
+                  title: '提示',
+                  content: data.msg
+                })
               }
-              this.$store.commit('updatebanks', bank)
-              this.mUtils.setStore('userName', data.username)
-              this.$router.push('/home')
-            } else {
-              this.$vux.alert.show({
-                title: '提示',
-                content: data.msg
-              })
-            }
-          }, {
-            sType: 'sessLogin'
+            }, {
+              sType: 'sessLogin'
+            })
+          } else {
+            this.$router.push('/login')
+          }
+        }
+      } else {
+        if (window.plus) {
+        } else {
+          document.addEventListener('plusready', function () {
           })
+        }
+        /* let versionold = this.mUtils.version */
+        let welcome = this.mUtils.getStore('welcome')
+        if (welcome == null || welcome == '') {
+          this.mUtils.setStore('welcome', 1)
+          this.$router.push('/welcome/welcome')
         } else {
           this.$router.push('/login')
         }
@@ -319,19 +338,24 @@ if (true) {
 }
 
 router.beforeEach((to, from, next) => {
-  if (from.path === '/regist') {
-    next()
-    return
-  }
-  if (to.matched.some(record => record.meta)) {
-    if (sessionStorage.getItem('sess') == null) {
-      next({
-        path: '/login'
-      })
+  if (Vue.prototype.playPlatform === 'web') {
+    if (from.path === '/regist') {
+      next()
+      return
+    }
+    if (to.matched.some(record => record.meta)) {
+      if (sessionStorage.getItem('sess') == null) {
+        next({
+          path: '/login'
+        })
+      } else {
+        next()
+      }
     } else {
       next()
     }
   } else {
     next()
   }
+
 })

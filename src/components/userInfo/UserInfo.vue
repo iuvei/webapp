@@ -3,12 +3,12 @@
   <div class="usre_info">
     <load-more v-if="loading" tip="正在加载"></load-more>
     <headTop headTitle="我的恒彩" Settings="true" Email="true" :emialShow=emialShow @setMessage="onSetMessage"></headTop>
-    <div class="usre_info_top">
+    <div class="usre_info_top" :class="playPlatform">
       <div class="user_activity">
         <img class="pic" src="../../assets/images/d/d1.png" alt=""/>
         <div class="accountInfo">
           <p>账号：<span v-text="this.$store.state.account"></span></p>
-          <p>余额：<span style="font-size: 0.28rem;">￥<span  v-text="this.$store.state.money"></span></span></p>
+          <p>余额：<span style="font-size: 0.28rem;">￥<span v-text="this.$store.state.money"></span></span></p>
         </div>
         <img class="update_code" v-tap="{ methods: updateCode }" src="./img/update.png" alt="">
         <i v-tap="{ methods: accountinfo }" class="account_info"></i>
@@ -24,10 +24,10 @@
     <div class="service">
       <div class="service_tit">购彩信息</div>
       <ul class="service_list">
-          <li v-tap="{ methods: _betRecord }">
-            <img src="./img/p_icon1.png" alt="">
-            投注记录
-          </li>
+        <li v-tap="{ methods: _betRecord }">
+          <img src="./img/p_icon1.png" alt="">
+          投注记录
+        </li>
         <li v-tap="{ methods: _chaseRecord }">
           <img src="./img/p_icon2.png" alt="">
           追号记录
@@ -107,10 +107,10 @@
 </template>
 <script>
   import headTop from '../header/Header.vue'
-  import { LoadMore } from 'vux'
+  import {LoadMore} from 'vux'
 
   export default {
-    data () {
+    data() {
       return {
         loading: true,
         current: 720,
@@ -128,15 +128,17 @@
       headTop,
       LoadMore
     },
-    created () {
+    created() {
       this.$vux.loading.hide()
     },
-    mounted () {
+    mounted() {
 
       this._getaccout()
       this._statement()
       this.$store.commit('updateUserInfoChildFlag', true)
-
+      // if (window.plus) {} else {
+      //   document.addEventListener('plusready', function () {})
+      // }
       this.loading = false
       this.setData()
       this.getAllDetail()
@@ -152,7 +154,7 @@
     methods: {
       _getaccout() {
         if (this.$store.state.account != null) {
-            return
+          return
         }
         let account
         if (localStorage.getItem('userName') != null) {
@@ -168,7 +170,7 @@
           daywageData = {
             check: 1
           }
-        this.httpAction(httpurl,(res) => {
+        this.httpAction(httpurl, (res) => {
           if (res.data.status == 200) {
             this.dayWage = res.data.data.isSalary
             this.dayLoss = res.data.data.isLose
@@ -177,276 +179,253 @@
             this.$store.commit('updatedayLoss', this.dayLoss)
             this.$store.commit('updatedividend', this.dividend)
           }
-        },daywageData)
+        }, daywageData)
       },
-      _activity () {
+      _activity() {
         this.$router.push({path: '/activity'})
       },
-      accountinfo () {
+      accountinfo() {
         this.$router.push({path: '/userInfo/accountinfo'})
       },
-      Recharge () {
+      Recharge() {
         this.$router.push({path: '/userInfo/Recharge'})
       },
-      _help () {
+      _help() {
         this.$router.push({path: '/userInfo/help'})
       },
-      _noticeDetails () {
+      _noticeDetails() {
         this.$router.push({path: '/notice/noticeDetails'})
       },
-      _SponsoredLinks () {
+      _SponsoredLinks() {
         this.$router.push({path: '/userInfo/SponsoredLinks'})
       },
-      _SubordinateRegistration () {
+      _SubordinateRegistration() {
         this.$router.push({path: '/userInfo/SubordinateRegistration'})
       },
-      _TeamReport () {
+      _TeamReport() {
         this.$router.push({path: '/userInfo/TeamReport'})
       },
-      _secondaryAgent () {
+      _secondaryAgent() {
         this.$router.push({path: '/userInfo/secondaryAgent'})
       },
-      _RechargeRecord () {
+      _RechargeRecord() {
         this.$router.push({path: '/userInfo/RechargeRecord'})
       },
-      _lotteryChange () {
+      _lotteryChange() {
         this.$router.push({path: '/userInfo/lotteryChange'})
       },
-      _chaseRecord () {
+      _chaseRecord() {
         this.$router.push({path: '/userInfo/chaseRecord'})
       },
-      _betRecord () {
+      _betRecord() {
         this.$router.push({path: '/userInfo/betRecord'})
       },
-      _TeamTable () {
-        this.$router.push({path: '/userInfo/TeamTable', query:{ team_table: true, dropclick: true }})
+      _TeamTable() {
+        this.$router.push({path: '/userInfo/TeamTable', query: {team_table: true, dropclick: true}})
       },
-      _DayWage () {
+      _DayWage() {
         this.$router.push({path: '/userInfo/DayWage'})
       },
-      _DayLoss () {
+      _DayLoss() {
         this.$router.push({path: '/userInfo/DayLoss'})
       },
-      _Dividend () {
-        this.$router.push({path: '/userInfo/Dividend', query:{ un_click: true, dividend: true }})
+      _Dividend() {
+        this.$router.push({path: '/userInfo/Dividend', query: {un_click: true, dividend: true}})
       },
-      onSetMessage (val) {
+      onSetMessage(val) {
         this.emialShow = parseInt(val)
       },
-      getAllDetail () {
-      let noticeurl = this.httpUrl('NOTICELIST')
-        this.httpAction(noticeurl,(res) => {
+      getAllDetail() {
+        let noticeurl = this.httpUrl('NOTICELIST')
+        this.httpAction(noticeurl, (res) => {
           let tempData = res.data.data.results
           let templength = 0
-          for(let i=0;i<tempData.length;i++){
-             if(tempData[i]['unread_id'] == 1){
+          for (let i = 0; i < tempData.length; i++) {
+            if (tempData[i]['unread_id'] == 1) {
               templength += 1
-             }
+            }
           }
           this.noticeShow = templength
-        },this.postData)
+        }, this.postData)
       },
-        setData () {
-            let emailurl = this.httpUrl('MESSAGELIST')+'&maxid=0&count=20'
-          this.httpAction(emailurl,(res) => {
-            let tempData = res.data;
-            for(let i=0;i<tempData.result.length;i++){
-               if(tempData.result[i]['isview'] == 0){
-                this.emialShow = 1
-                break
-               }
+      setData() {
+        let emailurl = this.httpUrl('MESSAGELIST') + '&maxid=0&count=20'
+        this.httpAction(emailurl, (res) => {
+          let tempData = res.data;
+          for (let i = 0; i < tempData.result.length; i++) {
+            if (tempData.result[i]['isview'] == 0) {
+              this.emialShow = 1
+              break
             }
-          })
-        },
-        Withdrawals (){
-          let tkyes = this.bankInfo.setsecurity || 'no';
-          if(tkyes == 'no'){
-            this.$router.push('/userInfo/EnterPwd');
-          }else{
-            this.$router.push('/userInfo/noPassword');
           }
-        },
-        BankList (){
-          let tkyes = this.bankInfo.setsecurity || 'no';
-          if(tkyes == 'no'){
-            this.$router.push('/userInfo/EnterPwdBank');
-          }else{
-            this.$router.push('/userInfo/noPassword');
-          }
+        })
       },
-        // 刷新
-        updateCode(){
-          this.getMoney()
-          document.getElementsByClassName('update_code')[0].style.transform='rotate('+this.current+'deg)';
-          this.current+=720;
-        },
-        getMoney () {
-          let moneyurl = this.httpUrl('GETMONEY')
-          this.httpAction(moneyurl,(res) => {
-            this.money = res.data
-            // 提交mutation到Store
-            this.$store.commit('updateMoney', this.money)
-          },{'flag': 'getmoney'})
-      },
-        //获取url
-          httpUrl(val){
-            let app = require('../../../static/hc.json')
-            let appData = app
-            let serverList = appData.serverList
-            let j = Math.floor(Math.random() * serverList.length)
-            if (this.$store.state.server == null) {
-              this.$store.commit('updateServer', window.location.origin)
-            }
-            if (this.$store.state.lotteryType == null) {
-              this.$store.commit('updateLotteryType', appData.lotteryType)
-            }
-            let sess
-            if (this.$store.state.sess != null) {
-              sess = this.$store.state.sess
-            } else {
-              sess = sessionStorage.getItem('sess')
-            }
-
-            return this.$store.state.server + this.mUtils.interFace(val)+'&sess='+sess;
-          },
-          openurl(){
-          let _this = this
-          let lickUrl = 'https://ngmm.livechatvalue.com/chat/chatClient/chatbox.jsp?companyID=12397&configID=50&jid=';
-          window.open(lickUrl,function(){
-            _this.$vux.alert.show({
-        content: '联系客服失败'
-      })
-          });
+      Withdrawals() {
+        let tkyes = this.bankInfo.setsecurity || 'no';
+        if (tkyes == 'no') {
+          this.$router.push('/userInfo/EnterPwd');
+        } else {
+          this.$router.push('/userInfo/noPassword');
         }
+      },
+      BankList() {
+        let tkyes = this.bankInfo.setsecurity || 'no';
+        if (tkyes == 'no') {
+          this.$router.push('/userInfo/EnterPwdBank');
+        } else {
+          this.$router.push('/userInfo/noPassword');
+        }
+      },
+      // 刷新
+      updateCode() {
+        this.getMoney()
+        document.getElementsByClassName('update_code')[0].style.transform = 'rotate(' + this.current + 'deg)';
+        this.current += 720;
+      },
+      getMoney() {
+        let moneyurl = this.httpUrl('GETMONEY')
+        this.httpAction(moneyurl, (res) => {
+          this.money = res.data
+          // 提交mutation到Store
+          this.$store.commit('updateMoney', this.money)
+        }, {'flag': 'getmoney'})
+      }
     }
   }
 </script>
 <style lang="less" scoped>
   @import '../../assets/css/style';
 
-  .usre_info{
+  .usre_info {
     /*margin:1.2rem 0 1.05rem 0;*/
-    .notice_msg{
+    .notice_msg {
       position: relative;
-      .unread{
+      .unread {
         position: absolute;
-        top:0.2rem;
-        right:0.2rem;
-        .wh(0.5rem,0.3rem);
-        background:#c7202c;
+        top: 0.2rem;
+        right: 0.2rem;
+        .wh(0.5rem, 0.3rem);
+        background: #c7202c;
         border-radius: 0.2rem;
-        color:#fff;
+        color: #fff;
         line-height: 0.3rem;
         text-align: center;
       }
     }
   }
 
-  .usre_info_top{
-    background:#c7202c;
+  .usre_info_top {
+    background: #c7202c;
     margin-top: 0.88rem;
-    .user_activity{
-      position:relative;
-      padding:0 0.1rem;
-      .account_info{
+    .user_activity {
+      position: relative;
+      padding: 0 0.1rem;
+      .account_info {
         position: absolute;
-        right:0.3rem;
-        top:0.6rem;
+        right: 0.3rem;
+        top: 0.6rem;
         padding: 0.4rem 0.5rem;
-        &:after{
-          .icon_arrows(0.3rem,0.3rem,#fff,0.2rem,45deg);
+        &:after {
+          .icon_arrows(0.3rem, 0.3rem, #fff, 0.2rem, 45deg);
         }
       }
-      .pic{
-        display:block;
+      .pic {
+        display: block;
         vertical-align: middle;
-        .wh(1.2rem,1.2rem);
+        .wh(1.2rem, 1.2rem);
         border-radius: 50%;
         margin: 0.2rem;
         float: left;
-      };
-      .accountInfo{
+      }
+      .accountInfo {
         padding-top: 0.4rem;
-        margin-left:0.1rem;
-        float:left;
-        p{
+        margin-left: 0.1rem;
+        float: left;
+        p {
           color: #fff;
-          line-height:0.42rem;
+          line-height: 0.42rem;
         }
       }
-      .update_code{
-        width:0.3rem;
-        margin:0.9rem 0 0 0.11rem;
+      .update_code {
+        width: 0.3rem;
+        margin: 0.9rem 0 0 0.11rem;
         transition: transform .5s;
         -webkit-transition: -webkit-transform .5s;
-        display:block;
-        float:left;
+        display: block;
+        float: left;
       }
     }
   }
 
-  .payList{
-    padding:0.3rem 0;
-    border-top:1px solid #fff;
-    border-bottom:1px solid #e8e8e8;
+  .usre_info_top.ios {
+    margin-top: 1.2rem;
+  }
+
+  .payList {
+    padding: 0.3rem 0;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #e8e8e8;
     text-align: center;
     background: #fff;
-    li{
+    li {
       display: inline-block;
-      margin-right:0.2rem;
-      border:1px solid #c7202a;
-      border-radius:3px;
-      .wh(2.1rem,0.6rem);
-      line-height:0.6rem;
-      text-align:center;
-      font-weight:600;
+      margin-right: 0.2rem;
+      border: 1px solid #c7202a;
+      border-radius: 3px;
+      .wh(2.1rem, 0.6rem);
+      line-height: 0.6rem;
+      text-align: center;
+      font-weight: 600;
       color: #c7202a;
-      &:active{
-        background:#c7202a;
-        color:#fff;
-        a{
-          color:#fff
+      &:active {
+        background: #c7202a;
+        color: #fff;
+        a {
+          color: #fff
         }
 
       }
     }
-    li:first-child{
-        margin-left: 0.2rem
-      }
+    li:first-child {
+      margin-left: 0.2rem
+    }
   }
-  .service{
-    background:#fff;
-    border-top:1px solid #e8e8e8;
-    border-bottom:1px solid #e8e8e8;
+
+  .service {
+    background: #fff;
+    border-top: 1px solid #e8e8e8;
+    border-bottom: 1px solid #e8e8e8;
     margin-top: 0.18rem
   }
-  .service_tit{
-    border-bottom:1px solid #e8e8e8;
-    font-size:0.26rem;
+
+  .service_tit {
+    border-bottom: 1px solid #e8e8e8;
+    font-size: 0.26rem;
     color: #525252;
     height: 0.8rem;
-    line-height:0.82rem;
-    text-indent:0.18rem;
+    line-height: 0.82rem;
+    text-indent: 0.18rem;
   }
-  .service_list{
+
+  .service_list {
     /*text-align:center;*/
     background: #fff;
-    li{
-      display:inline-block;
-      box-sizing:border-box;
-      .wh(20%,1.5rem);
-      text-align:center;
+    li {
+      display: inline-block;
+      box-sizing: border-box;
+      .wh(20%, 1.5rem);
+      text-align: center;
       line-height: 2;
-      padding-top:0.1rem;
-      margin:0.1rem 0.15rem;
-      font-size:0.22rem;
-      color:#5c5c5c;
-      img{
-        display:block;
+      padding-top: 0.1rem;
+      margin: 0.1rem 0.15rem;
+      font-size: 0.22rem;
+      color: #5c5c5c;
+      img {
+        display: block;
         /*.wh(0.6rem,0.6);*/
-        height:0.6rem;
-        margin:0.13rem auto;
-        background:#fff;
+        height: 0.6rem;
+        margin: 0.13rem auto;
+        background: #fff;
       }
     }
   }

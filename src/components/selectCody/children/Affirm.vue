@@ -137,7 +137,7 @@
         bets: {
           flag: 'save',
           lotteryid: '',
-          play_source: 5,
+          play_source: this.playSource,
           lt_issue_start: '',
           lt_total_money: 0,
           lt_total_nums: 0,
@@ -771,24 +771,6 @@
             }
           })
         }
-      },
-      // 获取url
-      httpUrl(val) {
-        let app = require('../../../../static/hc.json')
-        let appData = app
-        if (this.$store.state.server == null) {
-          this.$store.commit('updateServer', window.location.origin)
-        }
-        if (this.$store.state.lotteryType == null) {
-          this.$store.commit('updateLotteryType', appData.lotteryType)
-        }
-        let sess
-        if (this.$store.state.sess != null) {
-          sess = this.$store.state.sess
-        } else {
-          sess = sessionStorage.getItem('sess')
-        }
-        return this.$store.state.server + this.mUtils.interFace(val) + '&sess=' + sess;
       },
       // 投注截止时间
       _restart_tick() {
