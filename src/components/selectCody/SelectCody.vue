@@ -1080,7 +1080,7 @@
       _genBallOrder(type) {
         this.model.methodid = this.method.methodid
         this.model.menuid = this.method.menuid
-        if (this.model.methodid == 1010447 || this.model.methodid == 351 || this.model.methodid == 317 || this.model.methodid == 234) {
+        if (this.model.methodid == 1010447 || this.model.methodid == 351 || this.model.methodid == 317 || this.model.methodid == 234 || this.model.methodid == 3111846) {
           this.quwei = true
         } else {
           this.quwei = false
