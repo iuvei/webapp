@@ -1,6 +1,6 @@
 {
   "app_ver": {
-    "version": "1.0",
+    "version": "1.2",
     "iosStore": true,
     "updateFlag": 0,
     "available": 1,
@@ -20,7 +20,7 @@
       "lotteryid": 1,
       "lotteryCurmlotteryid": 50,
       "lotteryDesc": "最经典的时时彩",
-      "methodid" : 5,
+      "methodid": 5,
       "lastupdate": 0,
       "lotterytype": 2,
       "curmid": 50
@@ -31,7 +31,7 @@
       "lotteryid": 23,
       "lotteryCurmlotteryid": 311700,
       "lotteryDesc": "即时开奖",
-      "methodid" : 1010475,
+      "methodid": 1010475,
       "lastupdate": 0,
       "lotterytype": 1,
       "curmid": 311700
@@ -42,7 +42,7 @@
       "lotteryid": 14,
       "lotteryCurmlotteryid": 2325,
       "lotteryDesc": "24小时全天开奖",
-      "methodid" : 2370,
+      "methodid": 2370,
       "lastupdate": 0,
       "lotterytype": 1,
       "curmid": 2325
@@ -53,7 +53,7 @@
       "lotteryid": 19,
       "lotteryCurmlotteryid": 19000,
       "lotteryDesc": "24小时全天开奖",
-      "methodid" : 190201,
+      "methodid": 190201,
       "lastupdate": 0,
       "lotterytype": 1,
       "curmid": 19000
@@ -64,7 +64,7 @@
       "lotteryid": 6,
       "lotteryCurmlotteryid": 220,
       "lotteryDesc": "十分钟一期",
-      "methodid" : 265,
+      "methodid": 265,
       "lastupdate": 0,
       "lotterytype": 2,
       "curmid": 220
@@ -75,7 +75,7 @@
       "lotteryid": 13,
       "lotteryCurmlotteryid": 2265,
       "lotteryDesc": "十分钟一期",
-      "methodid" : 2326,
+      "methodid": 2326,
       "lastupdate": "044e884475a2166f6b7525a80f53c82c",
       "lotterytype": 2,
       "curmid": 2265
@@ -86,7 +86,7 @@
       "lotteryid": 26,
       "lotteryCurmlotteryid": 313051,
       "lotteryDesc": "赛车类时时彩",
-      "methodid" : 3111006,
+      "methodid": 3111006,
       "lastupdate": 0,
       "lotterytype": 2,
       "curmid": 313051
@@ -97,7 +97,7 @@
       "lotteryid": 5,
       "lotteryCurmlotteryid": 174,
       "lotteryDesc": "基诺型高频彩",
-      "methodid" : 238,
+      "methodid": 238,
       "lastupdate": 0,
       "lotterytype": 3,
       "curmid": 174
@@ -108,7 +108,7 @@
       "lotteryid": 8,
       "lotteryCurmlotteryid": 302,
       "lotteryDesc": "基诺型高频彩",
-      "methodid" : 355,
+      "methodid": 355,
       "lastupdate": 0,
       "lotterytype": 3,
       "curmid": 302
@@ -119,10 +119,21 @@
       "lotteryid": 7,
       "lotteryCurmlotteryid": 256,
       "lotteryDesc": "基诺型高频彩",
-      "methodid" : 321,
+      "methodid": 321,
       "lastupdate": 0,
       "lotterytype": 3,
       "curmid": 256
+    },
+    {
+      "cnname": "上海11选5",
+      "nav": "SH11-5",
+      "lotteryid": 30,
+      "lotteryCurmlotteryid": 313697,
+      "lotteryDesc": "基诺型高频彩",
+      "methodid": 3111848,
+      "lastupdate": 0,
+      "lotterytype": 3,
+      "curmid": 313697
     },
     {
       "cnname": "泰国11选5",
@@ -130,7 +141,7 @@
       "lotteryid": 21,
       "lotteryCurmlotteryid": 25024,
       "lotteryDesc": "24小时全天开奖",
-      "methodid" : 1010439,
+      "methodid": 1010439,
       "lastupdate": 0,
       "lotterytype": 1,
       "curmid": 25024
@@ -141,7 +152,7 @@
       "lotteryid": 11,
       "lotteryCurmlotteryid": 614,
       "lotteryDesc": "24小时全天开奖",
-      "methodid" : 1189,
+      "methodid": 1189,
       "lastupdate": 0,
       "lotterytype": 5,
       "curmid": 614
@@ -152,7 +163,7 @@
       "lotteryid": 12,
       "lotteryCurmlotteryid": 615,
       "lotteryDesc": "24小时全天开奖",
-      "methodid" : 2189,
+      "methodid": 2189,
       "lastupdate": 0,
       "lotterytype": 5,
       "curmid": 615
@@ -163,7 +174,7 @@
       "lotteryid": 29,
       "lotteryCurmlotteryid": 313550,
       "lotteryDesc": "24小时全天开奖",
-      "methodid" : 3111577,
+      "methodid": 3111577,
       "lastupdate": 0,
       "lotterytype": 1,
       "curmid": 313550

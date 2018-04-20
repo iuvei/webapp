@@ -45,11 +45,19 @@
         if (win.devicePixelRatio && devicePixelRatio > 1) {
           var testEle = doc.createElement('div');
           testEle.style.border = '.5px solid transparent';
-          doc.body.appendChild(testEle);
-          if (testEle.offsetHeight == 1) {
-            doc.querySelector('html').classList.add('hairlines');
+          if (doc.body) {
+            doc.body.appendChild(testEle);
+            if (testEle.offsetHeight == 1) {
+              doc.querySelector('html').classList.add('hairlines');
+            }
+            doc.body.removeChild(testEle);
+          } else {
+            doc.documentElement.appendChild(testEle);
+            if (testEle.offsetHeight == 1) {
+              doc.querySelector('html').classList.add('hairlines');
+            }
+            doc.documentElement.removeChild(testEle);
           }
-          doc.body.removeChild(testEle);
         }
       };
       var init = function () {
