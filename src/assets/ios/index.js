@@ -28,9 +28,9 @@ export default {
         // }
         Vue.prototype.httpAction(httpurl, (res) => {
           Store.commit('updateIflink', 1)
-          if (process.env.NODE_ENV === 'production') {
-            appData = res.data //上线用
-          }
+          // if (process.env.NODE_ENV === 'production') {
+          //   appData = res.data //上线用
+          // }
           Store.commit('updateAvailable', appData.app_ver.available)
           let iosStore = appData.app_ver.iosStore
           Store.commit('updateIosStore', iosStore)
