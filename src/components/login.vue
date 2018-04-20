@@ -253,7 +253,15 @@
             let data = res.data
             this.sess = res.data.sess
             if (data.sess) {
-
+              // 提交mutation到Store
+              this.$store.commit('updateSess', this.sess)
+              // 提交mutation到Store
+              this.$store.commit('updateUserName', this.account.toLocaleLowerCase())
+              // 提交mutation到Store
+              this.$store.commit('updateUsertype', res.data.usertype)
+              if (this.playPlatform === 'web') {
+                sessionStorage.setItem('sess', this.sess)
+              }
               if (this.checkPw) {
                 this.mUtils.setStore('userName', this.account);
                 this.mUtils.setStore('pswd', this.password);
@@ -277,15 +285,6 @@
                   _this.loginText = '登录'
                 }
               })
-            }
-            // 提交mutation到Store
-            this.$store.commit('updateSess', this.sess)
-            // 提交mutation到Store
-            this.$store.commit('updateUserName', this.account.toLocaleLowerCase())
-            // 提交mutation到Store
-            this.$store.commit('updateUsertype', res.data.usertype)
-            if (this.playPlatform === 'web') {
-              sessionStorage.setItem('sess', this.sess)
             }
           }, {
             'username': this.account,

@@ -5,14 +5,14 @@ export default {
   install: function (Vue, options) {
     // 实例变量
     Vue.prototype.playPlatform = 'ios'
-    Vue.prototype.playSource = 7
+    Vue.prototype.playSource = 5
     // 方法
     Vue.prototype.httpUrl = (val) => {
-      return Store.state.server + Utils.interFace(val) + '&sess=' + sess
+      return Store.state.server + Utils.interFace(val) + '&sess=' + Store.getters.getSess
     }
     Vue.prototype.openurl = () => {
       let lickUrl = 'https://ngmm.livechatvalue.com/chat/chatClient/chatbox.jsp?companyID=12397&configID=50&jid=';
-      plus.runtime.open(lickUrl, function () {
+      plus.runtime.openURL(lickUrl, function () {
         Vue.$vux.alert.show({
           content: '联系客服失败'
         })
@@ -20,12 +20,17 @@ export default {
     }
     Vue.prototype._getUpdate = () => {
       if (Store.state.ifLink == null) {
-//        let httpurl = 'https://dn-outwitinc.qbox.me/hcol/ios_hc_appstore.json?ver='+new Date().getTime()
-        let httpurl = 'https://dn-outwitinc.qbox.me/hcol/ios_hc_new.json?ver=' + new Date().getTime() //上线用
-        // let appData = require('../../static/ios_hc.json') // 开发用
+        // let httpurl = 'https://dn-outwitinc.qbox.me/hcol/ios_hc_appstore.json?ver='+new Date().getTime()
+        // if (process.env.NODE_ENV === 'production') {
+        var httpurl = 'https://dn-outwitinc.qbox.me/hcol/ios_hc_new.json?ver=' + new Date().getTime() //上线用
+        // } else {
+        var appData = require('../../../static/hc.json') // 开发用
+        // }
         Vue.prototype.httpAction(httpurl, (res) => {
           Store.commit('updateIflink', 1)
-          let appData = res.data //上线用
+          if (process.env.NODE_ENV === 'production') {
+            appData = res.data //上线用
+          }
           Store.commit('updateAvailable', appData.app_ver.available)
           let iosStore = appData.app_ver.iosStore
           Store.commit('updateIosStore', iosStore)
@@ -70,6 +75,7 @@ export default {
           }
         })
       }
+      return true
     }
   }
 }

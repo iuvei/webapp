@@ -2,7 +2,7 @@
 <template>
   <div class="home">
     <div>
-      <loading v-model="loading"></loading>
+      <loading v-model="loading" :text="'加载中...'"></loading>
     </div>
 
     <div v-transfer-dom v-if="playPlatform==='web'">
@@ -317,7 +317,7 @@
         this.loading = true
         let httpurl = this.httpUrl('METHOD') + '&nav=' + navArr[i]
         this.httpAction(httpurl, (res) => {
-          if (res.data) {
+          if (res.data && res.data.status !== 811) {
             let data = res.data
             // 处理龙虎庄闲数据
             let lhobj = {}, zxobj = {}, _index = ''
@@ -512,7 +512,7 @@
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="less" scoped >
   @import '../../assets/css/style';
 
   @border_radius: 0.265rem;

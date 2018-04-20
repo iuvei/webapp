@@ -316,7 +316,6 @@
 
   .usre_info_top {
     background: #c7202c;
-    margin-top: 0.88rem;
     .user_activity {
       position: relative;
       padding: 0 0.1rem;
@@ -355,10 +354,6 @@
         float: left;
       }
     }
-  }
-
-  .usre_info_top.ios {
-    margin-top: 1.2rem;
   }
 
   .payList {

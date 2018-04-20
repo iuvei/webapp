@@ -333,6 +333,62 @@ export const lhzx_trans = (name) => {
   let str = name.replace('BANKER', '').replace('TIE', '').replace('PLAYER', '').replace('庄', 'z').replace('闲', 'x').replace('对子', 'dz').replace('天王', 'tw').replace('豹子', 'bz').replace('赢', 'y').replace('输', 's').replace('和', 'h')
   return 'zx' + str
 }
+
+//判断平台类型
+export const getPlatformType = () => {
+  var platformType = '';
+  var browser = {
+    versions: function () {
+      var u = navigator.userAgent, app = navigator.appVersion;
+      return {   //移动终端浏览器版本信息
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或uc浏览器
+        iPhone: u.indexOf('iPhone') > -1, //是否为iPhone或者QQHD浏览器
+        iPad: u.indexOf('iPad') > -1, //是否iPad
+        webApp: u.indexOf('Safari') == -1,//是否web应该程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') > -1, //是否微信 （2015-01-22新增）
+        qq: u.match(/\sQQ/i) == " qq",//是否QQ
+        isAndroid: u.indexOf('Android') > -1 || u.indexOf('Adr') > -1,//android客户端
+        isiOS: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)  //ios客户端
+      };
+    }(),
+    language: (navigator.browserLanguage || navigator.language).toLowerCase()
+  }
+
+  if (browser.versions.mobile) {
+    //判断是否是移动设备打开。browser代码在下面
+    //用正则来判断手机是否是ios（苹果）和Android（安卓）客户端
+    var ua = navigator.userAgent.toLowerCase();//获取判断用的对象
+    //alert(ua)
+    if (ua.match(/MicroMessenger/i) == "micromessenger") {
+      //在微信中打开
+      platformType = 'CKPT0001'
+    } else if ((ua.match(/QQ/i) == "qq" && ua.indexOf('v1_and_sq') > -1) || (ua.match(/QQ/i) == "qq" && ua.indexOf('v1_iph_sq') > -1)) {
+      // //在QQ里面打开 内置浏览器android和ios不一样
+      platformType = 'CKPT0002'
+    } else if (ua.match(/WeiBo/i) == "weibo") {
+      //在新浪微博客户端打开
+      platformType = 'CKPT0003'
+    } else if (ua.match(/txmicroblog/i) == "txmicroblog") {
+      //在腾讯微博(自定义)
+      platformType = 'CKPT0004'
+    } else {
+      //浏览器
+      platformType = 'web'
+    }
+
+  } else {
+    //否则就是PC浏览器打开
+    platformType = 'web'
+  }
+
+  return platformType
+}
 export default {
   interFace,
   genCountdown,
@@ -342,5 +398,6 @@ export default {
   lotterytrans,
   setDateTime,
   formser,
-  lhzx_trans
+  lhzx_trans,
+  getPlatformType
 }

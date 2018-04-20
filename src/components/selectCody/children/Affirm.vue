@@ -1,7 +1,7 @@
 <template>
   <div>
     <headTop headTitle="确认投注" goBack='true'></headTop>
-    <div class="time_period header_app_v main-body" v-if='mmcshow'>
+    <div class="time_period header_app_v main-body" v-if='mmcshow' :class="playPlatform">
       <div class="clear">
         <p class="left">
           <span v-text="this.$store.state.selectLotteryName"></span>
@@ -15,7 +15,7 @@
         </p>
       </div>
     </div>
-    <div class="time_period header_app_v main-body" v-else>
+    <div class="time_period header_app_v main-body" v-else :class="playPlatform">
       <div class="clear">
         <p class="left">
           <span v-text="this.$store.state.selectLotteryName"></span>
@@ -912,6 +912,7 @@
     &:after {
       .border-1px(100%, solid, #ddd)
     }
+
   }
 
   .times {

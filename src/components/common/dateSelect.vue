@@ -22,7 +22,6 @@
       }
     },
     mounted() {
-//      console.log(this.starttimeOne)
     },
     methods: {
       _startTimeOne () {

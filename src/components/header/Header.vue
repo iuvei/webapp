@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <p class="header" v-if="playPlatform==='web'"></p>
-    <div id="head_top" :class="{playPlatform}">
+  <div class="header-container">
+    <p class="header" v-if="playPlatform==='ios'"></p>
+    <div id="head_top" :class="playPlatform">
       <section class="header_goback" v-if="goBack" v-tap="{ methods: _back }">
         <img src="./goBack.png" alt="">
       </section>
@@ -93,6 +93,10 @@
 
 <style lang="less" scoped>
   @import '../../assets/css/style';
+
+  .header-container {
+    height: 0.88rem;
+  }
 
   .header {
     background-color: #c7202c;

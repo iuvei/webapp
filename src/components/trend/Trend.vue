@@ -6,9 +6,9 @@
       <popup-picker slot="changelottery" :data="list" v-model="value1" class='change_lottery' @on-show="onShow"
                     @on-hide="onHide" @on-change="onChange"></popup-picker>
     </headTop>
-    <div class="main-body" :style="{'-webkit-overflow-scrolling': scrollMode}">
+    <div class="main-body" :class="playPlatform" :style="{'-webkit-overflow-scrolling': scrollMode}">
       <mt-loadmore :top-method="loadTop" :auto-fill="false" ref="loadmore">
-        <div style="min-height:11rem;margin-bottom: 0.5rem;">
+        <div style="min-height:11rem;margin-bottom: 0.5rem;position: relative" class="table">
           <tab v-if='nopk' bar-active-color="#c7202c" active-color="#c7202c">
             <tab-item selected @on-item-click="onItemClick"><span>万位</span></tab-item>
             <tab-item @on-item-click="onItemClick"><span>千位</span></tab-item>
@@ -143,20 +143,20 @@
       linkLine(width, angle, pt, pt1) {
         let reflag, flag, topflag, elflag;
         let ballWt = document.querySelector(".no").offsetWidth
-        let ballHg = document.querySelector(".no").offsetHeight
+        let ballHg = document.querySelector(".no").offsetHeight + (this.playPlatform === 'ios' ? 1.8 * 50 : this.playPlatform === 'web' ? 0.8 * 50 : 0.8 * 50)
         var ua = navigator.userAgent.toLowerCase();
         if (/iphone|ipad|ipod/.test(ua)) {
           if (window.screen.availWidth <= 320) {
             if (this.playPlatform === 'web') {
-              reflag = 8 - 3 + 16;
-              flag = -17 + 13;
-              topflag = 1 + 17;
-              elflag = -11 + 10;
+              reflag = 8 - 3 + 16
+              flag = -17 + 13
+              topflag = 1 + 17
+              elflag = -11 + 10
             } else if (this.playPlatform === 'ios') {
-              reflag = 8 - 3;
-              flag = -17 - 2;
-              topflag = 1;
-              elflag = -11 - 5;
+              reflag = 8 - 3
+              flag = -17 - 2
+              topflag = 1
+              elflag = -11 - 5
             } else {
               reflag = 8 - 3
               flag = -17 - 2
@@ -165,15 +165,15 @@
             }
           } else if (window.screen.availWidth > 320 && window.screen.availWidth < 400) {
             if (this.playPlatform === 'web') {
-              reflag = 9 - 14 + 20;
-              flag = -18 - 17 + 20;
-              topflag = 8 - 15 + 20;
-              elflag = -10 - 18 + 20;
+              reflag = 9 - 14 + 20
+              flag = -18 - 17 + 20
+              topflag = 8 - 15 + 20
+              elflag = -10 - 18 + 20
             } else if (this.playPlatform === 'ios') {
-              reflag = 9 - 14;
-              flag = -18 - 17;
-              topflag = 8 - 15;
-              elflag = -10 - 18;
+              reflag = 9 - 14
+              flag = -18 - 17
+              topflag = 8 - 15
+              elflag = -10 - 18
             } else {
               reflag = 9 - 14
               flag = -18 - 17
@@ -182,15 +182,15 @@
             }
           } else {
             if (this.playPlatform === 'web') {
-              reflag = 8 - 14 + 20;
-              flag = -23 - 16 + 20;
-              topflag = 5;
-              elflag = -13;
+              reflag = 8 - 14 + 20
+              flag = -23 - 16 + 20
+              topflag = 5
+              elflag = -13
             } else if (this.playPlatform === 'ios') {
-              reflag = 8 - 14;
-              flag = -23 - 16;
-              topflag = 5 - 20;
-              elflag = -13 - 20;
+              reflag = 8 - 14
+              flag = -23 - 16
+              topflag = 5 - 20
+              elflag = -13 - 20
             } else {
               reflag = 8 - 14
               flag = -23 - 16
@@ -200,21 +200,21 @@
           }
         } else if (/android/.test(ua)) {
           if (window.screen.availWidth <= 320) {
-            reflag = 8;
-            flag = -17;
-            topflag = 1;
-            elflag = -11;
+            reflag = 8
+            flag = -17
+            topflag = 1
+            elflag = -11
           } else if (window.screen.availWidth > 320 && window.screen.availWidth < 400) {
             if (this.playPlatform === 'web') {
-              reflag = 9 + 3;
-              flag = -18 + 5;
-              topflag = 8 + 3;
-              elflag = -10 + 3;
+              reflag = 9 + 3
+              flag = -18 + 5
+              topflag = 8 + 3
+              elflag = -10 + 3
             } else if (this.playPlatform === 'ios') {
-              reflag = 9;
-              flag = -18;
-              topflag = 8;
-              elflag = -10;
+              reflag = 9
+              flag = -18
+              topflag = 8
+              elflag = -10
             } else {
               reflag = 9
               flag = -18
@@ -222,10 +222,10 @@
               elflag = -10
             }
           } else {
-            reflag = 8;
-            flag = -23;
-            topflag = 5;
-            elflag = -13;
+            reflag = 8
+            flag = -23
+            topflag = 5
+            elflag = -13
           }
         }
         let newDiv = document.createElement("div");
@@ -407,7 +407,6 @@
   }
 
   .main-body {
-    margin-top: 1.28rem;
   }
 
   .qstitle {

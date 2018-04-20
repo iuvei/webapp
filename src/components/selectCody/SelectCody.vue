@@ -35,7 +35,7 @@
     </headTop>
     <div v-tap="{ methods:_hideAll }" v-show="isCarteList || showSelectList || showSelectListYJF"
          style="position: absolute; top:0;left:0;bottom:0;right:0; z-index:9;"></div>
-    <div class="ballBlock">
+    <div class="ballBlock" :class="playPlatform">
       <!--历史奖期-->
       <transition name="historyshow">
         <section v-show="isRecordTable" class="history_section">
@@ -77,7 +77,7 @@
         </section>
       </transition>
       <!--距离截止时间-->
-      <div style="height:0.5rem;" v-if='mmcshow'>
+      <div style="height: 0.5rem" v-if='mmcshow'>
         <div class="timePeriod">
           <div class="timePeriod_end">
             <p class="left" style="margin-left: 0.3rem;">
@@ -93,7 +93,7 @@
           <img class="clickDown" src="./img/down.png" v-tap="{ methods: _isRecordTable }">
         </div>
       </div>
-      <div style="height:0.5rem;" v-else>
+      <div style="height: 0.5rem" v-else>
         <div class="timePeriod">
           <div class="timePeriod_end">
             <p class="setByRandom right" v-tap="{ methods: _setByRandom }"
@@ -1850,7 +1850,6 @@
   }
 
   .ballBlock {
-    margin: 0 0 2rem;
     .timePeriod {
       position: relative;
       .clickDown {
@@ -2039,11 +2038,6 @@
         }
       }
     }
-  }
-
-  .android {
-    position: relative !important;
-    bottom: 2rem;
   }
 
   .footer_list {

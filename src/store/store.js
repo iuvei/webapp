@@ -79,7 +79,7 @@ export default new Vuex.Store({
 
     trend: null,
 
-    server: 'http://10.63.15.242/',
+    server: '',
 
     typeInput: undefined,
 
@@ -154,7 +154,7 @@ export default new Vuex.Store({
     updateAgreement(state, newAgreement) {
       state.agreement = newAgreement
     },
-    updateIosStore(state,newIosStore){
+    updateIosStore(state, newIosStore) {
       state.iosStore = newIosStore
     },
     updateHttpFlag(state, newhttpFlag) {
@@ -343,6 +343,10 @@ export default new Vuex.Store({
   },
   modules: {
     mutations
+  },
+  getters: {
+    getAvailable: state => state.available,
+    getSess: state => state.sess
   },
   actions
 })

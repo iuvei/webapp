@@ -1,8 +1,8 @@
-<br/><!--设置-->
+<!--设置-->
 <template>
   <div>
     <headTop headTitle="设置" goBack='true'></headTop>
-    <div class="topPadding"></div>
+    <div class="topPadding" :class="playPlatform"></div>
     <div class=" header_app_v">
       <ul class="rechargeBox">
         <li v-tap="{ methods: _modifyPwd }">

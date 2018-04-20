@@ -26,18 +26,68 @@ Vue.use(DatetimePlugin)
 Vue.use(ToastPlugin)
 Vue.use(tap)
 Vue.prototype.mUtils = mUtils
-
+// let error
+// try {
+//   console.log(plus)
+// } catch (e) {
+//   error = e
+// }
+// Vue.$vux.alert.show({
+//   title: error
+// })
+// if (error) {
+//   Vue.use(webPlugin)
+//   import('./assets/web/index.css')
+//   // Vue.$vux.alert.show({
+//   //   title: 'web'
+//   // })
+// } else {
+//   let u = navigator.userAgent
+//   if (u.indexOf('Android') > -1 || u.indexOf('Adr') > -1) {
+//     // android
+//     Vue.use(androidPlugin)
+//     import('./assets/android/index.css')
+//     Vue.$vux.alert.show({
+//       title: 'android',
+//     })
+//   } else {
+//     // ios
+//     Vue.use(iosPlugin)
+//     import('./assets/ios/index.css')
+//     Vue.$vux.alert.show({
+//       title: 'ios',
+//     })
+//   }
+// }
 // 引入ios、Android、web 插件
-if (true) {
-  Vue.use(webPlugin)
-  import('./assets/web/index.css')
-} else if (false) {
-  Vue.use(androidPlugin)
-  import('./assets/android/index.css')
-} else {
-  Vue.use(iosPlugin)
-  import('./assets/ios/index.css')
-}
+// web
+Vue.use(webPlugin)
+import('./assets/web/index.css')
+// android
+// Vue.use(androidPlugin)
+// import('./assets/android/index.css')
+// ios
+// Vue.use(iosPlugin)
+// import('./assets/ios/index.css')
+
+
+// let arr = []
+// for (let i = 0; i < 5; i++) {
+//   let func = function (i) {
+//     let img = new Image()
+//     img.src = 'http://10.63.15.242/speed/img/Login.png?time=' + Date.now()
+//     let start = Date.now()
+//     img.onload = function () {
+//       console.log(i, Date.now() - start)
+//       if (i < 4) {
+//         arr[i + 1](i + 1)
+//       }
+//     }
+//   }
+//   arr.push(func)
+// }
+// arr[0](0)
+
 if (Vue.prototype.httpAction == undefined) {
   let createxmlHttpRequest = () => {
     if (window.ActiveXObject) {
@@ -159,7 +209,7 @@ new Vue({
   mounted() {
     _this = this.$store
     // if (sessionStorage.getItem('sess') == null) {
-    // this.checkLogin()
+    this.checkLogin()
     // }
   },
   methods: {
@@ -181,7 +231,6 @@ new Vue({
             // this.$store.commit('updateServer', window.location.origin) // m下用
 
             this.$store.commit('updateLotteryType', appData.lotteryType)
-
             let httpurl = this.$store.state.server + this.mUtils.interFace('LOGIN') + '&sess=' + this.GetQueryString('sess')
             this.httpAction(httpurl, (res) => {
               this.$store.commit('updateHttpFlag', true)
@@ -338,6 +387,8 @@ if (true) {
 }
 
 router.beforeEach((to, from, next) => {
+  document.body.scrollTop = 0
+  document.documentElement.scrollTop = 0
   if (Vue.prototype.playPlatform === 'web') {
     if (from.path === '/regist') {
       next()

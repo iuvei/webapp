@@ -48,10 +48,13 @@ export default {
           })
           return false
         } else {
-          let serverList = appData.serverList
-          let j = Math.floor(Math.random() * serverList.length) // webapp下用
-          Store.commit('updateServer', serverList[j]) // webapp下用
-          // this.$store.commit('updateServer', window.location.origin) // m下用
+          if (process.env.node_env === 'production') {
+            Store.commit('updateServer', window.location.origin)
+          } else {
+            let serverList = appData.serverList
+            let j = Math.floor(Math.random() * serverList.length) // webapp下用
+            Store.commit('updateServer', serverList[j]) // webapp下用
+          }
           Store.commit('updateLotteryType', appData.lotteryType)
           return true
         }

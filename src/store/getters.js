@@ -3,6 +3,5 @@ export default {
   //     return state.header;
   // },
   loading: state => state.loading,
-  navbarShow: state => state.navbar,
-  getAvailable: state => state.navbar
+  navbarShow: state => state.navbar
 }

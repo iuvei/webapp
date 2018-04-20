@@ -14,45 +14,46 @@
 </template>
 <script>
   import headTop from '../../header/Header.vue'
-  import { LoadMore } from 'vux'
+  import {LoadMore} from 'vux'
 
   export default {
     components: {
       headTop,
       LoadMore
     },
-    data () {
-    	return{
-    		detail: '',
+    data() {
+      return {
+        detail: '',
         loading: true,
-    	}
+      }
     },
-    updated () {
+    updated() {
       this.loading = false
       this.$store.commit('updateMessage', false)
     },
-    mounted(){
-    	this.detail = this.$route.query.data||{}
-    	this.setData(this.detail.entry)
+    mounted() {
+      this.detail = this.$route.query.data || {}
+      this.setData(this.detail.entry)
     },
-    methods:{
-    	setData(val){
-	        let detailurl = this.httpUrl('READMESSAGE') + '&msgid='+val
-	        this.httpAction(detailurl,(res) => {
-	        })
-	    },
+    methods: {
+      setData(val) {
+        let detailurl = this.httpUrl('READMESSAGE') + '&msgid=' + val
+        this.httpAction(detailurl, (res) => {
+        })
+      },
 
     }
   }
 </script>
 <style lang="less" scoped>
-  .details{
-    margin:1rem 0.2rem 2rem;
-    li{
-      border-bottom:1px solid #aaa;
-      padding:0.2rem 0;
+  .details {
+    margin: 1rem 0.2rem 2rem;
+    li {
+      border-bottom: 1px solid #aaa;
+      padding: 0.2rem 0;
     }
   }
+
   .weui-loadmore {
     top: 1rem;
   }
