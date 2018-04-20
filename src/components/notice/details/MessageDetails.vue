@@ -47,7 +47,7 @@
 </script>
 <style lang="less" scoped>
   .details {
-    margin: 1rem 0.2rem 2rem;
+    margin: 0.12rem 0.2rem 2rem;
     li {
       border-bottom: 1px solid #aaa;
       padding: 0.2rem 0;

@@ -321,7 +321,7 @@
             let data = res.data
             // 处理龙虎庄闲数据
             let lhobj = {}, zxobj = {}, _index = ''
-            if (navArr[i] == 'ssc') {
+            if (navArr[i] == 'ssc' && Array.isArray(data)) {
               data.forEach((value, index) => {
                 if (value.title === '龙虎庄闲') {
                   _index = index
@@ -390,7 +390,9 @@
               codes = data[i]
             }
           }
-          this.cqcody = codes[0].code.split('')
+          if (codes[0]) {
+            this.cqcody = codes[0].code.split('')
+          }
         }, {lotteryid: '0', type: '1'})
       },
       // 添加彩种
@@ -512,7 +514,7 @@
   }
 </script>
 
-<style lang="less" scoped >
+<style lang="less" scoped>
   @import '../../assets/css/style';
 
   @border_radius: 0.265rem;
