@@ -470,7 +470,6 @@
         p[j].style.borderColor = '#e5e5e5'
       },
       _typeFun(params) {
-        console.log(params)
         let el = params.event.target
         let siblingsLi = el.parentNode.children
         let idx = params.parentIndex
