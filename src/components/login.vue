@@ -75,7 +75,8 @@
         clear: '',
         times: 0,
         appUpdata: false,
-        clickFlag: true
+        clickFlag: true,
+        loginTimes: 0
       }
     },
     mounted() {
@@ -242,11 +243,13 @@
                 })
               }
               this.times++
-            }, 1000)
+            }, 200)
             return
           }
+          this.times = 0
           let httpurl = this.$store.state.server + this.mUtils.interFace('LOGIN')
           this.httpAction(httpurl, (res) => {
+            this.loginTimes = 0
             this.clickFlag = true
             this.loginText = '登录'
             this.$store.commit('updateHttpFlag', true)
@@ -290,6 +293,24 @@
             'username': this.account,
             'loginpass': loginParam.password_sha,
             'logintype': 'login'
+          }, () => {
+            this.loginTimes++
+            this.clickFlag = true
+            this.isLoging = false
+            this.loginText = '登录'
+            if (this.loginTimes > 1000) {
+              this.$vux.alert.show({
+                title: '提示',
+                content: '登录失败，请重新登录',
+                onShow: () => {
+                  this.loginTimes = 0
+                  this.account = ''
+                  this.password = ''
+                }
+              })
+            } else {
+              this.toLogin()
+            }
           })
         }
       },

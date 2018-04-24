@@ -124,7 +124,8 @@
         <div v-for="(item,parentIndex) in layout">
           <div style="height: 0.42rem;" v-show="isButton">
             <ul class="selectedType clear">
-              <li class="selectType" v-tap="{ methods: _typeFun,parentIndex: parentIndex, index:index, item: item.name}"
+              <li class="selectType"
+                  v-tap="{ methods: _typeFun,parentIndex: parentIndex, index:index, item: item.name,playId:methodid}"
                   v-for="(item,index) in typeList">{{item.text}}
               </li>
             </ul>
@@ -469,6 +470,7 @@
         p[j].style.borderColor = '#e5e5e5'
       },
       _typeFun(params) {
+        console.log(params)
         let el = params.event.target
         let siblingsLi = el.parentNode.children
         let idx = params.parentIndex
@@ -493,6 +495,12 @@
             break;
           case 'big'   :
             for (let j = 0; j < p.length; j++) {
+              // 猜中位
+              if ([3111847, 236, 353, 319, 1010448].indexOf(params.playId) > -1) {
+                this.noBigIndex = 3
+              } else {
+                this.noBigIndex = 5
+              }
               if (j >= this.noBigIndex) {
                 this.selectNum(p, j, idx)
               } else {
@@ -501,6 +509,12 @@
             }
             break;
           case 'small' :
+            // 猜中位
+            if ([3111847, 236, 353, 319, 1010448].indexOf(params.playId) > -1) {
+              this.noBigIndex = 3
+            } else {
+              this.noBigIndex = 5
+            }
             for (let j = 0; j < p.length; j++) {
               if (j < this.noBigIndex) {
                 this.selectNum(p, j, idx)

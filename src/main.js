@@ -88,61 +88,6 @@ import('./assets/web/index.css')
 // }
 // arr[0](0)
 
-if (Vue.prototype.httpAction == undefined) {
-  let createxmlHttpRequest = () => {
-    if (window.ActiveXObject) {
-      return new ActiveXObject("Microsoft.XMLHTTP");
-    } else if (window.XMLHttpRequest) {
-      return new XMLHttpRequest()
-    }
-  }
-  let ajax = (httpurl, callback, param, errorAction, timeoutAction) => {
-    var ajaxData = {
-      type: 'POST',
-      url: httpurl,
-      async: "true",
-      data: param,
-      dataType: 'json',
-      contentType: "application/json; charset=utf-8",
-      success: callback,
-      error: () => {
-        errorAction && errorAction()
-      },
-      timeout: 30000
-    }
-    var xhr = createxmlHttpRequest()
-    xhr.timeout = ajaxData.timeout
-    xhr.responseType = ajaxData.dataType
-    xhr.ontimeout = () => {
-      timeoutAction && timeoutAction()
-      Vue.$vux.loading.hide()
-    }
-    xhr.open(ajaxData.type, ajaxData.url, ajaxData.async)
-    xhr.setRequestHeader("Content-Type", 'application/x-www-form-urlencoded')
-    xhr.send(JSON.stringify(ajaxData.data))
-    xhr.onreadystatechange = () => {
-      Vue.$vux.loading.hide()
-      if (xhr.readyState == 4) {
-        if (xhr.status == 200) {
-          let responseData = {"data": xhr.response}
-          if (responseData.data == null) {
-            ajaxData.success(responseData)
-          } else {
-            if (responseData.data.msg == '由于您长时间未操作，请重新登录' || responseData.data.status == 997 || responseData.data.status == 998) {
-
-              return
-            }
-            ajaxData.success(responseData)
-          }
-        } else {
-          ajaxData.error()
-        }
-      }
-    }
-  }
-  Vue.prototype.httpAction = ajax
-}
-
 const router = new VueRouter({
   routes
 })
@@ -296,95 +241,93 @@ new Vue({
   }
 }).$mount('#app-box')
 
-if (true) {
-  let createxmlHttpRequest = () => {
-    if (window.ActiveXObject) {
-      return new ActiveXObject("Microsoft.XMLHTTP");
-    } else if (window.XMLHttpRequest) {
-      return new XMLHttpRequest()
-    }
+let createxmlHttpRequest = () => {
+  if (window.ActiveXObject) {
+    return new ActiveXObject("Microsoft.XMLHTTP");
+  } else if (window.XMLHttpRequest) {
+    return new XMLHttpRequest()
   }
-  let ajax = (httpurl, callback, param, errorAction, timeoutAction) => {
-    _this.commit('updateAjax', true)
-    var ajaxData = {
-      type: 'POST',
-      url: httpurl,
-      async: "true",
-      data: param,
-      dataType: 'json',
-      contentType: "application/json; charset=utf-8",
-      success: callback,
-      error: () => {
-        errorAction && errorAction()
-        Vue.$vux.loading.hide()
-        if (_this.state.Ajax) {
-          _this.commit('updateAjax', false)
-          if (_this.state.httpFlag) {
-            Vue.$vux.alert.show({
-              title: '提示',
-              content: '网络连接失败',
-              onHide() {
-                Vue.$vux.confirm.hide()
-              }
-            })
-          }
-        }
-      },
-      timeout: 30000
-    }
-    var xhr = createxmlHttpRequest()
-    xhr.timeout = ajaxData.timeout
-    xhr.responseType = ajaxData.dataType
-    xhr.ontimeout = () => {
-      timeoutAction && timeoutAction()
+}
+let ajax = (httpurl, callback, param, errorAction, timeoutAction) => {
+  _this.commit('updateAjax', true)
+  var ajaxData = {
+    type: 'POST',
+    url: httpurl,
+    async: "true",
+    data: param,
+    dataType: 'json',
+    contentType: "application/json; charset=utf-8",
+    success: callback,
+    error: () => {
+      errorAction && errorAction()
       Vue.$vux.loading.hide()
       if (_this.state.Ajax) {
         _this.commit('updateAjax', false)
         if (_this.state.httpFlag) {
           Vue.$vux.alert.show({
             title: '提示',
-            content: '连接超时',
+            content: '网络连接失败',
             onHide() {
               Vue.$vux.confirm.hide()
             }
           })
         }
       }
-    }
-    xhr.open(ajaxData.type, ajaxData.url, ajaxData.async)
-    xhr.setRequestHeader("Content-Type", 'application/x-www-form-urlencoded')
-    xhr.send(JSON.stringify(ajaxData.data))
-    xhr.onreadystatechange = () => {
-      Vue.$vux.loading.hide()
-      if (xhr.readyState == 4) {
-        if (xhr.status == 200) {
-          _this.commit('updateAjax', false)
-          let responseData = {"data": xhr.response}
-          if (responseData.data == null) {
-            ajaxData.success(responseData)
-          } else {
-            if (responseData.data.msg == '由于您长时间未操作，请重新登录' || responseData.data.status == 997 || responseData.data.status == 998) {
-              if (_this.state.httpFlag) {
-                Vue.$vux.alert.show({
-                  title: '提示',
-                  content: responseData.data.msg,
-                  onHide() {
-                    router.replace('/login/')
-                  }
-                })
-              }
-              return
-            }
-            ajaxData.success(responseData)
+    },
+    timeout: 30000
+  }
+  var xhr = createxmlHttpRequest()
+  xhr.timeout = ajaxData.timeout
+  xhr.responseType = ajaxData.dataType
+  xhr.ontimeout = () => {
+    timeoutAction && timeoutAction()
+    Vue.$vux.loading.hide()
+    if (_this.state.Ajax) {
+      _this.commit('updateAjax', false)
+      if (_this.state.httpFlag) {
+        Vue.$vux.alert.show({
+          title: '提示',
+          content: '连接超时',
+          onHide() {
+            Vue.$vux.confirm.hide()
           }
-        } else {
-          ajaxData.error()
-        }
+        })
       }
     }
   }
-  Vue.prototype.httpAction = ajax
+  xhr.open(ajaxData.type, ajaxData.url, ajaxData.async)
+  xhr.setRequestHeader("Content-Type", 'application/x-www-form-urlencoded')
+  xhr.send(JSON.stringify(ajaxData.data))
+  xhr.onreadystatechange = () => {
+    Vue.$vux.loading.hide()
+    if (xhr.readyState == 4) {
+      if (xhr.status == 200) {
+        _this.commit('updateAjax', false)
+        let responseData = {"data": xhr.response}
+        if (responseData.data == null) {
+          ajaxData.success(responseData)
+        } else {
+          if (responseData.data.msg == '由于您长时间未操作，请重新登录' || responseData.data.status == 997 || responseData.data.status == 998) {
+            if (_this.state.httpFlag) {
+              Vue.$vux.alert.show({
+                title: '提示',
+                content: responseData.data.msg,
+                onHide() {
+                  router.replace('/login/')
+                }
+              })
+            }
+            return
+          }
+          ajaxData.success(responseData)
+        }
+      } else {
+        ajaxData.error()
+      }
+    }
+  }
 }
+Vue.prototype.httpAction = ajax
 
 router.beforeEach((to, from, next) => {
   document.body.scrollTop = 0
