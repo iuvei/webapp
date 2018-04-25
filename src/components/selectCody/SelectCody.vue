@@ -121,6 +121,14 @@
         </div>
       </div>
       <div v-else-if="codyBall" class="box_main">
+        <div class="select-box" v-if="rxPlayId.indexOf(methodid)>-1">
+          <Checker type="checkbox" v-model="rxSelect" default-item-class="select-item"
+                   selected-item-class="active">
+            <CheckerItem v-for="item in rxOptions" :value="item.key" :key="item.key">
+              <check-icon :value.sync="item.flag" type="plain" class="check-icon">{{item.value}}</check-icon>
+            </CheckerItem>
+          </Checker>
+        </div>
         <div v-for="(item,parentIndex) in layout">
           <div style="height: 0.42rem;" v-show="isButton">
             <ul class="selectedType clear">
@@ -130,7 +138,7 @@
               </li>
             </ul>
           </div>
-          <div class="parentBox">
+          <div class="parentBox" v-if="!item.rxShow">
             <span v-if="item.title != ''">{{item.title}}</span>
             <span v-else>选号</span>
             <ul class="ballBlock_number">
@@ -145,6 +153,14 @@
         </div>
       </div>
       <div v-else class="box_main">
+        <div class="select-box" v-if="rxPlayId.indexOf(methodid)>-1">
+          <Checker type="checkbox" v-model="rxSelect" default-item-class="select-item"
+                   selected-item-class="active">
+            <CheckerItem v-for="item in rxOptions" :value="item.key" :key="item.key">
+              <check-icon :value.sync="item.flag" type="plain" class="check-icon">{{item.value}}</check-icon>
+            </CheckerItem>
+          </Checker>
+        </div>
         <textarea @blur="onBlur" id="lt_write_box" v-model="danshiBall" class="textareaLong"></textarea>
         <div class="explain">
           <p v-text="this.method.methoddesc"></p>
@@ -219,7 +235,7 @@
   import headTop from '../header/Header.vue'
   import selectNumber from '../common/selectNumber.vue'
   import buttonView from '../common/button.vue'
-  import {PopupPicker} from 'vux'
+  import {PopupPicker, Checker, CheckerItem, CheckIcon} from 'vux'
 
   import {random, checkNum, uniquelize, uniquelizeNosort} from './merge'
 
@@ -368,15 +384,33 @@
               className: 'x'
             }]
           }
-        ]
-
+        ],
+        // 任选数据
+        rxOptions: [
+          {key: '1', value: '万位', flag: false},
+          {key: '2', value: '千位', flag: false},
+          {key: '3', value: '百位', flag: false},
+          {key: '4', value: '十位', flag: true},
+          {key: '5', value: '个位', flag: true},
+        ],
+        // 任选默认选中位置
+        rxSelect: ['4', '5'],
+        // 任选中 需要展示 位置的玩法id
+        rxPlayId: [2437, 2447, 2457, 2467, 2477, 1010111, 1010121, 1010211, 1010221, 1010231, 1010201, 1010306, 1010401, 1010406, 1010411, 1010416],
+        // 任选玩法中 和值玩法的id
+        rxSumId: [2467, 2477, 1010121, 1010231],
+        // 任选中 不需要大小单双的玩法
+        // rxIsButton: [2447, 2467, 2457, 2477, 1010111, 1010121]
       }
     },
     components: {
       headTop,
       PopupPicker,
       selectNumber,
-      buttonView
+      buttonView,
+      Checker,
+      CheckerItem,
+      CheckIcon
     },
     watch: {
       watchlotteryid(val, oldVal) {
@@ -871,6 +905,32 @@
           this.methodid = 'zx'
           this.codyBall = false  // 庄闲 去除机选功能
         }
+        let __index = this.rxPlayId.indexOf(this.methodid)
+        if (__index < 5) {
+          this.rxOptions = [
+            {key: 'w', value: '万位', flag: false},
+            {key: 'q', value: '千位', flag: false},
+            {key: 'b', value: '百位', flag: false},
+            {key: 's', value: '十位', flag: true},
+            {key: 'g', value: '个位', flag: true},
+          ]
+        } else if (__index < 11) {
+          this.rxOptions = [
+            {key: 'w', value: '万位', flag: false},
+            {key: 'q', value: '千位', flag: false},
+            {key: 'b', value: '百位', flag: true},
+            {key: 's', value: '十位', flag: true},
+            {key: 'g', value: '个位', flag: true},
+          ]
+        } else {
+          this.rxOptions = [
+            {key: 'w', value: '万位', flag: false},
+            {key: 'q', value: '千位', flag: true},
+            {key: 'b', value: '百位', flag: true},
+            {key: 's', value: '十位', flag: true},
+            {key: 'g', value: '个位', flag: true},
+          ]
+        }
         // 提交mutation到Store
         this.$store.commit('updateTypeInput', this.typeInput)
         this._getMethodename(this.methodid, this.lotteryBet.lottery.method, this.$store.state.typeInput)
@@ -893,6 +953,7 @@
         this.$store.commit('updateMethodid', this.methodid)
         let data = this.$store.state._lotteryBet[this.$store.state.nav]
         this.lotteryBet.lottery.method = data
+
         for (let i = 0; i < data.length; i++) {
           let ozd = {}
           ozd.name = data[i].title
@@ -1074,14 +1135,31 @@
         this.isButton = this.method.selectarea.isButton
         if (this.method.selectarea.layout !== undefined) {
           this.layout = this.method.selectarea.layout
-          this.layout.forEach((value) => {
+          let sumCode = ''
+          this.layout.forEach((value, index) => {
             // 处理龙虎
             if (_lotteryname === '龙虎') {
               value.title = value.title.slice(0, 2)
               value.no = '龙|虎|和'
               this.isButton = false
             }
+            // 任选和值
+            if (this.rxSumId.indexOf(this.methodid) > -1) {
+              sumCode += value.no + (index !== this.layout.length - 1 ? '|' : '')
+              if (index > 0) {
+                value.rxShow = true
+              }
+            }
           })
+          // 任选 和值玩法
+          if (this.rxSumId.indexOf(this.methodid) > -1) {
+            this.layout[0].no = sumCode
+            this.layout = [...this.layout].splice(0, 1)
+          }
+          // 任选中不需要 大小单双的玩法
+          // if (this.rxIsButton.indexOf(this.methodid) > -1) {
+          //   this.isButton = false
+          // }
           if (this.$store.state.selectLotteryNameFlag == this.$store.state.selectLotteryName) {
             // 提交mutation到Store
             this.$store.commit('updateLayout', this.layout)
@@ -1172,6 +1250,7 @@
         let r = random(this.methodid)
         this.model.codes = []
         for (let i = 0, layout = this.method.selectarea.layout; i < layout.length; i++) {
+          if (layout[i].rxShow) break
           let l = []
           r[i].forEach((val, index) => {
             l.push(String(val))
@@ -1346,6 +1425,10 @@
             } else {
               codes = this.model.codes
               this.model.type = 'lhzx_zx'
+            }
+            if (this.rxPlayId.indexOf(this.methodid) > -1) {
+              console.log(123)
+              this.model.poschose = this.rxSelect
             }
           }
           //第四步，检测购物篮中是否已经存在m对象了。如果不存在则添加进入购物篮
@@ -2093,4 +2176,11 @@
     text-overflow: ellipsis;
   }
 
+  .select-box {
+    margin-bottom: .2rem;
+    .select-item {
+      width: 20%;
+      font-size: 14px;
+    }
+  }
 </style>

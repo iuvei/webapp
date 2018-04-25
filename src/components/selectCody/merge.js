@@ -665,7 +665,7 @@ let lt_method = {
   '2422': 'ZUL',
   '2424': 'ZUHZ',
   '2425': 'SXZU4',
-  '2427': 'ZX5',
+  '2427': 'RX2ZXFS',
   '2429': 'ZH5',
 
   '2379': 'HHZX',
@@ -741,7 +741,7 @@ let lt_method = {
   '2464': 'RXZXDSSSC3',
   '2465': 'RXZXDSSSC3',
   '2466': 'RXZXDSSSC3',
-  '2467': 'RXZXDSSSC3',
+  '2467': 'RX2ZXHZ',
   '2468': 'RXZXDSSSC3',
   '2469': 'RXZXDSSSC3',
   '2470': 'RXZXDSSSC3',
@@ -1192,6 +1192,12 @@ export const random = (methid) => {
   let mname = lt_method[methid]
   let tmp_nums = 1
   switch (mname) {
+    // 任选 和值
+    case 2467:
+    case 2447:
+    case 1010121:
+      random_number = getRXHZRandom(methid)
+      break
     case 'SBTHDT':
       random_number = getSuiji(10, [1, 2, 0, 0, 0])
       break;
@@ -1499,6 +1505,25 @@ export const random = (methid) => {
   }
   return random_number;
 };
+// 任选和值 随机算法
+export const getRXHZRandom = (methodid) => {
+  let results = []
+  switch (methodid) {
+    // 任选2 直选和值
+    case 2467:
+      results = [[parseInt(Math.random() * 19)]]
+    case 2477:
+      results = [[parseInt((Math.random() * 17) + 1)]]
+    case 1010121:
+      results = [[parseInt(Math.random() * 28)]]
+    case 1010231:
+      results = [[parseInt((Math.random() * 26) + 1)]]
+      break
+  }
+  return results
+}
+
+
 //随机算法1
 export const getSuiji = (length, minchose, string) => {
   var size = 0; //表示随机生成几个数字
@@ -1667,6 +1692,19 @@ export const checkNum = (methid, data_sel) => {
   let j = 0
   let k = 0
   switch (mname) {
+    // 任选2 直选复试
+    case'RX2ZXFS':
+      nums = 0
+      for (let i = 0; i < 5; i++) {
+        if (data_sel[i].length) {
+          for (let j = i + 1; j < 5; j++) {
+            if (data_sel[j].length) {
+              nums += data_sel[i].length * data_sel[j].length
+            }
+          }
+        }
+      }
+      break
     case 'SD337': //11选5--------------------------------
       nums = 0;
       if (data_sel[0].length > 0 && data_sel[1].length > 0 && data_sel[2].length > 0) {

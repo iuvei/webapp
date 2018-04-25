@@ -320,11 +320,11 @@
           if (res.data && res.data.status !== 811) {
             let data = res.data
             // 处理龙虎庄闲数据
-            let lhobj = {}, zxobj = {}, _index = ''
+            let lhobj = {}, zxobj = {}, rxobj = {}, rxArr = [], _indexArr = []
             if (navArr[i] == 'ssc' && Array.isArray(data)) {
               data.forEach((value, index) => {
                 if (value.title === '龙虎庄闲') {
-                  _index = index
+                  _indexArr.push(index)
                   lhobj = {...value}
                   zxobj = {...value}
                   value.label.forEach((val) => {
@@ -337,11 +337,28 @@
                     }
                   })
                 }
+                if (value.title === '任选') {
+                  rxobj = {...value}
+                  _indexArr.push(index)
+                  value.label.forEach(item => {
+                    rxArr.push(item)
+                  })
+                }
               })
-              if (_index) {
-                data = [...data, lhobj, zxobj]
-                data.splice(_index, 1)
-              }
+              data = [...data, lhobj, zxobj]
+              _indexArr.forEach((val, index) => {
+                if (index === _indexArr.length - 1 && _indexArr.length > 1) {
+                  data.splice(val - 1, 1)
+                } else {
+                  data.splice(val, 1)
+                }
+              })
+              rxArr.forEach((item, index) => {
+                data.push(Object.assign({}, rxobj, item, {
+                  label: [...rxobj.label].splice(index, 1),
+                  title: item.gtitle
+                }))
+              })
             }
             if (navArr[i] == 'mmc') {
               this.lotteryBet[navArr[i]] = data
