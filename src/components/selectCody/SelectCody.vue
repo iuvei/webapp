@@ -442,6 +442,9 @@
           this._danshiBall(newVal, oldVal)
         }
       },
+      rxSelect(newVal, oldVal) {
+        this._calBet()
+      },
       methodid: {
         deep: true,
         handler: function (val, oldVal) {
@@ -869,7 +872,7 @@
         if (this.model.type === 'input') {
           return
         }
-        let nums = checkNum(this.model.methodid, this.model.codes)
+        let nums = checkNum(this.model.methodid, this.model.codes, this.rxSelect)
         this.model.nums = nums
         this.lotteryname = this.$store.state.nav
         // 提交mutation到Store
@@ -1154,7 +1157,7 @@
           // 任选 和值玩法
           if (this.rxSumId.indexOf(this.methodid) > -1) {
             this.layout[0].no = sumCode
-            this.layout = [...this.layout].splice(0, 1)
+            this.method.selectarea.layout = [...this.layout].splice(0, 1)
           }
           // 任选中不需要 大小单双的玩法
           // if (this.rxIsButton.indexOf(this.methodid) > -1) {
@@ -1250,6 +1253,7 @@
         let r = random(this.methodid)
         this.model.codes = []
         for (let i = 0, layout = this.method.selectarea.layout; i < layout.length; i++) {
+          // 任选 组选部分不显示
           if (layout[i].rxShow) break
           let l = []
           r[i].forEach((val, index) => {
@@ -1257,6 +1261,7 @@
           })
           this.model.codes.push(l)
         }
+        console.log(this.model.codes)
         let _codes = this.model.codes
         _codes.forEach((item, index) => {
           let li = document.getElementsByClassName('ballBlock_number')[index].getElementsByClassName('codysBall')
@@ -1362,9 +1367,11 @@
               let LodName = this.method['name']
               let regd = /和值/
               //第一步：这里处理各种不同的玩法
+              console.log(this.model.codes)
               let r = this.model.codes
               this.model.codes = []
               for (let i = 0; i < this.method.selectarea.layout.length; i++) {
+                if (this.method.selectarea.layout[i]) break
                 let l = []
                 r[i].forEach((val, index) => {
                   let b = String(val)
@@ -1427,7 +1434,6 @@
               this.model.type = 'lhzx_zx'
             }
             if (this.rxPlayId.indexOf(this.methodid) > -1) {
-              console.log(123)
               this.model.poschose = this.rxSelect
             }
           }

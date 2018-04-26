@@ -283,7 +283,7 @@ let lt_method = {
   '1010108': 'RXZXSSC2',//任选二直选复式-百十
   '1010109': 'RXZXSSC2',//任选二直选复式-百个
   '1010110': 'RXZXSSC2',//任选二直选复式-十个
-  '1010121': 'RXZXSSC2HZ',  //任选二直选和值-十个
+  '1010121': 'RX3ZXHZ',  //任选二直选和值-十个
   '1010122': 'RXZXSSC2HZ',  //任选二直选和值-百个
   '1010123': 'RXZXSSC2HZ',  //任选二直选和值-百十
   '1010124': 'RXZXSSC2HZ',  //任选二直选和值-千个
@@ -313,6 +313,7 @@ let lt_method = {
   '1010228': 'RXZUSSC2HZ',  //任选二组选和值-万十
   '1010229': 'RXZUSSC2HZ',  //任选二组选和值-万百
   '1010230': 'RXZUSSC2HZ',  //任选二组选和值-万千
+  '1010231': 'RX3ZXZXHZ',  //任选三组选和值
 
   '1010439': 'SD337',
   '1010440': 'SD339',
@@ -751,7 +752,7 @@ let lt_method = {
   '2474': 'RXZXHZSSC3',
   '2475': 'RXZXHZSSC3',
   '2476': 'RXZXHZSSC3',
-  '2477': 'RXZXHZSSC3',
+  '2477': 'RX2ZXZXHZ',
   '2478': 'RXZXHZSSC3',
   '2479': 'RXZXHZSSC3',
   '2480': 'RXZXHZSSC3',
@@ -1193,9 +1194,10 @@ export const random = (methid) => {
   let tmp_nums = 1
   switch (mname) {
     // 任选 和值
-    case 2467:
-    case 2447:
-    case 1010121:
+    case 'RX2ZXHZ':
+    case 'RX2ZXZXHZ':
+    case 'RX3ZXHZ':
+    case 'RX3ZXZXHZ':
       random_number = getRXHZRandom(methid)
       break
     case 'SBTHDT':
@@ -1683,7 +1685,8 @@ export const array_unique = (inputArr) => {
   return tmp_arr2;
 }
 // 投注注数的算法
-export const checkNum = (methid, data_sel) => {
+// posArr 任选中 所选的位置
+export const checkNum = (methid, data_sel, posArr) => {
   var mname = lt_method[methid];
   nums = 0
   var max_place = data_sel.length - 1
@@ -1692,7 +1695,7 @@ export const checkNum = (methid, data_sel) => {
   let j = 0
   let k = 0
   switch (mname) {
-    // 任选2 直选复试
+    // 任选2 直选复式
     case'RX2ZXFS':
       nums = 0
       for (let i = 0; i < 5; i++) {
@@ -1704,6 +1707,11 @@ export const checkNum = (methid, data_sel) => {
           }
         }
       }
+      break
+    // 任选2 直选和值
+    case'RX2ZXHZ':
+      nums = calRXHZNums(data_sel, posArr, 2)
+
       break
     case 'SD337': //11选5--------------------------------
       nums = 0;
@@ -2844,6 +2852,33 @@ export const checkNum = (methid, data_sel) => {
   return nums
 }
 
+export const calRXHZNums = (data, pos, n) => {
+  let sum = 0
+  data.forEach(value => {
+    value.forEach(val => {
+      for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 10; j++) {
+          if (i + j == val) {
+            sum += 1
+            break
+          }
+        }
+        if (i > val) {
+          break
+        }
+      }
+    })
+  })
+  return sum * (factorial(pos.length) / factorial(pos.length - n) / factorial(n))
+}
+// 计算n 的阶乘
+export const factorial = (n) => {
+  if (n == 1 || n == 0) {
+    return 1
+  } else {
+    return n * factorial(n - 1)
+  }
+}
 export const selectAll = (obj) => {
   jQuery(":checkbox[id!='' + obj + '']").attr('checked', jQuery('#' + obj).attr('checked'))
 }
