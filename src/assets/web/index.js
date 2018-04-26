@@ -48,7 +48,7 @@ export default {
           })
           return false
         } else {
-          if (process.env.node_env === 'production') {
+          if (process.env.NODE_ENV === 'production') {
             Store.commit('updateServer', window.location.origin)
           } else {
             let serverList = appData.serverList

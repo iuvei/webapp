@@ -119,11 +119,9 @@ new Vue({
             this.$store.commit('updateIflink', 1)
 
             let serverList = appData.serverList
-            let j = Math.floor(Math.random() * serverList.length) // webapp下用
-            this.$store.commit('updateServer', serverList[j]) // webapp下用
-
-            // this.$store.commit('updateServer', window.location.origin) // m下用
-
+            if (process.env.NODE_ENV === 'production') {
+              this.$store.commit('updateServer', window.location.origin)
+            }
             this.$store.commit('updateLotteryType', appData.lotteryType)
             let httpurl = this.$store.state.server + this.mUtils.interFace('LOGIN') + '&sess=' + this.GetQueryString('sess')
             this.httpAction(httpurl, (res) => {
