@@ -26,39 +26,6 @@ Vue.use(DatetimePlugin)
 Vue.use(ToastPlugin)
 Vue.use(tap)
 Vue.prototype.mUtils = mUtils
-// let error
-// try {
-//   console.log(plus)
-// } catch (e) {
-//   error = e
-// }
-// Vue.$vux.alert.show({
-//   title: error
-// })
-// if (error) {
-//   Vue.use(webPlugin)
-//   import('./assets/web/index.css')
-//   // Vue.$vux.alert.show({
-//   //   title: 'web'
-//   // })
-// } else {
-//   let u = navigator.userAgent
-//   if (u.indexOf('Android') > -1 || u.indexOf('Adr') > -1) {
-//     // android
-//     Vue.use(androidPlugin)
-//     import('./assets/android/index.css')
-//     Vue.$vux.alert.show({
-//       title: 'android',
-//     })
-//   } else {
-//     // ios
-//     Vue.use(iosPlugin)
-//     import('./assets/ios/index.css')
-//     Vue.$vux.alert.show({
-//       title: 'ios',
-//     })
-//   }
-// }
 // 引入ios、Android、web 插件
 // web
 Vue.use(webPlugin)
@@ -69,24 +36,6 @@ import('./assets/web/index.css')
 // ios
 // Vue.use(iosPlugin)
 // import('./assets/ios/index.css')
-
-
-// let arr = []
-// for (let i = 0; i < 5; i++) {
-//   let func = function (i) {
-//     let img = new Image()
-//     img.src = 'http://10.63.15.242/speed/img/Login.png?time=' + Date.now()
-//     let start = Date.now()
-//     img.onload = function () {
-//       console.log(i, Date.now() - start)
-//       if (i < 4) {
-//         arr[i + 1](i + 1)
-//       }
-//     }
-//   }
-//   arr.push(func)
-// }
-// arr[0](0)
 
 const router = new VueRouter({
   routes
@@ -170,11 +119,9 @@ new Vue({
             this.$store.commit('updateIflink', 1)
 
             let serverList = appData.serverList
-            let j = Math.floor(Math.random() * serverList.length) // webapp下用
-            this.$store.commit('updateServer', serverList[j]) // webapp下用
-
-            // this.$store.commit('updateServer', window.location.origin) // m下用
-
+            if (process.env.NODE_ENV === 'production') {
+              this.$store.commit('updateServer', window.location.origin)
+            }
             this.$store.commit('updateLotteryType', appData.lotteryType)
             let httpurl = this.$store.state.server + this.mUtils.interFace('LOGIN') + '&sess=' + this.GetQueryString('sess')
             this.httpAction(httpurl, (res) => {
