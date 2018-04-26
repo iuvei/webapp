@@ -359,7 +359,7 @@ let lt_method = {
   '2434': 'JSK3a2',
   '2435': 'JSK3a3',
   '2436': 'JSK3a4',
-  '2437': 'JSK3a5',
+  '2437': 'RX2ZXFS',
   '2438': 'JSK3a6',
   '2439': 'JSK3a7',
   '2440': 'JSK3a6i',
@@ -1514,10 +1514,13 @@ export const getRXHZRandom = (methodid) => {
     // 任选2 直选和值
     case 2467:
       results = [[parseInt(Math.random() * 19)]]
+      break
     case 2477:
       results = [[parseInt((Math.random() * 17) + 1)]]
+      break
     case 1010121:
       results = [[parseInt(Math.random() * 28)]]
+      break
     case 1010231:
       results = [[parseInt((Math.random() * 26) + 1)]]
       break
@@ -1687,6 +1690,7 @@ export const array_unique = (inputArr) => {
 // 投注注数的算法
 // posArr 任选中 所选的位置
 export const checkNum = (methid, data_sel, posArr) => {
+  console.log(methid)
   var mname = lt_method[methid];
   nums = 0
   var max_place = data_sel.length - 1
@@ -1711,7 +1715,10 @@ export const checkNum = (methid, data_sel, posArr) => {
     // 任选2 直选和值
     case'RX2ZXHZ':
       nums = calRXHZNums(data_sel, posArr, 2)
-
+      break
+    // 任选2 组选复试
+    case'RX2ZXFS':
+      nums = calRXZXNums(data_sel, posArr, 2)
       break
     case 'SD337': //11选5--------------------------------
       nums = 0;
@@ -2851,7 +2858,7 @@ export const checkNum = (methid, data_sel, posArr) => {
   }
   return nums
 }
-
+// 计算任选和值 注数
 export const calRXHZNums = (data, pos, n) => {
   let sum = 0
   data.forEach(value => {
@@ -2870,6 +2877,10 @@ export const calRXHZNums = (data, pos, n) => {
     })
   })
   return sum * (factorial(pos.length) / factorial(pos.length - n) / factorial(n))
+}
+// 计算任选组选 注数
+export const calRXZXNums = (data, pos, n) => {
+
 }
 // 计算n 的阶乘
 export const factorial = (n) => {

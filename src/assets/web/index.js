@@ -36,6 +36,7 @@ export default {
       })
     }
     Vue.prototype._getUpdate = () => {
+      console.log(Store.state.ifLink)
       if (Store.state.ifLink == null) {
         let appData = require('../../../static/hc.json')
         Store.commit('updateIflink', 1)
@@ -58,6 +59,8 @@ export default {
           Store.commit('updateLotteryType', appData.lotteryType)
           return true
         }
+      }else{
+        return true
       }
     }
   }

@@ -1261,7 +1261,6 @@
           })
           this.model.codes.push(l)
         }
-        console.log(this.model.codes)
         let _codes = this.model.codes
         _codes.forEach((item, index) => {
           let li = document.getElementsByClassName('ballBlock_number')[index].getElementsByClassName('codysBall')
@@ -1367,11 +1366,10 @@
               let LodName = this.method['name']
               let regd = /和值/
               //第一步：这里处理各种不同的玩法
-              console.log(this.model.codes)
               let r = this.model.codes
               this.model.codes = []
               for (let i = 0; i < this.method.selectarea.layout.length; i++) {
-                if (this.method.selectarea.layout[i]) break
+                if (this.method.selectarea.layout[i].rxShow) break
                 let l = []
                 r[i].forEach((val, index) => {
                   let b = String(val)
@@ -1434,7 +1432,7 @@
               this.model.type = 'lhzx_zx'
             }
             if (this.rxPlayId.indexOf(this.methodid) > -1) {
-              this.model.poschose = this.rxSelect
+              this.model.poschoose = this.rxSelect.toString()
             }
           }
           //第四步，检测购物篮中是否已经存在m对象了。如果不存在则添加进入购物篮
