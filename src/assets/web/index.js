@@ -58,6 +58,8 @@ export default {
           Store.commit('updateLotteryType', appData.lotteryType)
           return true
         }
+      } else {
+        return true
       }
     }
   }
