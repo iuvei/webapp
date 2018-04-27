@@ -399,8 +399,10 @@
         rxPlayId: [2437, 2447, 2457, 2467, 2477, 1010111, 1010121, 1010211, 1010221, 1010231, 1010201, 1010306, 1010401, 1010406, 1010411, 1010416],
         // 任选玩法中 和值玩法的id
         rxSumId: [2467, 2477, 1010121, 1010231],
-        // 任选中 不需要大小单双的玩法
-        // rxIsButton: [2447, 2467, 2457, 2477, 1010111, 1010121]
+        // 任选中 组选玩法 id
+        rxZXIds: [2437, 1010201, 1010211],
+        // 任选中 单式玩法 id
+        rxZuDsIds: [2447, 2457, 1010111, 1010306]
       }
     },
     components: {
@@ -444,6 +446,9 @@
       },
       rxSelect(newVal, oldVal) {
         this._calBet()
+        if (this.model.type === 'input') {
+          this._danshiBall(this.danshiBall)
+        }
       },
       methodid: {
         deep: true,
@@ -908,31 +913,35 @@
           this.methodid = 'zx'
           this.codyBall = false  // 庄闲 去除机选功能
         }
+        // 重置任选玩法是的默认选中位置
         let __index = this.rxPlayId.indexOf(this.methodid)
         if (__index < 5) {
           this.rxOptions = [
-            {key: 'w', value: '万位', flag: false},
-            {key: 'q', value: '千位', flag: false},
-            {key: 'b', value: '百位', flag: false},
-            {key: 's', value: '十位', flag: true},
-            {key: 'g', value: '个位', flag: true},
+            {key: '1', value: '万位', flag: false},
+            {key: '2', value: '千位', flag: false},
+            {key: '3', value: '百位', flag: false},
+            {key: '4', value: '十位', flag: true},
+            {key: '5', value: '个位', flag: true},
           ]
+          this.rxSelect = [4, 5]
         } else if (__index < 11) {
           this.rxOptions = [
-            {key: 'w', value: '万位', flag: false},
-            {key: 'q', value: '千位', flag: false},
-            {key: 'b', value: '百位', flag: true},
-            {key: 's', value: '十位', flag: true},
-            {key: 'g', value: '个位', flag: true},
+            {key: '1', value: '万位', flag: false},
+            {key: '2', value: '千位', flag: false},
+            {key: '3', value: '百位', flag: true},
+            {key: '4', value: '十位', flag: true},
+            {key: '5', value: '个位', flag: true},
           ]
+          this.rxSelect = [3, 4, 5]
         } else {
           this.rxOptions = [
-            {key: 'w', value: '万位', flag: false},
-            {key: 'q', value: '千位', flag: true},
-            {key: 'b', value: '百位', flag: true},
-            {key: 's', value: '十位', flag: true},
-            {key: 'g', value: '个位', flag: true},
+            {key: '1', value: '万位', flag: false},
+            {key: '2', value: '千位', flag: true},
+            {key: '3', value: '百位', flag: true},
+            {key: '4', value: '十位', flag: true},
+            {key: '5', value: '个位', flag: true},
           ]
+          this.rxSelect = [2, 3, 4, 5]
         }
         // 提交mutation到Store
         this.$store.commit('updateTypeInput', this.typeInput)
@@ -1252,14 +1261,24 @@
         this._emptyCody()
         let r = random(this.methodid)
         this.model.codes = []
-        for (let i = 0, layout = this.method.selectarea.layout; i < layout.length; i++) {
-          // 任选 组选部分不显示
-          if (layout[i].rxShow) break
-          let l = []
-          r[i].forEach((val, index) => {
-            l.push(String(val))
+        // 任选组选 复试
+        if (this.rxZXIds.indexOf(this.methodid) > -1) {
+          this.model.codes = [[]]
+          r.forEach(value => {
+            value.forEach(val => {
+              this.model.codes[0].push(val)
+            })
           })
-          this.model.codes.push(l)
+        } else {
+          for (let i = 0, layout = this.method.selectarea.layout; i < layout.length; i++) {
+            // 任选 组选部分不显示
+            if (layout[i].rxShow) break
+            let l = []
+            r[i].forEach((val, index) => {
+              l.push(String(val))
+            })
+            this.model.codes.push(l)
+          }
         }
         let _codes = this.model.codes
         _codes.forEach((item, index) => {
@@ -1636,7 +1655,7 @@
           ['255', '367', '333', '1010455'], //14 11选5组选7中5
           ['258', '369', '335', '1010456'], //16 11选5组选8中5
           ['220', '224', '337', '341', '303', '307', '1010439', '1010441', '3111007', '3111008', '3111024', '3111025', '3111027'], //这是11选5直选单式
-          ['2447', '2457', '1010111', '1010306']
+          ['2447', '2457', '1010111', '1010221', '1010306']
         ];
         let i = 0
         while (i < 9) {
@@ -1676,14 +1695,14 @@
           i++
         }
         // 任选
-        let _rxIndex = IDarr[10].indexOf(DanID)
-        switch (_rxIndex) {
-          case 0:
-          case 1:
+        switch (this.methodid) {
+          case 2447:
+          case 2457:
             Sid = 2
             break
-          case 2:
-          case 3:
+          case 1010111:
+          case 1010306:
+          case 1010221:
             Sid = 3
           default:
             break
@@ -1736,6 +1755,22 @@
               }
             })
           }
+        } else if (this.rxZuDsIds.indexOf(this.methodid) > -1) {
+          // 任选组选 单式
+          for (let i = 0; i < valueArr.length; i++) {
+            // 去除匹配数组项中长度小于或大于Sid的项
+            if (valueArr[i].length != Sid) continue
+            if (Array.from(new Set(valueArr[i].split(''))).length != Sid) continue
+            BellArr.push(valueArr[i])
+          }
+        } else if (this.methodid == 1010221) {
+          // 任3 混合组选
+          for (let i = 0; i < valueArr.length; i++) {
+            // 去除匹配数组项中长度小于或大于Sid的项
+            if (valueArr[i].length != Sid) continue
+            if (Array.from(new Set(valueArr[i].split(''))).length == 1) continue
+            BellArr.push(valueArr[i])
+          }
         } else {
           valueArr.forEach(function (item, index) {
             // 去除匹配数组项中长度小于或大于Sid的项
@@ -1750,8 +1785,29 @@
         /* ★//这里是单式投注的号码
          scope.BallDan = scope.ArrayToBell(BellArr);*/
         this.BallDan = BellArr
+        // 任选单式修改位数 4,5 -> 3,4,5
+        let rxTimes = (function () {
+          let times = 1
+          switch (this.methodid) {
+            case 2447:// 任2 复选单式
+            case 2457: // 任2 组选单式
+              times = this.mUtils.factorial(this.rxSelect.length) / this.mUtils.factorial(this.rxSelect.length - 2) / this.mUtils.factorial(2)
+              break
+            case 1010111: // 任3 直选单式
+            case 1010221: // 任3 直选单式
+              times = this.mUtils.factorial(this.rxSelect.length) / this.mUtils.factorial(this.rxSelect.length - 3) / this.mUtils.factorial(3)
+              break
+            default:
+              times = 1
+              break
+          }
+          return times
+        }.bind(this))();
         // 这里只是单式输入时，展示金额
-        this.model.nums = this.BallDan.length
+        this.model.nums = this.BallDan.length * rxTimes
+        if (this.rxPlayId.indexOf(this.methodid) > -1) {
+          this.model.poschoose = [...this.rxSelect].sort().toString()
+        }
 //        this.model.money = accMul(accMul(accMul(this.BallDan.length, this.model.times), GETMODE(this.model.mode)), 2)
         // 消除临时变量
         DanID = valueArr = BellArr = Sid = d = too = null

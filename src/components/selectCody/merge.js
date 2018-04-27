@@ -1,4 +1,6 @@
-﻿export const uniquelizeNosort = (arr) => { // 去重复不排序
+﻿import Utils from '../../assets/js/mUtils'
+
+export const uniquelizeNosort = (arr) => { // 去重复不排序
   let re = [arr[0]]
   for (let i = 1; i < arr.length; i++) {
     if (arr[i] !== re[re.length - 1]) {
@@ -293,7 +295,8 @@ let lt_method = {
   '1010128': 'RXZXSSC2HZ',  //任选二直选和值-万十
   '1010129': 'RXZXSSC2HZ',  //任选二直选和值-万百
   '1010130': 'RXZXSSC2HZ',  //任选二直选和值-万千
-  '1010201': 'RXZUSSC2',//任选二组选复式-万千
+  '1010201': 'RX3ZUXZ3',//任选二组选复式-万千
+  '1010211': 'RX3ZUXZ6',//任选二组选复式-万千
   '1010202': 'RXZUSSC2',//任选二组选复式-万百
   '1010203': 'RXZUSSC2',//任选二组选复式-万十
   '1010204': 'RXZUSSC2',//任选二组选复式-千个
@@ -313,7 +316,7 @@ let lt_method = {
   '1010228': 'RXZUSSC2HZ',  //任选二组选和值-万十
   '1010229': 'RXZUSSC2HZ',  //任选二组选和值-万百
   '1010230': 'RXZUSSC2HZ',  //任选二组选和值-万千
-  '1010231': 'RX3ZXZXHZ',  //任选三组选和值
+  '1010231': 'RX3ZUXHZ',  //任选三组选和值
 
   '1010439': 'SD337',
   '1010440': 'SD339',
@@ -359,7 +362,7 @@ let lt_method = {
   '2434': 'JSK3a2',
   '2435': 'JSK3a3',
   '2436': 'JSK3a4',
-  '2437': 'RX2ZXFS',
+  '2437': 'RX2ZUXFS',
   '2438': 'JSK3a6',
   '2439': 'JSK3a7',
   '2440': 'JSK3a6i',
@@ -752,7 +755,7 @@ let lt_method = {
   '2474': 'RXZXHZSSC3',
   '2475': 'RXZXHZSSC3',
   '2476': 'RXZXHZSSC3',
-  '2477': 'RX2ZXZXHZ',
+  '2477': 'RX2ZUXHZ',
   '2478': 'RXZXHZSSC3',
   '2479': 'RXZXHZSSC3',
   '2480': 'RXZXHZSSC3',
@@ -1101,6 +1104,7 @@ let lt_method = {
   '3111789': 'RXZXFFC4',
   '3111790': 'RXZXFFC4',
   '3111791': 'RXZXFFC4',
+  '1010301': 'RX4ZXFS',
   //任选四-直选单式
   '3111792': 'RXZXFFC4DS',
   '3111793': 'RXZXFFC4DS',
@@ -1189,15 +1193,22 @@ export const contains = (a, b) => {
 /*------------------------------------------------------------------------------------------------------------*/
 // 生成随机号码方法
 export const random = (methid) => {
+  console.log(methid)
   let random_number = []
   let mname = lt_method[methid]
   let tmp_nums = 1
   switch (mname) {
     // 任选 和值
     case 'RX2ZXHZ':
-    case 'RX2ZXZXHZ':
+    case 'RX2ZUXHZ':
     case 'RX3ZXHZ':
-    case 'RX3ZXZXHZ':
+    case 'RX3ZUXHZ':
+    // 任选 组选 复试
+    case 'RX2ZUXFS':
+    // 任3 组三
+    case 'RX3ZUXZ3':
+    // 任3 组6
+    case 'RX3ZUXZ6':
       random_number = getRXHZRandom(methid)
       break
     case 'SBTHDT':
@@ -1512,6 +1523,15 @@ export const getRXHZRandom = (methodid) => {
   let results = []
   switch (methodid) {
     // 任选2 直选和值
+    case 2437:
+    // 组三
+    case 1010201:
+      results = getNoRepeat(2)
+      break
+    // 组六
+    case 1010211:
+      results = getNoRepeat(3)
+      break
     case 2467:
       results = [[parseInt(Math.random() * 19)]]
       break
@@ -1527,7 +1547,24 @@ export const getRXHZRandom = (methodid) => {
   }
   return results
 }
-
+// 生成不重复随机数
+/*
+*   n 生成的个数
+* */
+export const getNoRepeat = (n) => {
+  let arr = [], numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  for (let i = 0; i < n; i++) {
+    let _index = parseInt(Math.random() * numbers.length)
+    arr.push(numbers[_index])
+    numbers.splice(_index, 1)
+  }
+  arr.sort()
+  let arrs = []
+  for (let i = 0; i < n; i++) {
+    arrs.push([arr[i]])
+  }
+  return arrs
+}
 
 //随机算法1
 export const getSuiji = (length, minchose, string) => {
@@ -1690,7 +1727,6 @@ export const array_unique = (inputArr) => {
 // 投注注数的算法
 // posArr 任选中 所选的位置
 export const checkNum = (methid, data_sel, posArr) => {
-  console.log(methid)
   var mname = lt_method[methid];
   nums = 0
   var max_place = data_sel.length - 1
@@ -1698,6 +1734,7 @@ export const checkNum = (methid, data_sel, posArr) => {
   let i = 0
   let j = 0
   let k = 0
+  console.log(mname)
   switch (mname) {
     // 任选2 直选复式
     case'RX2ZXFS':
@@ -1712,13 +1749,52 @@ export const checkNum = (methid, data_sel, posArr) => {
         }
       }
       break
+    // 任选2 组选复试
+    case'RX2ZUXFS':
+      nums = calRXZXNums(data_sel, posArr, 2, 2, 1)
+      break
+    // 任选3 组3
+    case'RX3ZUXZ3':
+      nums = calRXZXNums(data_sel, posArr, 3, 2, 2)
+      break
+    // 任选3 组6
+    case'RX3ZUXZ':
+      nums = calRXZXNums(data_sel, posArr, 3, 3, 1)
+      break
     // 任选2 直选和值
     case'RX2ZXHZ':
-      nums = calRXHZNums(data_sel, posArr, 2)
+      nums = calRXHZNums2(data_sel, posArr, 2)
       break
-    // 任选2 组选复试
-    case'RX2ZXFS':
-      nums = calRXZXNums(data_sel, posArr, 2)
+    // 任选3 直选和值
+    case'RX3ZXHZ':
+      nums = calRXHZNums3(data_sel, posArr, 3)
+      break
+    // 任选2 组选和值
+    case'RX2ZUXHZ':
+      nums = calRXHZNums2(data_sel, posArr, 2, true)
+      break
+    // 任选3 组选和值
+    case'RX3ZUXHZ':
+      nums = calRXHZNums3(data_sel, posArr, 3, true)
+      break
+    // 任选4 直选复式
+    case'RX4ZXFS':
+      console.log(data_sel)
+      let flag = false
+      nums = 1
+      for (let i = 0; i < data_sel.length; i++) {
+        if (data_sel[i].length) {
+          nums *= data_sel[i].length
+        } else {
+          if (flag) {
+            nums = 0
+            break
+          } else {
+            flag = true
+          }
+        }
+      }
+      nums *= 5
       break
     case 'SD337': //11选5--------------------------------
       nums = 0;
@@ -2859,12 +2935,13 @@ export const checkNum = (methid, data_sel, posArr) => {
   return nums
 }
 // 计算任选和值 注数
-export const calRXHZNums = (data, pos, n) => {
+// flag true组选 false 复选 任2
+export const calRXHZNums2 = (data, pos, n, flag) => {
   let sum = 0
   data.forEach(value => {
     value.forEach(val => {
-      for (let i = 0; i < 10; i++) {
-        for (let j = 0; j < 10; j++) {
+      for (let i = 0; i < (flag ? 9 : 10); i++) {
+        for (let j = (flag ? i + 1 : 0); j < 10; j++) {
           if (i + j == val) {
             sum += 1
             break
@@ -2876,24 +2953,50 @@ export const calRXHZNums = (data, pos, n) => {
       }
     })
   })
-  return sum * (factorial(pos.length) / factorial(pos.length - n) / factorial(n))
+  return sum * (Utils.factorial(pos.length) / Utils.factorial(pos.length - n) / Utils.factorial(n))
+}
+// flag true组选 false 复选 任3
+export const calRXHZNums3 = (data, pos, n, flag) => {
+  let sum = 0, _arr = []
+  data.forEach(value => {
+    value.forEach(val => {
+      for (let i = 0; i < (flag ? 9 : 10); i++) {
+        for (let j = 0; j < 10; j++) {
+          for (let k = (flag ? i + 1 : 0); k < 10; k++) {
+            if (i + j + k == val) {
+              _arr.push([i, j, k].sort().toString())
+              break
+            }
+          }
+          if (j > val) {
+            break
+          }
+        }
+        if (i > val) {
+          break
+        }
+      }
+    })
+  })
+  return Array.from(new Set(_arr)).length * (Utils.factorial(pos.length) / Utils.factorial(pos.length - n) / Utils.factorial(n))
 }
 // 计算任选组选 注数
-export const calRXZXNums = (data, pos, n) => {
-
-}
-// 计算n 的阶乘
-export const factorial = (n) => {
-  if (n == 1 || n == 0) {
-    return 1
+/*
+* @params
+* @pos 当前位置集合
+* @n 最少位置数
+* @m 最少号码数
+* @times 倍数
+* */
+export const calRXZXNums = (data, pos, n, m, times) => {
+  let sum = 0, len = data[0].length
+  if (len < m) {
+    sum = 0
   } else {
-    return n * factorial(n - 1)
+    sum = (Utils.factorial(len) / Utils.factorial(len - m) / Utils.factorial(m)) * (Utils.factorial(pos.length) / Utils.factorial(pos.length - n) / Utils.factorial(n)) * times
   }
+  return sum
 }
-export const selectAll = (obj) => {
-  jQuery(":checkbox[id!='' + obj + '']").attr('checked', jQuery('#' + obj).attr('checked'))
-}
-
 export const Combination = (n, m) => {
   m = parseInt(m)
   n = parseInt(n)
