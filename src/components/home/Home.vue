@@ -321,7 +321,7 @@
             let data = res.data
             // 处理龙虎庄闲数据
             let lhobj = {}, zxobj = {}, rxobj = {}, rxArr = [], _indexArr = []
-            if (navArr[i] == 'ssc' && Array.isArray(data)) {
+            if ((navArr[i] == 'ssc' || navArr[i] == 'txffc') && Array.isArray(data)) {
               data.forEach((value, index) => {
                 if (value.title === '龙虎庄闲') {
                   _indexArr.push(index)
@@ -336,6 +336,7 @@
                       zxobj.label = [val]
                     }
                   })
+                  data = [...data, lhobj, zxobj]
                 }
                 if (value.title === '任选') {
                   rxobj = {...value}
@@ -345,7 +346,6 @@
                   })
                 }
               })
-              data = [...data, lhobj, zxobj]
               _indexArr.forEach((val, index) => {
                 if (index === _indexArr.length - 1 && _indexArr.length > 1) {
                   data.splice(val - 1, 1)

@@ -121,7 +121,7 @@
         </div>
       </div>
       <div v-else-if="codyBall" class="box_main">
-        <div class="select-box" v-if="rxPlayId.indexOf(methodid)>-1">
+        <div class="select-box" v-if="showChecker">
           <Checker type="checkbox" v-model="rxSelect" default-item-class="select-item"
                    selected-item-class="active">
             <CheckerItem v-for="item in rxOptions" :value="item.key" :key="item.key">
@@ -153,7 +153,7 @@
         </div>
       </div>
       <div v-else class="box_main">
-        <div class="select-box" v-if="rxPlayId.indexOf(methodid)>-1">
+        <div class="select-box" v-if="showChecker">
           <Checker type="checkbox" v-model="rxSelect" default-item-class="select-item"
                    selected-item-class="active">
             <CheckerItem v-for="item in rxOptions" :value="item.key" :key="item.key">
@@ -238,7 +238,7 @@
   import buttonView from '../common/button.vue'
   import {PopupPicker, Checker, CheckerItem, CheckIcon} from 'vux'
 
-  import {random, checkNum, uniquelize, uniquelizeNosort} from './merge'
+  import {random, checkNum, uniquelize, uniquelizeNosort, lt_method} from './merge'
 
   export default {
     data() {
@@ -398,15 +398,15 @@
         rxSelect: ['4', '5'],
         rxSelectCopy: ['4', '5'],
         // 任选中 需要展示 位置的玩法id
-        rxPlayId: [2437, 2447, 2457, 2467, 2477, 1010111, 1010121, 1010211, 1010221, 1010231, 1010201, 1010306, 1010401, 1010406, 1010411, 1010416],
+        rxPlayId: ['RX2ZUXFS', 'RX2ZXDS', 'RX2ZUXDS', 'RX2ZXHZ', 'RX2ZUXHZ', 'RX3ZXDS', 'RX3ZXHZ', 'RX3ZUXZ6', 'RX3ZUXHX', 'RX3ZUXHZ', 'RX3ZUXZ3', 'RX4ZXDS', 'SSCRX4ZUX24', 'SSCRX4ZUX12', 'SSCRX4ZUX6', 'SSCRX4ZUX4'],
         // 任选玩法中 和值玩法的id
-        rxSumId: [2467, 2477, 1010121, 1010231],
+        rxSumId: ['RX2ZXHZ', 'RX2ZUXHZ', 'RX3ZXHZ', 'RX3ZUXHZ'],
         // 任选中 组选玩法 id
-        rxZXIds: [2437, 1010201, 1010211, 1010401, 1010411],
+        rxZXIds: ['RX2ZUXFS', 'RX3ZUXZ3', 'RX3ZUXZ6', 'SSCRX4ZUX24', 'SSCRX4ZUX6'],
         // 任选4 组选12 id
-        rx4ZX12Ids: [1010406],
+        rx4ZX12Ids: ['SSCRX4ZUX12'],
         // 任选中 单式玩法 id
-        rxZuDsIds: [2447, 2457, 1010111]
+        rxZuDsIds: ['RX2ZXDS', 'RX2ZUXDS', 'RX3ZXDS']
       }
     },
     components: {
@@ -451,7 +451,7 @@
       rxSelect: {
         deep: true,
         handler: function (newVal, oldVal) {
-          if (this.modelValue[0].indexOf('任二') > -1 && newVal.length < 2) {
+          if (this.modelValue[0].indexOf('任二') > -1 && newVal.length < 2 && this.rxPlayId.indexOf(lt_method[String(this.methodid)]) > -1) {
             this.rxSelect = [...this.rxSelectCopy]
             this.rxSelect.forEach(value => {
               this.rxOptions.forEach(val => {
@@ -466,7 +466,7 @@
               hideOnBlur: true
             })
             return false
-          } else if (this.modelValue[0].indexOf('任三') > -1 && newVal.length < 3) {
+          } else if (this.modelValue[0].indexOf('任三') > -1 && newVal.length < 3 && this.rxPlayId.indexOf(lt_method[String(this.methodid)]) > -1) {
             this.rxSelect = [...this.rxSelectCopy]
             this.rxSelect.forEach(value => {
               this.rxOptions.forEach(val => {
@@ -481,7 +481,7 @@
               hideOnBlur: true
             })
             return false
-          } else if (this.modelValue[0].indexOf('任四') > -1 && newVal.length < 4) {
+          } else if (this.modelValue[0].indexOf('任四') > -1 && newVal.length < 4 && this.rxPlayId.indexOf(lt_method[String(this.methodid)]) > -1) {
             this.rxSelect = [...this.rxSelectCopy]
             this.rxSelect.forEach(value => {
               this.rxOptions.forEach(val => {
@@ -516,6 +516,9 @@
     computed: {
       watchlotteryid() {
         return this.$store.state.lotteryid
+      },
+      showChecker() {
+        return this.rxPlayId.indexOf(lt_method[String(this.methodid)]) > -1
       }
     },
     beforeRouteLeave(to, from, next) {
@@ -968,7 +971,7 @@
           this.codyBall = false  // 庄闲 去除机选功能
         }
         // 重置任选玩法是的默认选中位置
-        let __index = this.rxPlayId.indexOf(this.methodid)
+        let __index = this.rxPlayId.indexOf(lt_method[String(this.methodid)])
         if (__index < 5) {
           this.rxOptions = [
             {key: '1', value: '万位', flag: false},
@@ -1212,7 +1215,7 @@
               this.isButton = false
             }
             // 任选和值
-            if (this.rxSumId.indexOf(this.methodid) > -1) {
+            if (this.rxSumId.indexOf(lt_method[String(this.methodid)]) > -1) {
               sumCode += value.no + (index !== this.layout.length - 1 ? '|' : '')
               if (index > 0) {
                 value.rxShow = true
@@ -1220,7 +1223,7 @@
             }
           })
           // 任选 和值玩法
-          if (this.rxSumId.indexOf(this.methodid) > -1) {
+          if (this.rxSumId.indexOf(lt_method[String(this.methodid)]) > -1) {
             this.layout[0].no = sumCode
             this.method.selectarea.layout = [...this.layout].splice(0, 1)
           }
@@ -1318,14 +1321,14 @@
         let r = random(this.methodid)
         this.model.codes = []
         // 任选组选 复试
-        if (this.rxZXIds.indexOf(this.methodid) > -1) {
+        if (this.rxZXIds.indexOf(lt_method[String(this.methodid)]) > -1) {
           this.model.codes = [[]]
           r.forEach(value => {
             value.forEach(val => {
               this.model.codes[0].push(val)
             })
           })
-        } else if (this.rx4ZX12Ids.indexOf(this.methodid) > -1) {
+        } else if (this.rx4ZX12Ids.indexOf(lt_method[String(this.methodid)]) > -1) {
           this.model.codes = [[], []]
           r.forEach((value, index) => {
             if (index == 0) {
@@ -1520,7 +1523,7 @@
               codes = this.model.codes
               this.model.type = 'lhzx_zx'
             }
-            if (this.rxPlayId.indexOf(this.methodid) > -1) {
+            if (this.rxPlayId.indexOf(lt_method[String(this.methodid)]) > -1) {
               this.model.poschoose = this.rxSelect.toString()
             }
           }
@@ -1764,16 +1767,16 @@
           i++
         }
         // 任选
-        switch (this.methodid) {
-          case 2447:
-          case 2457:
+        switch (lt_method[String(this.methodid)]) {
+          case 'RX2ZXDS':
+          case 'RX2ZUXDS':
             Sid = 2
             break
-          case 1010111:
-          case 1010221:
+          case 'RX3ZXDS':
+          case 'RX3ZUXHX':
             Sid = 3
             break
-          case 1010306:
+          case 'RX4ZXDS':
             Sid = 4
             break
           default:
@@ -1827,7 +1830,7 @@
               }
             })
           }
-        } else if (this.rxZuDsIds.indexOf(this.methodid) > -1) {
+        } else if (this.rxZuDsIds.indexOf(lt_method[String(this.methodid)]) > -1) {
           // 任选组选 单式
           for (let i = 0; i < valueArr.length; i++) {
             // 去除匹配数组项中长度小于或大于Sid的项
@@ -1835,7 +1838,7 @@
             if (Array.from(new Set(valueArr[i].split(''))).length != Sid) continue
             BellArr.push(valueArr[i])
           }
-        } else if (this.methodid == 1010221) {
+        } else if (lt_method[String(this.methodid)] == 'RX3ZUXHX') {
           // 任3 混合组选
           for (let i = 0; i < valueArr.length; i++) {
             // 去除匹配数组项中长度小于或大于Sid的项
@@ -1843,7 +1846,7 @@
             if (Array.from(new Set(valueArr[i].split(''))).length == 1) continue
             BellArr.push(valueArr[i])
           }
-        } else if (this.methodid == 1010306) {
+        } else if (lt_method[String(this.methodid)] == 'RX4ZXDS') {
           // 任4 直选但是
           for (let i = 0; i < valueArr.length; i++) {
             // 去除匹配数组项中长度小于或大于Sid的项
@@ -1867,16 +1870,16 @@
         // 任选单式修改位数 4,5 -> 3,4,5
         let rxTimes = (function () {
           let times = 1
-          switch (this.methodid) {
-            case 2447:// 任2 复选单式
-            case 2457: // 任2 组选单式
+          switch (lt_method[String(this.methodid)]) {
+            case 'RX2ZXDS':// 任2 复选单式
+            case 'RX2ZUXDS': // 任2 组选单式
               times = this.mUtils.factorial(this.rxSelect.length) / this.mUtils.factorial(this.rxSelect.length - 2) / this.mUtils.factorial(2)
               break
-            case 1010111: // 任3 直选单式
-            case 1010221: // 任3 直选单式
+            case 'RX3ZXDS': // 任3 直选单式
+            case 'RX3ZUXHX': // 任3 直选单式
               times = this.mUtils.factorial(this.rxSelect.length) / this.mUtils.factorial(this.rxSelect.length - 3) / this.mUtils.factorial(3)
               break
-            case 1010306: // 任4 直选单式
+            case 'RX4ZXDS': // 任4 直选单式
               times = this.mUtils.factorial(this.rxSelect.length) / this.mUtils.factorial(this.rxSelect.length - 4) / this.mUtils.factorial(4)
               break
             default:
@@ -1887,7 +1890,7 @@
         }.bind(this))();
         // 这里只是单式输入时，展示金额
         this.model.nums = this.BallDan.length * rxTimes
-        if (this.rxPlayId.indexOf(this.methodid) > -1) {
+        if (this.rxPlayId.indexOf(lt_method[String(this.methodid)]) > -1) {
           this.model.poschoose = [...this.rxSelect].sort().toString()
         }
 //        this.model.money = accMul(accMul(accMul(this.BallDan.length, this.model.times), GETMODE(this.model.mode)), 2)
