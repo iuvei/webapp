@@ -1154,7 +1154,12 @@ let lt_method = {
   '3111852': 'SD363',
   '3111853': 'SD365',
   '3111854': 'SD367',
-  '3111855': 'SD369'
+  '3111855': 'SD369',
+  // ssc 任选玩法
+  '1010401': 'SSCRX4ZUX24',
+  '1010406': 'SSCRX4ZUX12',
+  '1010411': 'SSCRX4ZUX6',
+  '1010416': 'SSCRX4ZUX4'
 };
 let nums = 0
 
@@ -1193,7 +1198,6 @@ export const contains = (a, b) => {
 /*------------------------------------------------------------------------------------------------------------*/
 // 生成随机号码方法
 export const random = (methid) => {
-  console.log(methid)
   let random_number = []
   let mname = lt_method[methid]
   let tmp_nums = 1
@@ -1210,6 +1214,16 @@ export const random = (methid) => {
     // 任3 组6
     case 'RX3ZUXZ6':
       random_number = getRXHZRandom(methid)
+      break
+    // 任4 组选24
+    case 'SSCRX4ZUX24':
+      random_number = getNoRepeat(4)
+      break
+    case 'SSCRX4ZUX12':
+      random_number = getNoRepeat(3)
+      break
+    case 'SSCRX4ZUX6':
+      random_number = getNoRepeat(2)
       break
     case 'SBTHDT':
       random_number = getSuiji(10, [1, 2, 0, 0, 0])
@@ -1552,19 +1566,32 @@ export const getRXHZRandom = (methodid) => {
 *   n 生成的个数
 * */
 export const getNoRepeat = (n) => {
-  let arr = [], numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  let arr = [], numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], arrs = []
   for (let i = 0; i < n; i++) {
     let _index = parseInt(Math.random() * numbers.length)
     arr.push(numbers[_index])
     numbers.splice(_index, 1)
   }
   arr.sort()
-  let arrs = []
   for (let i = 0; i < n; i++) {
     arrs.push([arr[i]])
   }
   return arrs
 }
+// export const getNoRepeat12 = (n, m) => {
+//   let arr = [], numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], arrs = []
+//   for (let i = 0; i < n+m; i++) {
+//     let _index = parseInt(Math.random() * numbers.length)
+//     arr.push(numbers[_index])
+//     numbers.splice(_index, 1)
+//   }
+//   arr.sort()
+//   for (let i = 0; i < (n + m); i++) {
+//     arrs.push([arr[i]])
+//   }
+//
+//   return arrs
+// }
 
 //随机算法1
 export const getSuiji = (length, minchose, string) => {
@@ -1734,7 +1761,6 @@ export const checkNum = (methid, data_sel, posArr) => {
   let i = 0
   let j = 0
   let k = 0
-  console.log(mname)
   switch (mname) {
     // 任选2 直选复式
     case'RX2ZXFS':
@@ -1761,6 +1787,22 @@ export const checkNum = (methid, data_sel, posArr) => {
     case'RX3ZUXZ':
       nums = calRXZXNums(data_sel, posArr, 3, 3, 1)
       break
+    // 任选4 组选24
+    case'SSCRX4ZUX24':
+      nums = calRXZXNums(data_sel, posArr, 4, 4, 1)
+      break
+    // 任选4 组选12
+    case'SSCRX4ZUX12':
+      nums = calRXZX12(data_sel, posArr, 2)
+      break
+    // 任选4 组选6
+    case'SSCRX4ZUX6':
+      nums = calRXZXNums(data_sel, posArr, 4, 2, 1)
+      break
+    // 任选4 组选4
+    case'SSCRX4ZUX4':
+      nums = calRXZX12(data_sel, posArr, 1)
+      break
     // 任选2 直选和值
     case'RX2ZXHZ':
       nums = calRXHZNums2(data_sel, posArr, 2)
@@ -1777,24 +1819,30 @@ export const checkNum = (methid, data_sel, posArr) => {
     case'RX3ZUXHZ':
       nums = calRXHZNums3(data_sel, posArr, 3, true)
       break
+
     // 任选4 直选复式
     case'RX4ZXFS':
-      console.log(data_sel)
-      let flag = false
-      nums = 1
+      let flag = false, arr = [1, 1, 1, 1, 1]
+      nums = 0
       for (let i = 0; i < data_sel.length; i++) {
         if (data_sel[i].length) {
-          nums *= data_sel[i].length
+          for (let j = 0; j < 5; j++) {
+            if (i != j) {
+              arr[i] *= data_sel[j].length
+            }
+          }
         } else {
           if (flag) {
-            nums = 0
+            arr = [0, 0, 0, 0, 0]
             break
           } else {
             flag = true
           }
         }
       }
-      nums *= 5
+      arr.forEach(value => {
+        nums += value
+      })
       break
     case 'SD337': //11选5--------------------------------
       nums = 0;
@@ -2996,6 +3044,26 @@ export const calRXZXNums = (data, pos, n, m, times) => {
     sum = (Utils.factorial(len) / Utils.factorial(len - m) / Utils.factorial(m)) * (Utils.factorial(pos.length) / Utils.factorial(pos.length - n) / Utils.factorial(n)) * times
   }
   return sum
+}
+/*
+*
+*  @n 第二个位置最小个数
+* */
+export const calRXZX12 = (data, pos, n) => {
+  let sum = 0
+  data[0].forEach(value => {
+    let arr = [...data[1]]
+    if (arr.indexOf(Number(value)) > -1) {
+      arr.splice(arr.indexOf(value), 1)
+    }
+    if (arr.indexOf(String(value)) > -1) {
+      arr.splice(arr.indexOf(value), 1)
+    }
+    if (arr.length >= n) {
+      sum += Utils.factorial(arr.length) / Utils.factorial(arr.length - n) / Utils.factorial(n)
+    }
+  })
+  return sum * Utils.factorial(pos.length) / Utils.factorial(pos.length - 4) / Utils.factorial(4)
 }
 export const Combination = (n, m) => {
   m = parseInt(m)

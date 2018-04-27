@@ -157,7 +157,8 @@
           <Checker type="checkbox" v-model="rxSelect" default-item-class="select-item"
                    selected-item-class="active">
             <CheckerItem v-for="item in rxOptions" :value="item.key" :key="item.key">
-              <check-icon :value.sync="item.flag" type="plain" class="check-icon">{{item.value}}</check-icon>
+              <check-icon :value.sync="item.flag" type="plain" class="check-icon">{{item.value}}
+              </check-icon>
             </CheckerItem>
           </Checker>
         </div>
@@ -395,14 +396,17 @@
         ],
         // 任选默认选中位置
         rxSelect: ['4', '5'],
+        rxSelectCopy: ['4', '5'],
         // 任选中 需要展示 位置的玩法id
         rxPlayId: [2437, 2447, 2457, 2467, 2477, 1010111, 1010121, 1010211, 1010221, 1010231, 1010201, 1010306, 1010401, 1010406, 1010411, 1010416],
         // 任选玩法中 和值玩法的id
         rxSumId: [2467, 2477, 1010121, 1010231],
         // 任选中 组选玩法 id
-        rxZXIds: [2437, 1010201, 1010211],
+        rxZXIds: [2437, 1010201, 1010211, 1010401, 1010411],
+        // 任选4 组选12 id
+        rx4ZX12Ids: [1010406],
         // 任选中 单式玩法 id
-        rxZuDsIds: [2447, 2457, 1010111, 1010306]
+        rxZuDsIds: [2447, 2457, 1010111]
       }
     },
     components: {
@@ -444,10 +448,60 @@
           this._danshiBall(newVal, oldVal)
         }
       },
-      rxSelect(newVal, oldVal) {
-        this._calBet()
-        if (this.model.type === 'input') {
-          this._danshiBall(this.danshiBall)
+      rxSelect: {
+        deep: true,
+        handler: function (newVal, oldVal) {
+          if (this.modelValue[0].indexOf('任二') > -1 && newVal.length < 2) {
+            this.rxSelect = [...this.rxSelectCopy]
+            this.rxSelect.forEach(value => {
+              this.rxOptions.forEach(val => {
+                if (val.key == value) {
+                  val.flag = true
+                }
+              })
+            })
+            this.$vux.alert.show({
+              title: '温馨提示',
+              content: '最少需要选中两个位置',
+              hideOnBlur: true
+            })
+            return false
+          } else if (this.modelValue[0].indexOf('任三') > -1 && newVal.length < 3) {
+            this.rxSelect = [...this.rxSelectCopy]
+            this.rxSelect.forEach(value => {
+              this.rxOptions.forEach(val => {
+                if (val.key == value) {
+                  val.flag = true
+                }
+              })
+            })
+            this.$vux.alert.show({
+              title: '温馨提示',
+              content: '最少需要选中三个位置',
+              hideOnBlur: true
+            })
+            return false
+          } else if (this.modelValue[0].indexOf('任四') > -1 && newVal.length < 4) {
+            this.rxSelect = [...this.rxSelectCopy]
+            this.rxSelect.forEach(value => {
+              this.rxOptions.forEach(val => {
+                if (val.key == value) {
+                  val.flag = true
+                }
+              })
+            })
+            this.$vux.alert.show({
+              title: '温馨提示',
+              content: '最少需要选中四个位置',
+              hideOnBlur: true
+            })
+            return false
+          }
+          this.rxSelectCopy = [...newVal]
+          this._calBet()
+          if (this.model.type === 'input') {
+            this._danshiBall(this.danshiBall)
+          }
         }
       },
       methodid: {
@@ -923,7 +977,8 @@
             {key: '4', value: '十位', flag: true},
             {key: '5', value: '个位', flag: true},
           ]
-          this.rxSelect = [4, 5]
+          this.rxSelect = ['4', '5']
+          this.rxSelectCopy = ['4', '5']
         } else if (__index < 11) {
           this.rxOptions = [
             {key: '1', value: '万位', flag: false},
@@ -932,7 +987,8 @@
             {key: '4', value: '十位', flag: true},
             {key: '5', value: '个位', flag: true},
           ]
-          this.rxSelect = [3, 4, 5]
+          this.rxSelect = ['3', '4', '5']
+          this.rxSelectCopy = ['3', '4', '5']
         } else {
           this.rxOptions = [
             {key: '1', value: '万位', flag: false},
@@ -941,7 +997,8 @@
             {key: '4', value: '十位', flag: true},
             {key: '5', value: '个位', flag: true},
           ]
-          this.rxSelect = [2, 3, 4, 5]
+          this.rxSelect = ['2', '3', '4', '5']
+          this.rxSelectCopy = ['2', '3', '4', '5']
         }
         // 提交mutation到Store
         this.$store.commit('updateTypeInput', this.typeInput)
@@ -1267,6 +1324,20 @@
             value.forEach(val => {
               this.model.codes[0].push(val)
             })
+          })
+        } else if (this.rx4ZX12Ids.indexOf(this.methodid) > -1) {
+          this.model.codes = [[], []]
+          r.forEach((value, index) => {
+            if (index == 0) {
+              value.forEach(val => {
+                this.model.codes[0].push(val)
+              })
+            } else {
+              value.forEach(val => {
+                this.model.codes[1].push(val)
+              })
+            }
+
           })
         } else {
           for (let i = 0, layout = this.method.selectarea.layout; i < layout.length; i++) {
@@ -1699,9 +1770,12 @@
             Sid = 2
             break
           case 1010111:
-          case 1010306:
           case 1010221:
             Sid = 3
+            break
+          case 1010306:
+            Sid = 4
+            break
           default:
             break
         }
@@ -1769,6 +1843,13 @@
             if (Array.from(new Set(valueArr[i].split(''))).length == 1) continue
             BellArr.push(valueArr[i])
           }
+        } else if (this.methodid == 1010306) {
+          // 任4 直选但是
+          for (let i = 0; i < valueArr.length; i++) {
+            // 去除匹配数组项中长度小于或大于Sid的项
+            if (valueArr[i].length != Sid) continue
+            BellArr.push(valueArr[i])
+          }
         } else {
           valueArr.forEach(function (item, index) {
             // 去除匹配数组项中长度小于或大于Sid的项
@@ -1794,6 +1875,9 @@
             case 1010111: // 任3 直选单式
             case 1010221: // 任3 直选单式
               times = this.mUtils.factorial(this.rxSelect.length) / this.mUtils.factorial(this.rxSelect.length - 3) / this.mUtils.factorial(3)
+              break
+            case 1010306: // 任4 直选单式
+              times = this.mUtils.factorial(this.rxSelect.length) / this.mUtils.factorial(this.rxSelect.length - 4) / this.mUtils.factorial(4)
               break
             default:
               times = 1
