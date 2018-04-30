@@ -2997,7 +2997,7 @@ export const calRXHZNums3 = (data, pos, n, flag) => {
         for (let j = 0; j < 10; j++) {
           for (let k = 0; k < 10; k++) {
             if (i + j + k == val) {
-              if (flag && !(i == j == k)) {
+              if (flag && !(i == j && j == k)) {
                 _arr.push([i, j, k].sort().toString())
               } else {
                 sum += 1
