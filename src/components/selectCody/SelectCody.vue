@@ -1041,7 +1041,6 @@
             for (let j = 0; j < label_1.length; j++) {
               let label_2 = label_1[j].label
               for (let z = 0; z < label_2.length; z++) {
-                console.log(data[i].title, label_2[z].desc, label_2[z].methodid)
                 let ozdChild = {}
                 if (data[i].title === '龙虎') {
                   ozdChild.name = label_2[z].name.slice(0, 2)
