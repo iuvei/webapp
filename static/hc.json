@@ -158,6 +158,17 @@
       "curmid": 614
     },
     {
+      "cnname": "加拿大30秒",
+      "nav": "jnd30s",
+      "lotteryid": 31,
+      "lotteryCurmlotteryid": 313550,
+      "lotteryDesc": "24小时全天开奖",
+      "methodid": 3111895,
+      "lastupdate": 0,
+      "lotterytype": 4,
+      "curmid": 313860
+    },
+    {
       "cnname": "排列3",
       "nav": "ticaip3",
       "lotteryid": 12,
