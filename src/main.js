@@ -42,7 +42,6 @@ const router = new VueRouter({
 })
 
 Vue.config.productionTip = false
-
 Vue.filter('filterRebate', function (value) {
   return (value * 100).toFixed(1) + '%'
 })
@@ -115,7 +114,7 @@ new Vue({
           this.$router.push('/regist')
         } else {
           if (sess > -1) {
-            let appData = require('../static/hc.json')
+            let appData = require('../static/hc_2.0.json')
             this.$store.commit('updateIflink', 1)
 
             let serverList = appData.serverList
