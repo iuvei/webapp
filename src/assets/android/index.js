@@ -22,7 +22,7 @@ export default {
       if (Store.state.ifLink == null) {
         // let httpurl = 'https://dn-outwitinc.qbox.me/hcol/ios_hc_appstore.json?ver='+new Date().getTime()
         // if (process.env.NODE_ENV === 'production') {
-        var httpurl = 'https://dn-outwitinc.qbox.me/hcol/ios_hc_appstore.json?ver=' + new Date().getTime() //上线用
+        var httpurl = 'https://dn-outwitinc.qbox.me/hcol/hc_2.0.json?ver=' + new Date().getTime() //上线用
         // } else {
         var appData = require('../../../static/hc_2.0.json') // 开发用
         // }
@@ -55,7 +55,9 @@ export default {
                   title: '提示',
                   content: '有版本更新了,请立即更新',
                   onHide() {
-                    window.location = updateUrl
+                    plus.runtime.openURL(updateUrl, function () {
+                      alert('更新失败')
+                    })
                   }
                 })
               } else {
@@ -67,7 +69,9 @@ export default {
                   onCancel() {
                   },
                   onConfirm() {
-                    window.location = updateUrl
+                    plus.runtime.openURL(updateUrl, function () {
+                      alert('更新失败')
+                    })
                   }
                 })
               }
