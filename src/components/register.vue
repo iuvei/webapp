@@ -25,7 +25,7 @@
         <router-link to="/login" class="log-btn">已有账号？立即登录</router-link>
       </div>
     </div>
-    <p class="copyright">Copyright &copy; 2014 - 2017 恒彩娱乐版权所有
+    <p class="copyright">Copyright &copy; 2014 - 2017 恒彩彩票版权所有
       菲律宾政府合法博彩牌照</p>
   </div>
 </template>
