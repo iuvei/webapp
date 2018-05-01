@@ -8,7 +8,7 @@ export default {
     Vue.prototype.playSource = ''
     // 方法
     Vue.prototype.httpUrl = (val) => {
-      let app = require('../../../static/hc.json')
+      let app = require('../../../static/hc_2.0.json')
       let appData = app
       let serverList = appData.serverList
       let j = Math.floor(Math.random() * serverList.length)
@@ -37,7 +37,7 @@ export default {
     }
     Vue.prototype._getUpdate = () => {
       if (Store.state.ifLink == null) {
-        let appData = require('../../../static/hc.json')
+        let appData = require('../../../static/hc_2.0.json')
         Store.commit('updateIflink', 1)
         let available = appData.app_ver.available
         Store.commit('updateAvailable', available)

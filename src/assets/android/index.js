@@ -24,13 +24,13 @@ export default {
         // if (process.env.NODE_ENV === 'production') {
         var httpurl = 'https://dn-outwitinc.qbox.me/hcol/hc_2.0.json?ver=' + new Date().getTime() //上线用
         // } else {
-        var appData = require('../../../static/hc.json') // 开发用
+        var appData = require('../../../static/hc_2.0.json') // 开发用
         // }
         Vue.prototype.httpAction(httpurl, (res) => {
           Store.commit('updateIflink', 1)
-          if (process.env.NODE_ENV === 'production') {
-            appData = res.data //上线用
-          }
+          // if (process.env.NODE_ENV === 'production') {
+          //   appData = res.data //上线用
+          // }
           Store.commit('updateAvailable', appData.app_ver.available)
           let iosStore = appData.app_ver.iosStore
           Store.commit('updateIosStore', iosStore)

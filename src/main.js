@@ -115,7 +115,7 @@ new Vue({
           this.$router.push('/regist')
         } else {
           if (sess > -1) {
-            let appData = require('../static/hc.json')
+            let appData = require('../static/hc_2.0.json')
             this.$store.commit('updateIflink', 1)
 
             let serverList = appData.serverList
