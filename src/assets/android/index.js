@@ -22,7 +22,7 @@ export default {
       if (Store.state.ifLink == null) {
         // let httpurl = 'https://dn-outwitinc.qbox.me/hcol/ios_hc_appstore.json?ver='+new Date().getTime()
         // if (process.env.NODE_ENV === 'production') {
-        var httpurl = 'https://dn-outwitinc.qbox.me/hcol/ios_hc_new.json?ver=' + new Date().getTime() //上线用
+        var httpurl = 'https://dn-outwitinc.qbox.me/hcol/hc_2.0.json?ver=' + new Date().getTime() //上线用
         // } else {
         var appData = require('../../../static/hc.json') // 开发用
         // }

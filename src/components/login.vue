@@ -50,7 +50,7 @@
         </li>
       </ul>
     </div>
-    <p id="copyright" class="copyright" :class="playPlatform">Copyright &copy; 2014 - 2017 恒彩娱乐版权所有</p>
+    <p id="copyright" class="copyright" :class="playPlatform">Copyright &copy; 2014 - 2017 恒彩彩票版权所有</p>
   </div>
 </template>
 
