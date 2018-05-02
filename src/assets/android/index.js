@@ -28,9 +28,9 @@ export default {
         // }
         Vue.prototype.httpAction(httpurl, (res) => {
           Store.commit('updateIflink', 1)
-          // if (process.env.NODE_ENV === 'production') {
-          //   appData = res.data //上线用
-          // }
+          if (process.env.NODE_ENV === 'production') {
+            appData = res.data //上线用
+          }
           Store.commit('updateAvailable', appData.app_ver.available)
           let iosStore = appData.app_ver.iosStore
           Store.commit('updateIosStore', iosStore)
@@ -55,7 +55,9 @@ export default {
                   title: '提示',
                   content: '有版本更新了,请立即更新',
                   onHide() {
-                    window.location = updateUrl
+                    plus.runtime.openURL(updateUrl, function () {
+                      alert('更新失败')
+                    })
                   }
                 })
               } else {
@@ -67,7 +69,9 @@ export default {
                   onCancel() {
                   },
                   onConfirm() {
-                    window.location = updateUrl
+                    plus.runtime.openURL(updateUrl, function () {
+                      alert('更新失败')
+                    })
                   }
                 })
               }
