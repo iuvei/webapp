@@ -1,4 +1,6 @@
-﻿export const uniquelizeNosort = (arr) => { // 去重复不排序
+﻿import Utils from '../../assets/js/mUtils'
+
+export const uniquelizeNosort = (arr) => { // 去重复不排序
   let re = [arr[0]]
   for (let i = 1; i < arr.length; i++) {
     if (arr[i] !== re[re.length - 1]) {
@@ -9,7 +11,7 @@
 }
 
 //玩法ID对应的生成随机的算法
-let lt_method = {
+export const lt_method = {
   '2': 'ZX3',  //前三直选
   '3': 'ZXHZ', //前三直选_和值
   '5': 'ZX3',
@@ -273,7 +275,6 @@ let lt_method = {
   '2310': 'BJRX7',
   '2314': 'BDW2',
   //任选二
-  '1010101': 'RXZXSSC2',//任选二直选复式-万千
   '1010102': 'RXZXSSC2',//任选二直选复式-万百
   '1010103': 'RXZXSSC2',//任选二直选复式-万十
   '1010104': 'RXZXSSC2',//任选二直选复式-万个
@@ -283,7 +284,6 @@ let lt_method = {
   '1010108': 'RXZXSSC2',//任选二直选复式-百十
   '1010109': 'RXZXSSC2',//任选二直选复式-百个
   '1010110': 'RXZXSSC2',//任选二直选复式-十个
-  '1010121': 'RXZXSSC2HZ',  //任选二直选和值-十个
   '1010122': 'RXZXSSC2HZ',  //任选二直选和值-百个
   '1010123': 'RXZXSSC2HZ',  //任选二直选和值-百十
   '1010124': 'RXZXSSC2HZ',  //任选二直选和值-千个
@@ -293,7 +293,6 @@ let lt_method = {
   '1010128': 'RXZXSSC2HZ',  //任选二直选和值-万十
   '1010129': 'RXZXSSC2HZ',  //任选二直选和值-万百
   '1010130': 'RXZXSSC2HZ',  //任选二直选和值-万千
-  '1010201': 'RXZUSSC2',//任选二组选复式-万千
   '1010202': 'RXZUSSC2',//任选二组选复式-万百
   '1010203': 'RXZUSSC2',//任选二组选复式-万十
   '1010204': 'RXZUSSC2',//任选二组选复式-千个
@@ -303,7 +302,6 @@ let lt_method = {
   '1010208': 'RXZUSSC2',//任选二组选复式-百十
   '1010209': 'RXZUSSC2',//任选二组选复式-百个
   '1010210': 'RXZUSSC2',//任选二组选复式-十个
-  '1010221': 'RXZUSSC2HZ',  //任选二组选和值-十个
   '1010222': 'RXZUSSC2HZ',  //任选二组选和值-百个
   '1010223': 'RXZUSSC2HZ',  //任选二组选和值-百十
   '1010224': 'RXZUSSC2HZ',  //任选二组选和值-千个
@@ -358,7 +356,6 @@ let lt_method = {
   '2434': 'JSK3a2',
   '2435': 'JSK3a3',
   '2436': 'JSK3a4',
-  '2437': 'JSK3a5',
   '2438': 'JSK3a6',
   '2439': 'JSK3a7',
   '2440': 'JSK3a6i',
@@ -665,7 +662,6 @@ let lt_method = {
   '2422': 'ZUL',
   '2424': 'ZUHZ',
   '2425': 'SXZU4',
-  '2427': 'ZX5',
   '2429': 'ZH5',
 
   '2379': 'HHZX',
@@ -673,33 +669,73 @@ let lt_method = {
   '2423': 'HHZX',
   '190403': 'HHZX',
   '190303': 'HHZX',
-  '191903': 'HHZX',
   '191501': 'ZH5',
+  '3111933': 'ZH5',
+
   '190101': 'ZX3',
   '190102': 'ZXHZ',
   '190301': 'ZUS',
   '190302': 'ZUL',
   '190304': 'ZUHZ',
+
+  '3111893': 'ZX3',
+  '3111894': 'ZXHZ',
+  '3111897': 'ZUS',
+  '3111898': 'ZUL',
+  '3111900': 'ZUHZ',
+
   '190201': 'ZX3',
   '190202': 'ZXHZ',
   '190401': 'ZUS',
   '190402': 'ZUL',
   '190404': 'ZUHZ',
+
+  '3111895': 'ZX3',
+  '3111896': 'ZXHZ',
+  '3111902': 'ZUS',
+  '3111903': 'ZUL',
+  '3111905': 'ZUHZ',
+
   '190501': 'BDW1',
   '190601': 'BDW2',
   '190502': 'BDW1',
   '190602': 'BDW2',
+
+  '3111907': 'BDW1',
+  '3111909': 'BDW2',
+  '3111908': 'BDW1',
+  '3111910': 'BDW2',
+
+
   '190701': 'ZX2',
   '190702': 'ZX2',
   '190703': 'ZXHZ2',
   '190704': 'ZXHZ2',
+
+
+  '3111912': 'ZX2',
+  '3111911': 'ZX2',
+  '3111914': 'ZXHZ2',
+  '3111913': 'ZXHZ2',
+
   '190801': 'ZU2',
   '190802': 'ZU2',
   '190803': 'ZUHZ2',
   '190804': 'ZUHZ2',
+
+  '3111916': 'ZU2',
+  '3111915': 'ZU2',
+  '3111918': 'ZUHZ2',
+  '3111917': 'ZUHZ2',
+
   '190901': 'DWD',
+  '3111919': 'DWD',
   '191001': 'DXDS',
   '191002': 'DXDS',
+
+  '3111925': 'DXDS',
+  '3111924': 'DXDS',
+
   '191101': 'ZX4',
   '191201': 'ZH4',
   '191301': 'SXZU24',
@@ -707,6 +743,12 @@ let lt_method = {
   '191303': 'SXZU6',
   '191304': 'SXZU4',
 
+  '3111926': 'ZX4',
+  '3111927': 'ZH4',
+  '3111928': 'SXZU24',
+  '3111929': 'SXZU12',
+  '3111930': 'SXZU6',
+  '3111931': 'SXZU4',
 
   '191601': 'WXZU120',
   '191602': 'WXZU60',
@@ -714,24 +756,40 @@ let lt_method = {
   '191604': 'WXZU20',
   '191605': 'WXZU10',
   '191606': 'WXZU5',
+  '3111934': 'WXZU120',
+  '3111935': 'WXZU60',
+  '3111936': 'WXZU30',
+  '3111937': 'WXZU20',
+  '3111938': 'WXZU10',
+  '3111939': 'WXZU5',
 
   '191701': 'BDW1',
   '191702': 'HSCS',
   '191703': 'SXBX',
   '191704': 'SJFC',
 
+  '3111940': 'BDW1',
+  '3111941': 'HSCS',
+  '3111942': 'SXBX',
+  '3111943': 'SJFC',
+
   '191801': 'ZX3',
   '191802': 'ZXHZ',
+
   '191901': 'ZUS',
   '191902': 'ZUL',
   '191903': 'HHZX',
   '191904': 'ZUHZ',
+  '3111946': 'ZUS',
+  '3111947': 'ZUL',
+  '3111948': 'HHZX',
+  '3111949': 'ZUHZ',
+
   '2452': 'RXZXSSC3',
   '2453': 'RXZXSSC3',
   '2454': 'RXZXSSC3',
   '2455': 'RXZXSSC3',
   '2456': 'RXZXSSC3',
-  '2457': 'RXZXSSC3',
   '2458': 'RXZXSSC3',
   '2459': 'RXZXSSC3',
   '2460': 'RXZXSSC3',
@@ -741,7 +799,6 @@ let lt_method = {
   '2464': 'RXZXDSSSC3',
   '2465': 'RXZXDSSSC3',
   '2466': 'RXZXDSSSC3',
-  '2467': 'RXZXDSSSC3',
   '2468': 'RXZXDSSSC3',
   '2469': 'RXZXDSSSC3',
   '2470': 'RXZXDSSSC3',
@@ -751,7 +808,6 @@ let lt_method = {
   '2474': 'RXZXHZSSC3',
   '2475': 'RXZXHZSSC3',
   '2476': 'RXZXHZSSC3',
-  '2477': 'RXZXHZSSC3',
   '2478': 'RXZXHZSSC3',
   '2479': 'RXZXHZSSC3',
   '2480': 'RXZXHZSSC3',
@@ -952,7 +1008,6 @@ let lt_method = {
   '3111630': 'HHZX',
   '3111631': 'ZUHZ',
   //任选二-直选复式
-  '3111632': 'RXZXFFC2',
   '3111633': 'RXZXFFC2',
   '3111634': 'RXZXFFC2',
   '3111635': 'RXZXFFC2',
@@ -963,7 +1018,6 @@ let lt_method = {
   '3111640': 'RXZXFFC2',
   '3111641': 'RXZXFFC2',
   //任选二-直选单式
-  '3111642': 'RXZXFFC2DS',
   '3111643': 'RXZXFFC2DS',
   '3111644': 'RXZXFFC2DS',
   '3111645': 'RXZXFFC2DS',
@@ -974,7 +1028,6 @@ let lt_method = {
   '3111650': 'RXZXFFC2DS',
   '3111651': 'RXZXFFC2DS',
   //任选二-直选和值
-  '3111652': 'RXZXFFC2HZ',
   '3111653': 'RXZXFFC2HZ',
   '3111654': 'RXZXFFC2HZ',
   '3111655': 'RXZXFFC2HZ',
@@ -985,7 +1038,6 @@ let lt_method = {
   '3111660': 'RXZXFFC2HZ',
   '3111661': 'RXZXFFC2HZ',
   //任选二-组选复式
-  '3111662': 'RXZUFFC2',
   '3111663': 'RXZUFFC2',
   '3111664': 'RXZUFFC2',
   '3111665': 'RXZUFFC2',
@@ -996,7 +1048,6 @@ let lt_method = {
   '3111670': 'RXZUFFC2',
   '3111671': 'RXZUFFC2',
   //任选二-组选单式
-  '3111672': 'RXZUFFC2DS',
   '3111673': 'RXZUFFC2DS',
   '3111674': 'RXZUFFC2DS',
   '3111675': 'RXZUFFC2DS',
@@ -1007,7 +1058,6 @@ let lt_method = {
   '3111680': 'RXZUFFC2DS',
   '3111681': 'RXZUFFC2DS',
   //任选二-组选和值
-  '3111682': 'RXZUFFC2HZ',
   '3111683': 'RXZUFFC2HZ',
   '3111684': 'RXZUFFC2HZ',
   '3111685': 'RXZUFFC2HZ',
@@ -1018,7 +1068,6 @@ let lt_method = {
   '3111690': 'RXZUFFC2HZ',
   '3111691': 'RXZUFFC2HZ',
   //任选三-直选复式
-  '3111693': 'RXZXFFC3',
   '3111694': 'RXZXFFC3',
   '3111695': 'RXZXFFC3',
   '3111696': 'RXZXFFC3',
@@ -1029,7 +1078,6 @@ let lt_method = {
   '3111701': 'RXZXFFC3',
   '3111702': 'RXZXFFC3',
   //任选三-直选单式
-  '3111703': 'RXZXFFC3DS',
   '3111704': 'RXZXFFC3DS',
   '3111705': 'RXZXFFC3DS',
   '3111706': 'RXZXFFC3DS',
@@ -1040,7 +1088,6 @@ let lt_method = {
   '3111711': 'RXZXFFC3DS',
   '3111712': 'RXZXFFC3DS',
   //任选三-直选和值
-  '3111713': 'RXZXFFC3HZ',
   '3111714': 'RXZXFFC3HZ',
   '3111715': 'RXZXFFC3HZ',
   '3111716': 'RXZXFFC3HZ',
@@ -1051,7 +1098,6 @@ let lt_method = {
   '3111721': 'RXZXFFC3HZ',
   '3111722': 'RXZXFFC3HZ',
   //任选三-组选组三
-  '3111724': 'RXZUSANFFC3',
   '3111725': 'RXZUSANFFC3',
   '3111726': 'RXZUSANFFC3',
   '3111727': 'RXZUSANFFC3',
@@ -1062,7 +1108,6 @@ let lt_method = {
   '3111732': 'RXZUSANFFC3',
   '3111733': 'RXZUSANFFC3',
   //任选三-组选组六
-  '3111734': 'RXZUSIXFFC3',
   '3111735': 'RXZUSIXFFC3',
   '3111736': 'RXZUSIXFFC3',
   '3111737': 'RXZUSIXFFC3',
@@ -1073,7 +1118,6 @@ let lt_method = {
   '3111742': 'RXZUSIXFFC3',
   '3111743': 'RXZUSIXFFC3',
   //任选三-混合组选
-  '3111744': 'RXZUFFC3HH',
   '3111745': 'RXZUFFC3HH',
   '3111746': 'RXZUFFC3HH',
   '3111747': 'RXZUFFC3HH',
@@ -1084,7 +1128,6 @@ let lt_method = {
   '3111752': 'RXZUFFC3HH',
   '3111753': 'RXZUFFC3HH',
   //任选三-组选和值
-  '3111754': 'RXZUFFC3HZ',
   '3111755': 'RXZUFFC3HZ',
   '3111756': 'RXZUFFC3HZ',
   '3111757': 'RXZUFFC3HZ',
@@ -1095,37 +1138,31 @@ let lt_method = {
   '3111762': 'RXZUFFC3HZ',
   '3111763': 'RXZUFFC3HZ',
   //任选四-直选复式
-  '3111787': 'RXZXFFC4',
   '3111788': 'RXZXFFC4',
   '3111789': 'RXZXFFC4',
   '3111790': 'RXZXFFC4',
   '3111791': 'RXZXFFC4',
   //任选四-直选单式
-  '3111792': 'RXZXFFC4DS',
   '3111793': 'RXZXFFC4DS',
   '3111794': 'RXZXFFC4DS',
   '3111795': 'RXZXFFC4DS',
   '3111796': 'RXZXFFC4DS',
   //任选四-组选24
-  '3111802': 'RXZU24FFC4',
   '3111803': 'RXZU24FFC4',
   '3111804': 'RXZU24FFC4',
   '3111805': 'RXZU24FFC4',
   '3111806': 'RXZU24FFC4',
   //任选四-组选12
   '3111807': 'RXZU12FFC4',
-  '3111808': 'RXZU12FFC4',
   '3111809': 'RXZU12FFC4',
   '3111810': 'RXZU12FFC4',
   '3111811': 'RXZU12FFC4',
   //任选四-组选6
-  '3111812': 'RXZU6FFC4',
   '3111813': 'RXZU6FFC4',
   '3111814': 'RXZU6FFC4',
   '3111815': 'RXZU6FFC4',
   '3111816': 'RXZU6FFC4',
   //任选四-组选4
-  '3111817': 'RXZU4FFC4',
   '3111818': 'RXZU4FFC4',
   '3111819': 'RXZU4FFC4',
   '3111820': 'RXZU4FFC4',
@@ -1149,7 +1186,68 @@ let lt_method = {
   '3111852': 'SD363',
   '3111853': 'SD365',
   '3111854': 'SD367',
-  '3111855': 'SD369'
+  '3111855': 'SD369',
+  // ssc  任选玩法
+  '2427': 'RX2ZXFS', // 任2 直选 复式
+  '2447': 'RX2ZXDS',// 任2 直选 单式
+  '2467': 'RX2ZXHZ',// 任2 直选 和值
+  '2437': 'RX2ZUXFS',// 任2 组选 复式
+  '2457': 'RX2ZUXDS',// 任2 组选 单式
+  '2477': 'RX2ZUXHZ',// 任2 组选 和值
+  '1010101': 'RX3ZXFS',//任3 直选 复式
+  '1010111': 'RX3ZXDS',//任3 直选 单式
+  '1010121': 'RX3ZXHZ',  //任3 直选 和值
+  '1010201': 'RX3ZUXZ3',//任3 组选 组三
+  '1010211': 'RX3ZUXZ6',//任3 组选 组六
+  '1010221': 'RX3ZUXHX',//任3 组选 混选
+  '1010231': 'RX3ZUXHZ',  //任3 组选 和值
+  '1010301': 'RX4ZXFS', // 任4 直选 复式
+  '1010306': 'RX4ZXDS',// 任4 直选 单式
+  '1010401': 'SSCRX4ZUX24', // 任4 组选 24
+  '1010406': 'SSCRX4ZUX12',// 任4 组选 12
+  '1010411': 'SSCRX4ZUX6',// 任4 组选 6
+  '1010416': 'SSCRX4ZUX4',// 任4 组选 4
+  // jnd30s  任选玩法
+  '3111950': 'RX2ZXFS', // 任2 直选 复式
+  '3111960': 'RX2ZXDS',// 任2 直选 单式
+  '3111970': 'RX2ZXHZ',// 任2 直选 和值
+  '3111980': 'RX2ZUXFS',// 任2 组选 复式
+  '3111990': 'RX2ZUXDS',// 任2 组选 单式
+  '3112000': 'RX2ZUXHZ',// 任2 组选 和值
+  '3112010': 'RX3ZXFS',//任3 直选 复式
+  '3112020': 'RX3ZXDS',//任3 直选 单式
+  '3112030': 'RX3ZXHZ',  //任3 直选 和值
+  '3112041': 'RX3ZUXZ3',//任3 组选 组三
+  '3112051': 'RX3ZUXZ6',//任3 组选 组六
+  '3112061': 'RX3ZUXHX',//任3 组选 混选
+  '3112071': 'RX3ZUXHZ',  //任3 组选 和值
+  '3112094': 'RX4ZXFS', // 任4 直选 复式
+  '3112099': 'RX4ZXDS',// 任4 直选 单式
+  '3112109': 'SSCRX4ZUX24', // 任4 组选 24
+  '3112115': 'SSCRX4ZUX12',// 任4 组选 12
+  '3112119': 'SSCRX4ZUX6',// 任4 组选 6
+  '3112124': 'SSCRX4ZUX4',// 任4 组选 4
+
+  // ffc 任选玩法
+  '3110101': 'RX2ZXFS', // 任2 直选 复式
+  '3110111': 'RX2ZXDS',// 任2 直选 单式
+  '3110121': 'RX2ZXHZ',// 任2 直选 和值
+  '3110201': 'RX2ZUXFS',// 任2 组选 复式
+  '3110211': 'RX2ZUXDS',// 任2 组选 单式
+  '3110221': 'RX2ZUXHZ',// 任2 组选 和值
+  '3110301': 'RX3ZXFS',//任3 直选 复式
+  '3110311': 'RX3ZXDS',//任3 直选 单式
+  '3110321': 'RX3ZXHZ',  //任3 直选 和值
+  '3110401': 'RX3ZUXZ3',//任3 组选 组三
+  '3110411': 'RX3ZUXZ6',//任3 组选 组六
+  '3110421': 'RX3ZUXHX',//任3 组选 混选
+  '3110431': 'RX3ZUXHZ',  //任3 组选 和值
+  '3110501': 'RX4ZXFS', // 任4 直选 复式
+  '3110506': 'RX4ZXDS',// 任4 直选 单式
+  '3110601': 'SSCRX4ZUX24', // 任4 组选 24
+  '3110606': 'SSCRX4ZUX12',// 任4 组选 12
+  '3110611': 'SSCRX4ZUX6',// 任4 组选 6
+  '3110616': 'SSCRX4ZUX4'// 任4 组选 4
 };
 let nums = 0
 
@@ -1192,6 +1290,39 @@ export const random = (methid) => {
   let mname = lt_method[methid]
   let tmp_nums = 1
   switch (mname) {
+    // 任选 和值
+    case 'RX2ZXHZ':
+      random_number = [[parseInt(Math.random() * 19)]]
+      break
+    case 'RX2ZUXHZ':
+      random_number = [[parseInt((Math.random() * 17) + 1)]]
+      break
+    case 'RX3ZXHZ':
+      random_number = [[parseInt(Math.random() * 28)]]
+      break
+    case 'RX3ZUXHZ':
+      random_number = [[parseInt((Math.random() * 26) + 1)]]
+      break
+    // 任选 组选 复试
+    case 'RX2ZUXFS':
+    // 任3 组三
+    case 'RX3ZUXZ3':
+      random_number = getNoRepeat(2)
+      break
+    // 任3 组6
+    case 'RX3ZUXZ6':
+      random_number = getNoRepeat(3)
+      break
+    // 任4 组选24
+    case 'SSCRX4ZUX24':
+      random_number = getNoRepeat(4)
+      break
+    case 'SSCRX4ZUX12':
+      random_number = getNoRepeat(3)
+      break
+    case 'SSCRX4ZUX6':
+      random_number = getNoRepeat(2)
+      break
     case 'SBTHDT':
       random_number = getSuiji(10, [1, 2, 0, 0, 0])
       break;
@@ -1499,6 +1630,38 @@ export const random = (methid) => {
   }
   return random_number;
 };
+// 生成不重复随机数
+/*
+*   n 生成的个数
+* */
+export const getNoRepeat = (n) => {
+  let arr = [], numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], arrs = []
+  for (let i = 0; i < n; i++) {
+    let _index = parseInt(Math.random() * numbers.length)
+    arr.push(numbers[_index])
+    numbers.splice(_index, 1)
+  }
+  arr.sort()
+  for (let i = 0; i < n; i++) {
+    arrs.push([arr[i]])
+  }
+  return arrs
+}
+// export const getNoRepeat12 = (n, m) => {
+//   let arr = [], numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], arrs = []
+//   for (let i = 0; i < n+m; i++) {
+//     let _index = parseInt(Math.random() * numbers.length)
+//     arr.push(numbers[_index])
+//     numbers.splice(_index, 1)
+//   }
+//   arr.sort()
+//   for (let i = 0; i < (n + m); i++) {
+//     arrs.push([arr[i]])
+//   }
+//
+//   return arrs
+// }
+
 //随机算法1
 export const getSuiji = (length, minchose, string) => {
   var size = 0; //表示随机生成几个数字
@@ -1658,7 +1821,8 @@ export const array_unique = (inputArr) => {
   return tmp_arr2;
 }
 // 投注注数的算法
-export const checkNum = (methid, data_sel) => {
+// posArr 任选中 所选的位置
+export const checkNum = (methid, data_sel, posArr) => {
   var mname = lt_method[methid];
   nums = 0
   var max_place = data_sel.length - 1
@@ -1667,6 +1831,102 @@ export const checkNum = (methid, data_sel) => {
   let j = 0
   let k = 0
   switch (mname) {
+    // 任选2 直选复式
+    case'RX2ZXFS':
+      nums = 0
+      for (let i = 0; i < 5; i++) {
+        if (data_sel[i].length) {
+          for (let j = i + 1; j < 5; j++) {
+            if (data_sel[j].length) {
+              nums += data_sel[i].length * data_sel[j].length
+            }
+          }
+        }
+      }
+      break
+    // 任选3 直选复式
+    case'RX3ZXFS':
+      nums = 0
+      for (let i = 0; i < 5; i++) {
+        if (data_sel[i].length) {
+          for (let j = i + 1; j < 5; j++) {
+            if (data_sel[j].length) {
+              for (let k = j + 1; k < 5; k++) {
+                if (data_sel[k].length) {
+                  nums += data_sel[i].length * data_sel[j].length * data_sel[k].length
+                }
+              }
+            }
+          }
+        }
+      }
+      break
+    // 任选2 组选复试
+    case'RX2ZUXFS':
+      nums = calRXZXNums(data_sel, posArr, 2, 2, 1)
+      break
+    // 任选3 组3
+    case'RX3ZUXZ3':
+      nums = calRXZXNums(data_sel, posArr, 3, 2, 2)
+      break
+    // 任选3 组6
+    case'RX3ZUXZ6':
+      nums = calRXZXNums(data_sel, posArr, 3, 3, 1)
+      break
+    // 任选4 组选24
+    case'SSCRX4ZUX24':
+      nums = calRXZXNums(data_sel, posArr, 4, 4, 1)
+      break
+    // 任选4 组选12
+    case'SSCRX4ZUX12':
+      nums = calRXZX12(data_sel, posArr, 2)
+      break
+    // 任选4 组选6
+    case'SSCRX4ZUX6':
+      nums = calRXZXNums(data_sel, posArr, 4, 2, 1)
+      break
+    // 任选4 组选4
+    case'SSCRX4ZUX4':
+      nums = calRXZX12(data_sel, posArr, 1)
+      break
+    // 任选2 直选和值
+    case'RX2ZXHZ':
+      nums = calRXHZNums2(data_sel, posArr, 2)
+      break
+    // 任选3 直选和值
+    case'RX3ZXHZ':
+      nums = calRXHZNums3(data_sel, posArr, 3)
+      break
+    // 任选2 组选和值
+    case'RX2ZUXHZ':
+      nums = calRXHZNums2(data_sel, posArr, 2, true)
+      break
+    // 任选3 组选和值
+    case'RX3ZUXHZ':
+      nums = calRXHZNums3(data_sel, posArr, 3, true)
+      break
+
+    // 任选4 直选复式
+    case'RX4ZXFS':
+      nums = 0
+      for (let i = 0; i < 5; i++) {
+        if (data_sel[i].length) {
+          for (let j = i + 1; j < 5; j++) {
+            if (data_sel[j].length) {
+              for (let k = j + 1; k < 5; k++) {
+                if (data_sel[k].length) {
+                  for (let m = k + 1; m < 5; m++) {
+                    if (data_sel[m].length) {
+                      nums += data_sel[i].length * data_sel[j].length * data_sel[k].length * data_sel[m].length
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      break
     case 'SD337': //11选5--------------------------------
       nums = 0;
       if (data_sel[0].length > 0 && data_sel[1].length > 0 && data_sel[2].length > 0) {
@@ -2805,11 +3065,97 @@ export const checkNum = (methid, data_sel) => {
   }
   return nums
 }
-
-export const selectAll = (obj) => {
-  jQuery(":checkbox[id!='' + obj + '']").attr('checked', jQuery('#' + obj).attr('checked'))
+// 计算任选和值 注数
+// flag true组选 false 复选 任2
+export const calRXHZNums2 = (data, pos, n, flag) => {
+  let sum = 0
+  data.forEach(value => {
+    value.forEach(val => {
+      for (let i = 0; i < (flag ? 9 : 10); i++) {
+        for (let j = (flag ? i + 1 : 0); j < 10; j++) {
+          if (i + j == val) {
+            sum += 1
+            break
+          }
+        }
+        if (i > val) {
+          break
+        }
+      }
+    })
+  })
+  return sum * (Utils.factorial(pos.length) / Utils.factorial(pos.length - n) / Utils.factorial(n))
 }
-
+// flag true组选 false 复选 任3
+export const calRXHZNums3 = (data, pos, n, flag) => {
+  let sum = 0, _arr = [], _r = 0
+  data.forEach(value => {
+    value.forEach(val => {
+      for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 10; j++) {
+          for (let k = 0; k < 10; k++) {
+            if (i + j + k == val) {
+              if (flag && !(i == j && j == k)) {
+                _arr.push([i, j, k].sort().toString())
+              } else {
+                sum += 1
+              }
+              break
+            }
+          }
+          if (j > val) {
+            break
+          }
+        }
+        if (i > val) {
+          break
+        }
+      }
+    })
+  })
+  if (flag) {
+    return Array.from(new Set(_arr)).length * (Utils.factorial(pos.length) / Utils.factorial(pos.length - n) / Utils.factorial(n))
+  } else {
+    return sum * (Utils.factorial(pos.length) / Utils.factorial(pos.length - n) / Utils.factorial(n))
+  }
+}
+// 计算任选组选 注数
+/*
+* @params
+* @pos 当前位置集合
+* @n 最少位置数
+* @m 最少号码数
+* @times 倍数
+* */
+export const calRXZXNums = (data, pos, n, m, times) => {
+  let sum = 0, len = data[0].length
+  if (len < m) {
+    sum = 0
+  } else {
+    sum = (Utils.factorial(len) / Utils.factorial(len - m) / Utils.factorial(m)) * (Utils.factorial(pos.length) / Utils.factorial(pos.length - n) / Utils.factorial(n)) * times
+  }
+  return sum
+}
+/*
+*
+*  @n 第二个位置最小个数
+* */
+export const calRXZX12 = (data, pos, n) => {
+  let sum = 0
+  data[0].forEach(value => {
+    let arr = [...data[1]]
+    if (arr.indexOf(Number(value)) > -1) {
+      arr.splice(arr.indexOf(value), 1)
+    }
+    if (arr.indexOf(String(value)) > -1) {
+      arr.splice(arr.indexOf(value), 1)
+    }
+    if (arr.length >= n) {
+      sum += Utils.factorial(arr.length) / Utils.factorial(arr.length - n) / Utils.factorial(n)
+    }
+  })
+  return sum * Utils.factorial(pos.length) / Utils.factorial(pos.length - 4) / Utils.factorial(4)
+}
 export const Combination = (n, m) => {
   m = parseInt(m)
   n = parseInt(n)

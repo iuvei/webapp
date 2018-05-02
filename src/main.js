@@ -42,7 +42,6 @@ const router = new VueRouter({
 })
 
 Vue.config.productionTip = false
-
 Vue.filter('filterRebate', function (value) {
   return (value * 100).toFixed(1) + '%'
 })

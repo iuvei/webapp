@@ -389,6 +389,18 @@ export const getPlatformType = () => {
 
   return platformType
 }
+// 计算n 的阶乘
+export const factorial = (n) => {
+  if (n == 1 || n == 0) {
+    return 1
+  } else {
+    return n * factorial(n - 1)
+  }
+}
+export const selectAll = (obj) => {
+  jQuery(":checkbox[id!='' + obj + '']").attr('checked', jQuery('#' + obj).attr('checked'))
+}
+
 export default {
   interFace,
   genCountdown,
@@ -399,5 +411,6 @@ export default {
   setDateTime,
   formser,
   lhzx_trans,
-  getPlatformType
+  getPlatformType,
+  factorial
 }

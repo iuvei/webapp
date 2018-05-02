@@ -7,12 +7,7 @@
     "url": "https://shtc021.com/feed/downH5/mobileh5vue.html?ver="
   },
   "serverList": [
-    "https://piaozher.com",
-    "https://qhzxyy.com",
-    "https://qijifood.com",
-    "https://shtc021.com",
-    "https://wyjianli.com",
-    "https://xinqiedu.com"
+    "http://10.63.15.242"
   ],
   "quickBet": {
     "id": 1,
@@ -161,6 +156,17 @@
       "lastupdate": 0,
       "lotterytype": 5,
       "curmid": 614
+    },
+    {
+      "cnname": "加拿大30秒",
+      "nav": "jnd30s",
+      "lotteryid": 31,
+      "lotteryCurmlotteryid": 313550,
+      "lotteryDesc": "24小时全天开奖",
+      "methodid": 3111895,
+      "lastupdate": 0,
+      "lotterytype": 4,
+      "curmid": 313860
     },
     {
       "cnname": "排列3",

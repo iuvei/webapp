@@ -121,6 +121,14 @@
         </div>
       </div>
       <div v-else-if="codyBall" class="box_main">
+        <div class="select-box" v-if="showChecker">
+          <Checker type="checkbox" v-model="rxSelect" default-item-class="select-item"
+                   selected-item-class="active">
+            <CheckerItem v-for="item in rxOptions" :value="item.key" :key="item.key">
+              <check-icon :value.sync="item.flag" type="plain" class="check-icon">{{item.value}}</check-icon>
+            </CheckerItem>
+          </Checker>
+        </div>
         <div v-for="(item,parentIndex) in layout">
           <div style="height: 0.42rem;" v-show="isButton">
             <ul class="selectedType clear">
@@ -130,7 +138,7 @@
               </li>
             </ul>
           </div>
-          <div class="parentBox">
+          <div class="parentBox" v-if="!item.rxShow">
             <span v-if="item.title != ''">{{item.title}}</span>
             <span v-else>选号</span>
             <ul class="ballBlock_number">
@@ -145,6 +153,15 @@
         </div>
       </div>
       <div v-else class="box_main">
+        <div class="select-box" v-if="showChecker">
+          <Checker type="checkbox" v-model="rxSelect" default-item-class="select-item"
+                   selected-item-class="active">
+            <CheckerItem v-for="item in rxOptions" :value="item.key" :key="item.key">
+              <check-icon :value.sync="item.flag" type="plain" class="check-icon">{{item.value}}
+              </check-icon>
+            </CheckerItem>
+          </Checker>
+        </div>
         <textarea @blur="onBlur" id="lt_write_box" v-model="danshiBall" class="textareaLong"></textarea>
         <div class="explain">
           <p v-text="this.method.methoddesc"></p>
@@ -219,9 +236,9 @@
   import headTop from '../header/Header.vue'
   import selectNumber from '../common/selectNumber.vue'
   import buttonView from '../common/button.vue'
-  import {PopupPicker} from 'vux'
+  import {PopupPicker, Checker, CheckerItem, CheckIcon} from 'vux'
 
-  import {random, checkNum, uniquelize, uniquelizeNosort} from './merge'
+  import {random, checkNum, uniquelize, uniquelizeNosort, lt_method} from './merge'
 
   export default {
     data() {
@@ -368,15 +385,38 @@
               className: 'x'
             }]
           }
-        ]
-
+        ],
+        // 任选数据
+        rxOptions: [
+          {key: '1', value: '万位', flag: false},
+          {key: '2', value: '千位', flag: false},
+          {key: '3', value: '百位', flag: false},
+          {key: '4', value: '十位', flag: true},
+          {key: '5', value: '个位', flag: true},
+        ],
+        // 任选默认选中位置
+        rxSelect: ['4', '5'],
+        rxSelectCopy: ['4', '5'],
+        // 任选中 需要展示 位置的玩法id
+        rxPlayId: ['RX2ZUXFS', 'RX2ZXDS', 'RX2ZUXDS', 'RX2ZXHZ', 'RX2ZUXHZ', 'RX3ZXDS', 'RX3ZXHZ', 'RX3ZUXZ6', 'RX3ZUXHX', 'RX3ZUXHZ', 'RX3ZUXZ3', 'RX4ZXDS', 'SSCRX4ZUX24', 'SSCRX4ZUX12', 'SSCRX4ZUX6', 'SSCRX4ZUX4'],
+        // 任选玩法中 和值玩法的id
+        rxSumId: ['RX2ZXHZ', 'RX2ZUXHZ', 'RX3ZXHZ', 'RX3ZUXHZ'],
+        // 任选中 组选玩法 id
+        rxZXIds: ['RX2ZUXFS', 'RX3ZUXZ3', 'RX3ZUXZ6', 'SSCRX4ZUX24', 'SSCRX4ZUX6'],
+        // 任选4 组选12 id
+        rx4ZX12Ids: ['SSCRX4ZUX12'],
+        // 任选中 单式玩法 id
+        rxZuDsIds: ['RX2ZXDS', 'RX2ZUXDS', 'RX3ZXDS']
       }
     },
     components: {
       headTop,
       PopupPicker,
       selectNumber,
-      buttonView
+      buttonView,
+      Checker,
+      CheckerItem,
+      CheckIcon
     },
     watch: {
       watchlotteryid(val, oldVal) {
@@ -408,6 +448,62 @@
           this._danshiBall(newVal, oldVal)
         }
       },
+      rxSelect: {
+        deep: true,
+        handler: function (newVal, oldVal) {
+          if (this.modelValue[0].indexOf('任二') > -1 && newVal.length < 2 && this.rxPlayId.indexOf(lt_method[String(this.methodid)]) > -1) {
+            this.rxSelect = [...this.rxSelectCopy]
+            this.rxSelect.forEach(value => {
+              this.rxOptions.forEach(val => {
+                if (val.key == value) {
+                  val.flag = true
+                }
+              })
+            })
+            this.$vux.alert.show({
+              title: '温馨提示',
+              content: '最少需要选中两个位置',
+              hideOnBlur: true
+            })
+            return false
+          } else if (this.modelValue[0].indexOf('任三') > -1 && newVal.length < 3 && this.rxPlayId.indexOf(lt_method[String(this.methodid)]) > -1) {
+            this.rxSelect = [...this.rxSelectCopy]
+            this.rxSelect.forEach(value => {
+              this.rxOptions.forEach(val => {
+                if (val.key == value) {
+                  val.flag = true
+                }
+              })
+            })
+            this.$vux.alert.show({
+              title: '温馨提示',
+              content: '最少需要选中三个位置',
+              hideOnBlur: true
+            })
+            return false
+          } else if (this.modelValue[0].indexOf('任四') > -1 && newVal.length < 4 && this.rxPlayId.indexOf(lt_method[String(this.methodid)]) > -1) {
+            this.rxSelect = [...this.rxSelectCopy]
+            this.rxSelect.forEach(value => {
+              this.rxOptions.forEach(val => {
+                if (val.key == value) {
+                  val.flag = true
+                }
+              })
+            })
+            this.$vux.alert.show({
+              title: '温馨提示',
+              content: '最少需要选中四个位置',
+              hideOnBlur: true
+            })
+            return false
+          }
+          this.rxSelectCopy = [...newVal]
+          this._calBet()
+          if (this.model.type === 'input') {
+            this._danshiBall(this.danshiBall)
+          }
+        }
+      },
       methodid: {
         deep: true,
         handler: function (val, oldVal) {
@@ -420,6 +516,9 @@
     computed: {
       watchlotteryid() {
         return this.$store.state.lotteryid
+      },
+      showChecker() {
+        return this.rxPlayId.indexOf(lt_method[String(this.methodid)]) > -1
       }
     },
     beforeRouteLeave(to, from, next) {
@@ -835,7 +934,7 @@
         if (this.model.type === 'input') {
           return
         }
-        let nums = checkNum(this.model.methodid, this.model.codes)
+        let nums = checkNum(this.model.methodid, this.model.codes, this.rxSelect)
         this.model.nums = nums
         this.lotteryname = this.$store.state.nav
         // 提交mutation到Store
@@ -870,6 +969,39 @@
         } else {
           this.methodid = 'zx'
           this.codyBall = false  // 庄闲 去除机选功能
+        }
+        // 重置任选玩法是的默认选中位置
+        let __index = this.rxPlayId.indexOf(lt_method[String(this.methodid)])
+        if (__index < 5) {
+          this.rxOptions = [
+            {key: '1', value: '万位', flag: false},
+            {key: '2', value: '千位', flag: false},
+            {key: '3', value: '百位', flag: false},
+            {key: '4', value: '十位', flag: true},
+            {key: '5', value: '个位', flag: true},
+          ]
+          this.rxSelect = ['4', '5']
+          this.rxSelectCopy = ['4', '5']
+        } else if (__index < 11) {
+          this.rxOptions = [
+            {key: '1', value: '万位', flag: false},
+            {key: '2', value: '千位', flag: false},
+            {key: '3', value: '百位', flag: true},
+            {key: '4', value: '十位', flag: true},
+            {key: '5', value: '个位', flag: true},
+          ]
+          this.rxSelect = ['3', '4', '5']
+          this.rxSelectCopy = ['3', '4', '5']
+        } else {
+          this.rxOptions = [
+            {key: '1', value: '万位', flag: false},
+            {key: '2', value: '千位', flag: true},
+            {key: '3', value: '百位', flag: true},
+            {key: '4', value: '十位', flag: true},
+            {key: '5', value: '个位', flag: true},
+          ]
+          this.rxSelect = ['2', '3', '4', '5']
+          this.rxSelectCopy = ['2', '3', '4', '5']
         }
         // 提交mutation到Store
         this.$store.commit('updateTypeInput', this.typeInput)
@@ -1074,14 +1206,31 @@
         this.isButton = this.method.selectarea.isButton
         if (this.method.selectarea.layout !== undefined) {
           this.layout = this.method.selectarea.layout
-          this.layout.forEach((value) => {
+          let sumCode = ''
+          this.layout.forEach((value, index) => {
             // 处理龙虎
             if (_lotteryname === '龙虎') {
               value.title = value.title.slice(0, 2)
               value.no = '龙|虎|和'
               this.isButton = false
             }
+            // 任选和值
+            if (this.rxSumId.indexOf(lt_method[String(this.methodid)]) > -1) {
+              sumCode += value.no + (index !== this.layout.length - 1 ? '|' : '')
+              if (index > 0) {
+                value.rxShow = true
+              }
+            }
           })
+          // 任选 和值玩法
+          if (this.rxSumId.indexOf(lt_method[String(this.methodid)]) > -1) {
+            this.layout[0].no = sumCode
+            this.method.selectarea.layout = [...this.layout].splice(0, 1)
+          }
+          // 任选中不需要 大小单双的玩法
+          // if (this.rxIsButton.indexOf(this.methodid) > -1) {
+          //   this.isButton = false
+          // }
           if (this.$store.state.selectLotteryNameFlag == this.$store.state.selectLotteryName) {
             // 提交mutation到Store
             this.$store.commit('updateLayout', this.layout)
@@ -1171,12 +1320,38 @@
         this._emptyCody()
         let r = random(this.methodid)
         this.model.codes = []
-        for (let i = 0, layout = this.method.selectarea.layout; i < layout.length; i++) {
-          let l = []
-          r[i].forEach((val, index) => {
-            l.push(String(val))
+        // 任选组选 复试
+        if (this.rxZXIds.indexOf(lt_method[String(this.methodid)]) > -1) {
+          this.model.codes = [[]]
+          r.forEach(value => {
+            value.forEach(val => {
+              this.model.codes[0].push(val)
+            })
           })
-          this.model.codes.push(l)
+        } else if (this.rx4ZX12Ids.indexOf(lt_method[String(this.methodid)]) > -1) {
+          this.model.codes = [[], []]
+          r.forEach((value, index) => {
+            if (index == 0) {
+              value.forEach(val => {
+                this.model.codes[0].push(val)
+              })
+            } else {
+              value.forEach(val => {
+                this.model.codes[1].push(val)
+              })
+            }
+
+          })
+        } else {
+          for (let i = 0, layout = this.method.selectarea.layout; i < layout.length; i++) {
+            // 任选 组选部分不显示
+            if (layout[i].rxShow) break
+            let l = []
+            r[i].forEach((val, index) => {
+              l.push(String(val))
+            })
+            this.model.codes.push(l)
+          }
         }
         let _codes = this.model.codes
         _codes.forEach((item, index) => {
@@ -1286,6 +1461,7 @@
               let r = this.model.codes
               this.model.codes = []
               for (let i = 0; i < this.method.selectarea.layout.length; i++) {
+                if (this.method.selectarea.layout[i].rxShow) break
                 let l = []
                 r[i].forEach((val, index) => {
                   let b = String(val)
@@ -1346,6 +1522,9 @@
             } else {
               codes = this.model.codes
               this.model.type = 'lhzx_zx'
+            }
+            if (this.rxPlayId.indexOf(lt_method[String(this.methodid)]) > -1) {
+              this.model.poschoose = this.rxSelect.toString()
             }
           }
           //第四步，检测购物篮中是否已经存在m对象了。如果不存在则添加进入购物篮
@@ -1587,6 +1766,22 @@
           }
           i++
         }
+        // 任选
+        switch (lt_method[String(this.methodid)]) {
+          case 'RX2ZXDS':
+          case 'RX2ZUXDS':
+            Sid = 2
+            break
+          case 'RX3ZXDS':
+          case 'RX3ZUXHX':
+            Sid = 3
+            break
+          case 'RX4ZXDS':
+            Sid = 4
+            break
+          default:
+            break
+        }
         valueArr = uniquelize(value.split(' '))
         // 第二步
         if (IDarr[0].indexOf(DanID) > -1 || IDarr[1].indexOf(DanID) > -1) {                   // 时时彩2码,3码组选
@@ -1635,6 +1830,29 @@
               }
             })
           }
+        } else if (this.rxZuDsIds.indexOf(lt_method[String(this.methodid)]) > -1) {
+          // 任选组选 单式
+          for (let i = 0; i < valueArr.length; i++) {
+            // 去除匹配数组项中长度小于或大于Sid的项
+            if (valueArr[i].length != Sid) continue
+            if (Array.from(new Set(valueArr[i].split(''))).length != Sid) continue
+            BellArr.push(valueArr[i])
+          }
+        } else if (lt_method[String(this.methodid)] == 'RX3ZUXHX') {
+          // 任3 混合组选
+          for (let i = 0; i < valueArr.length; i++) {
+            // 去除匹配数组项中长度小于或大于Sid的项
+            if (valueArr[i].length != Sid) continue
+            if (Array.from(new Set(valueArr[i].split(''))).length == 1) continue
+            BellArr.push(valueArr[i])
+          }
+        } else if (lt_method[String(this.methodid)] == 'RX4ZXDS') {
+          // 任4 直选但是
+          for (let i = 0; i < valueArr.length; i++) {
+            // 去除匹配数组项中长度小于或大于Sid的项
+            if (valueArr[i].length != Sid) continue
+            BellArr.push(valueArr[i])
+          }
         } else {
           valueArr.forEach(function (item, index) {
             // 去除匹配数组项中长度小于或大于Sid的项
@@ -1649,8 +1867,32 @@
         /* ★//这里是单式投注的号码
          scope.BallDan = scope.ArrayToBell(BellArr);*/
         this.BallDan = BellArr
+        // 任选单式修改位数 4,5 -> 3,4,5
+        let rxTimes = (function () {
+          let times = 1
+          switch (lt_method[String(this.methodid)]) {
+            case 'RX2ZXDS':// 任2 复选单式
+            case 'RX2ZUXDS': // 任2 组选单式
+              times = this.mUtils.factorial(this.rxSelect.length) / this.mUtils.factorial(this.rxSelect.length - 2) / this.mUtils.factorial(2)
+              break
+            case 'RX3ZXDS': // 任3 直选单式
+            case 'RX3ZUXHX': // 任3 直选单式
+              times = this.mUtils.factorial(this.rxSelect.length) / this.mUtils.factorial(this.rxSelect.length - 3) / this.mUtils.factorial(3)
+              break
+            case 'RX4ZXDS': // 任4 直选单式
+              times = this.mUtils.factorial(this.rxSelect.length) / this.mUtils.factorial(this.rxSelect.length - 4) / this.mUtils.factorial(4)
+              break
+            default:
+              times = 1
+              break
+          }
+          return times
+        }.bind(this))();
         // 这里只是单式输入时，展示金额
-        this.model.nums = this.BallDan.length
+        this.model.nums = this.BallDan.length * rxTimes
+        if (this.rxPlayId.indexOf(lt_method[String(this.methodid)]) > -1) {
+          this.model.poschoose = [...this.rxSelect].sort().toString()
+        }
 //        this.model.money = accMul(accMul(accMul(this.BallDan.length, this.model.times), GETMODE(this.model.mode)), 2)
         // 消除临时变量
         DanID = valueArr = BellArr = Sid = d = too = null
@@ -2093,4 +2335,11 @@
     text-overflow: ellipsis;
   }
 
+  .select-box {
+    margin-bottom: .2rem;
+    .select-item {
+      width: 20%;
+      font-size: 14px;
+    }
+  }
 </style>
