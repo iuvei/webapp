@@ -28,11 +28,11 @@ Vue.use(tap)
 Vue.prototype.mUtils = mUtils
 // 引入ios、Android、web 插件
 // web
-// Vue.use(webPlugin)
-// import('./assets/web/index.css')
+Vue.use(webPlugin)
+import('./assets/web/index.css')
 // android
 Vue.use(androidPlugin)
-import('./assets/android/index.css')
+// import('./assets/android/index.css')
 // ios
 // Vue.use(iosPlugin)
 // import('./assets/ios/index.css')
