@@ -31,7 +31,7 @@ Vue.prototype.mUtils = mUtils
 Vue.use(webPlugin)
 import('./assets/web/index.css')
 // android
-Vue.use(androidPlugin)
+// Vue.use(androidPlugin)
 // import('./assets/android/index.css')
 // ios
 // Vue.use(iosPlugin)
