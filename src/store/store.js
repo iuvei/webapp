@@ -124,7 +124,8 @@ export default new Vuex.Store({
     dividend: null,
 
     showToast: true,
-    available: 1 // 网站是否可用（维护）
+    available: 1, // 网站是否可用（维护）
+    nowPlays: []
   },
   mutations: {
     updateSelfUserid(state, newselfUserid) {
@@ -339,6 +340,9 @@ export default new Vuex.Store({
     },
     updateAvailable(state, flag) {
       state.available = flag
+    },
+    updateNowPlays(state, arr) {
+      state.nowPlays = arr
     }
   },
   modules: {
@@ -346,7 +350,8 @@ export default new Vuex.Store({
   },
   getters: {
     getAvailable: state => state.available,
-    getSess: state => state.sess
+    getSess: state => state.sess,
+    getNowPlays: state => state.nowPlays
   },
   actions
 })
