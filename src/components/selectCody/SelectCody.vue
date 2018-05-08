@@ -1005,7 +1005,7 @@
         }
         // 提交mutation到Store
         this.$store.commit('updateTypeInput', this.typeInput)
-        this._getMethodename(this.methodid, this.lotteryBet.lottery.method, this.$store.state.typeInput)
+        this._getMethodename(this.methodid, this.lotteryBet.lottery.method, this.$store.state.typeInput, true)
       },
       // 获取玩法
       _getOzd() {
@@ -1063,7 +1063,7 @@
         this._getMethodename(this.methodid, data, this.$store.state.typeInput)
       },
       // 获取玩法的方法
-      _getMethodename(methodid, lotteryBet, typeInput) {
+      _getMethodename(methodid, lotteryBet, typeInput, flag) {
         let _method = null,
           _lotteryname = null,
           _break = false
@@ -1201,6 +1201,18 @@
         } else {
           this.modelValue.push(this.methodid.toString())
         }
+        // 判断本地是否保存上次最近玩法，若果有 则显示最近一次完的玩法 手动更改后 则显示更改后的玩法
+        if (!flag) {
+          let lastPlays = JSON.parse(this.mUtils.getStore('lastPlays'))
+          if (Array.isArray(lastPlays)) {
+            lastPlays.forEach((value) => {
+              if (value.id === this.nowLotteryId) {
+                this.modelValue = value.value
+              }
+            })
+          }
+        }
+        this.$store.commit('updateNowPlays', this.modelValue)
         this.method = _method
         this.yjfmodel = this.method.modes[this.indexYJF].name
         this.isButton = this.method.selectarea.isButton

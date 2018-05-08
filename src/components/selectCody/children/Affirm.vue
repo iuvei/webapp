@@ -556,6 +556,29 @@
               onHide() {
                 _this.dataList = []
                 _this.$store.state.dataList = [] // 清空投注
+                // // 保存当前玩法至本地，下次默认加载此玩法
+                let lastPlays = JSON.parse(_this.mUtils.getStore('lastPlays'))
+                if (Array.isArray(lastPlays)) {
+                  let flag = false
+                  lastPlays.forEach((value) => {
+                    if (value.id == _this.bets.lotteryid) {
+                      value.value = _this.$store.getters.getNowPlays
+                      flag = true
+                    }
+                  })
+                  if (!flag) {
+                    lastPlays.push({
+                      id: _this.bets.lotteryid,
+                      value: _this.$store.getters.getNowPlays
+                    })
+                  }
+                  _this.mUtils.setStore('lastPlays', JSON.stringify(lastPlays))
+                } else {
+                  _this.mUtils.setStore('lastPlays', JSON.stringify([{
+                    id: _this.bets.lotteryid,
+                    value: _this.$store.getters.getNowPlays
+                  }]))
+                }
                 clearInterval(_this.interval)
                 _this.$router.replace('/home/selectCody')
               }
@@ -686,6 +709,29 @@
                 /* _this.dataList = []
                      _this.$store.state.dataList = [] // 清空投注
                      _this.$router.replace('/home/selectCody')*/
+                // // 保存当前玩法至本地，下次默认加载此玩法
+                let lastPlays = JSON.parse(_this.mUtils.getStore('lastPlays'))
+                if (Array.isArray(lastPlays)) {
+                  let flag = false
+                  lastPlays.forEach((value) => {
+                    if (value.id == _this.bets.lotteryid) {
+                      value.value = _this.$store.getters.getNowPlays
+                      flag = true
+                    }
+                  })
+                  if (!flag) {
+                    lastPlays.push({
+                      id: _this.bets.lotteryid,
+                      value: _this.$store.getters.getNowPlays
+                    })
+                  }
+                  _this.mUtils.setStore('lastPlays', JSON.stringify(lastPlays))
+                } else {
+                  _this.mUtils.setStore('lastPlays', JSON.stringify([{
+                    id: _this.bets.lotteryid,
+                    value: _this.$store.getters.getNowPlays
+                  }]))
+                }
               }
             })
           } else if (res.data.h5statuscode == '889') {
