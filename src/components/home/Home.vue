@@ -317,7 +317,7 @@
         this.loading = true
         let httpurl = this.httpUrl('METHOD') + '&nav=' + navArr[i]
         this.httpAction(httpurl, (res) => {
-          if (res.data && res.data.status !== 811) {
+          if (res.data) {
             let data = res.data
             // 处理龙虎庄闲数据
             let lhobj = {}, zxobj = {}, rxobj = {}, rxArr = [], _indexArr = []

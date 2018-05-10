@@ -521,6 +521,14 @@
         return this.rxPlayId.indexOf(lt_method[String(this.methodid)]) > -1
       }
     },
+    beforeRouteEnter(to, from, next) {
+      if (from.path === "/home/selectCody/affirm") {
+        window.notChangePlayType = true
+      } else {
+        window.notChangePlayType = false
+      }
+      next()
+    },
     beforeRouteLeave(to, from, next) {
       clearInterval(this.intervals)
       next(true)
@@ -1202,7 +1210,7 @@
           this.modelValue.push(this.methodid.toString())
         }
         // 判断本地是否保存上次最近玩法，若果有 则显示最近一次完的玩法 手动更改后 则显示更改后的玩法
-        if (!flag) {
+        if (!flag && !window.notChangePlayType) {
           let lastPlays = JSON.parse(this.mUtils.getStore('lastPlays'))
           if (Array.isArray(lastPlays)) {
             lastPlays.forEach((value) => {
