@@ -1126,6 +1126,7 @@
             }
           }
         }
+        console.log(lotteryBet, _method, methodid)
         // 处理庄闲
         if (methodid === 'zx') {
           lotteryBet.forEach((val) => {
