@@ -41,7 +41,9 @@
         <p>最大充值金额<i>{{loadmax}}</i>元,最小可充值金额<i>{{loadmin}}</i>元</p>
         <p :style="alplayInfo.name == 'zhifubaoc9' ? 'display: block' : 'display: none'">金额必须是<i>10</i>的倍数并且大于<i>500</i>时必须是<i>50</i>的倍数
         </p>
-        <p v-if="handCharge!=0"><i>温馨提示：此渠道需要收取{{handCharge}}%手续费，谢谢！</i></p>
+        <p :style="alplayInfo.name == 'weixinsmc' ? 'display: block' : 'display: none'">金额必须是<i>100</i>的倍数
+        </p>
+        <p v-if="handCharge!=0"><i>温馨提示：此渠道需要收取{{handCharge}}%手续费，谢谢!</i></p>
       </div>
       <p class="nextStep" v-tap="{ methods: nextAction }">下一步</p>
     </div>
@@ -166,6 +168,14 @@
               })
               return
             }
+          }
+        }
+        if (this.alplayInfo.name === "weixinsmc") {
+          if (this.inputMoney < this.alplayInfo.loadmin || this.inputMoney > this.alplayInfo.loadmax || this.inputMoney % 100 != 0) {
+            this.$vux.alert.show({
+              content: '充值金额格式不正确'
+            })
+            return
           }
         }
         if (this.ifshow == 'block') {
