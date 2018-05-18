@@ -121,7 +121,7 @@
   import headTop from '../../header/Header.vue'
   import selectNumber from '../../common/selectNumber.vue'
   import buttonView from '../../common/button.vue'
-  import {random, checkNum} from '../merge'
+  import {random, checkNum, lt_method} from '../merge'
   import mUtils from "../../../assets/js/mUtils";
 
   export default {
@@ -184,7 +184,9 @@
           'sgl': 'l4h5',
           'sgt': 'h4l5',
           'sgh': 'sgh',
-        }
+        },
+        // 任选中 需要展示 位置的玩法id
+        rxPlayId: ['RX2ZUXFS', 'RX2ZXDS', 'RX2ZUXDS', 'RX2ZXHZ', 'RX2ZUXHZ', 'RX3ZXDS', 'RX3ZXHZ', 'RX3ZUXZ6', 'RX3ZUXHX', 'RX3ZUXHZ', 'RX3ZUXZ3', 'RX4ZXDS', 'SSCRX4ZUX24', 'SSCRX4ZUX12', 'SSCRX4ZUX6', 'SSCRX4ZUX4']
       }
     },
     watch: {
@@ -308,6 +310,8 @@
         //第一步：这里处理各种不同的玩法
         let r = random(Lodid)
         for (let i = 0; i < this.$store.state.layout.length; i++) {
+          // 任选 组选部分不显示
+          if (this.$store.state.layout[i].rxShow) break
           let l = []
           r[i].forEach((val, index) => {
             let b = String(val)
@@ -390,16 +394,19 @@
         }
 
 
-        let nums = checkNum(model.methodid, model.codes)
+        let nums = checkNum(model.methodid, model.codes, this.$store.getters.getRxSelect)
         model.nums = nums
         let nmodel = 1
         model.money = model.nums * 100 * model.times * nmodel * 2 / 100
         model.contents = model.codes
-
+        if (this.rxPlayId.indexOf(lt_method[String(model.methodid)]) > -1) {
+          model.poschoose = this.$store.getters.getRxSelect.toString()
+        }
         if (typeof model.codes === 'object') {
           model.codes = model.codes.join('|')
           return
         }
+
       },
       // 计算总共投注金额, 总注数
       _allMoney() {
@@ -534,12 +541,12 @@
         let map = {}
         map['curmid'] = this.mUtils.lotterytrans(lotteryid, 'id->curmId', this.$store.state.lotteryType)
         this.bets.lt_issue_start = this.avinul
-
+        this.bets.lt_total_nums = this.bets.lt_total_money = 0
         for (let i = 0, dataList = this.dataList; i < dataList.length; i++) {
           this.bets.lt_total_nums += dataList[i].nums // 代表投注注数
           this.bets.lt_total_money += dataList[i].money // 代表投注金额
         }
-        this.bets.play_source = 5
+        this.bets.play_source = this.playSource
         this.bets.flag = 'save'
         let tempBets = JSON.parse(JSON.stringify(this.bets))
         for (let i = 0; i < tempBets.lt_project.length; i++) {

@@ -5,7 +5,7 @@ export default {
   install: function (Vue, options) {
     // 实例变量
     Vue.prototype.playPlatform = 'web'
-    Vue.prototype.playSource = ''
+    Vue.prototype.playSource = 6
     // 方法
     Vue.prototype.httpUrl = (val) => {
       let app = require('../../../static/hc_2.0.json')

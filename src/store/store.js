@@ -125,7 +125,8 @@ export default new Vuex.Store({
 
     showToast: true,
     available: 1, // 网站是否可用（维护）
-    nowPlays: []
+    nowPlays: [],
+    rxSelect: []
   },
   mutations: {
     updateSelfUserid(state, newselfUserid) {
@@ -343,6 +344,9 @@ export default new Vuex.Store({
     },
     updateNowPlays(state, arr) {
       state.nowPlays = arr
+    },
+    updateRXSelect(state, arr) {
+      state.rxSelect = arr
     }
   },
   modules: {
@@ -351,7 +355,8 @@ export default new Vuex.Store({
   getters: {
     getAvailable: state => state.available,
     getSess: state => state.sess,
-    getNowPlays: state => state.nowPlays
+    getNowPlays: state => state.nowPlays,
+    getRxSelect: state => state.rxSelect
   },
   actions
 })
