@@ -186,7 +186,15 @@
           'sgh': 'sgh',
         },
         // 任选中 需要展示 位置的玩法id
-        rxPlayId: ['RX2ZUXFS', 'RX2ZXDS', 'RX2ZUXDS', 'RX2ZXHZ', 'RX2ZUXHZ', 'RX3ZXDS', 'RX3ZXHZ', 'RX3ZUXZ6', 'RX3ZUXHX', 'RX3ZUXHZ', 'RX3ZUXZ3', 'RX4ZXDS', 'SSCRX4ZUX24', 'SSCRX4ZUX12', 'SSCRX4ZUX6', 'SSCRX4ZUX4']
+        rxPlayId: ['RX2ZUXFS', 'RX2ZXDS', 'RX2ZUXDS', 'RX2ZXHZ', 'RX2ZUXHZ', 'RX3ZXDS', 'RX3ZXHZ', 'RX3ZUXZ6', 'RX3ZUXHX', 'RX3ZUXHZ', 'RX3ZUXZ3', 'RX4ZXDS', 'SSCRX4ZUX24', 'SSCRX4ZUX12', 'SSCRX4ZUX6', 'SSCRX4ZUX4'],
+        // 任选玩法中 和值玩法的id
+        rxSumId: ['RX2ZXHZ', 'RX2ZUXHZ', 'RX3ZXHZ', 'RX3ZUXHZ'],
+        // 任选中 组选玩法 id
+        rxZXIds: ['RX2ZUXFS', 'RX3ZUXZ3', 'RX3ZUXZ6', 'SSCRX4ZUX24', 'SSCRX4ZUX6'],
+        // 任选4 组选12 id
+        rx4ZX12Ids: ['SSCRX4ZUX12'],
+        // 任选中 单式玩法 id
+        rxZuDsIds: ['RX2ZXDS', 'RX2ZUXDS', 'RX3ZXDS']
       }
     },
     watch: {
@@ -309,6 +317,31 @@
         let regd = /和值/
         //第一步：这里处理各种不同的玩法
         let r = random(Lodid)
+        console.log(r)
+        // 任选和值
+        if (this.rxZXIds.indexOf(lt_method[String(Lodid)]) > -1) {
+          let tmp = [[]]
+          r.forEach(value => {
+            value.forEach(val => {
+              tmp[0].push(val)
+            })
+          })
+          r = tmp
+        } else if (this.rx4ZX12Ids.indexOf(lt_method[String(Lodid)]) > -1) {
+          let tmp = [[], []]
+          r.forEach((value, index) => {
+            if (index == 0) {
+              value.forEach(val => {
+                tmp[0].push(val)
+              })
+            } else {
+              value.forEach(val => {
+                tmp[1].push(val)
+              })
+            }
+          })
+          r = tmp
+        }
         for (let i = 0; i < this.$store.state.layout.length; i++) {
           // 任选 组选部分不显示
           if (this.$store.state.layout[i].rxShow) break
