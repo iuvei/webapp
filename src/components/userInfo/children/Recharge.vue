@@ -171,7 +171,7 @@
           }
         }
         if (this.alplayInfo.name === "weixinsmc") {
-          if (this.inputMoney < this.alplayInfo.loadmin || this.inputMoney > this.alplayInfo.loadmax || this.inputMoney % 100 != 0) {
+          if (Number(this.inputMoney) < Number(this.alplayInfo.loadmin) || Number(this.inputMoney) > Number(this.alplayInfo.loadmax) || this.inputMoney % 100 != 0) {
             this.$vux.alert.show({
               content: '充值金额格式不正确'
             })

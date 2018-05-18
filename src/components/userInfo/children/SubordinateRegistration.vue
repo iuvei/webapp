@@ -43,16 +43,16 @@
           <li>
             <p class="linkL">自身保留返点</p>
             <p class="select_number">
-              <span v-tap="{ methods:Less}" :class="{forbidColor: postData.keeppoint<=0.1}"
+              <span v-tap="{ methods:Less}" :class="{forbidColor: postData.keeppoint<=0}"
                     :style="{borderRight:0}">-</span>
               <input type="text" name="keeppoint" @blur="_blurKeeppoint" v-model="postData.keeppoint">
               <span v-tap="{ methods:plus}" :class="{forbidColor: postData.keeppoint>=parseFloat(maxPoint)}"
                     :style="{borderLeft:0}">+</span>
             </p>
           </li>
-          <li class="tips">
-            自身返点至少保留<span>0.1</span>
-          </li>
+          <!--<li class="tips">-->
+          <!--自身返点至少保留<span>0.1</span>-->
+          <!--</li>-->
           <!--<li>-->
           <!--<p class="linkL">奖金组</p>-->
           <!--<p  class="select_number">-->
@@ -381,6 +381,7 @@
         let httpurl = this.httpUrl('REGISTRATION')
         this.httpAction(httpurl, (res) => {
           this.maxPoint = parseFloat(res.data.selfp * 100).toFixed(1)
+          this.postData.keeppoint = parseFloat(res.data.selfp * 100).toFixed(1) // 默认展示最大返点
           this.AllTypeAccNumData = res.data.AllTypeAccNum
           this.AllLotterysflag = res.data.lotterys
           this._getInputData()
@@ -445,22 +446,22 @@
         return arr
       },
       Less() {
-        if (this.postData.keeppoint == 0.1) {
+        if (this.postData.keeppoint == 0) {
           return
-        } else if (this.postData.keeppoint > 0.1) {
-          this.postData.keeppoint = parseFloat(this.postData.keeppoint - 0.1).toFixed(1)
         } else {
-          this.postData.keeppoint = 0.1
+          this.postData.keeppoint = parseFloat(this.postData.keeppoint - 0.1).toFixed(1)
         }
       },
       _blurKeeppoint() {
+        if (/\D/.test(this.postData.keeppoint)) {
+          this.postData.keeppoint = 0
+          return
+        }
+        this.postData.keeppoint = Number(this.postData.keeppoint)
         if (parseFloat(this.postData.keeppoint) > parseFloat(this.maxPoint)) {
           this.postData.keeppoint = this.maxPoint
-        } else if (this.postData.keeppoint < 0.1) {
-          this.postData.keeppoint = 0.1
-        } else {
-          this.postData.keeppoint = 0.1
-          return
+        } else if (this.postData.keeppoint < 0) {
+          this.postData.keeppoint = 0
         }
       },
       plus() {
