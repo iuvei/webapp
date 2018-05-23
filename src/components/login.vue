@@ -50,12 +50,14 @@
         </li>
       </ul>
     </div>
-    <p id="copyright" class="copyright" :class="playPlatform">Copyright &copy; 2014 - 2017 恒彩彩票版权所有</p>
+    <p id="copyright" class="copyright" :class="playPlatform">Copyright &copy; 2014 - 2017 恒彩彩票版权所有</p><br>
+    <p id="copyright" class="copyright" :class="playPlatform">当前版本：V{{version}}</p>
   </div>
 </template>
 
 <script>
   import {md5} from 'vux'
+  import ver from '../../static/version'
 
   export default {
     data() {
@@ -77,6 +79,11 @@
         appUpdata: false,
         clickFlag: true,
         loginTimes: 0
+      }
+    },
+    computed: {
+      version() {
+        return ver.version
       }
     },
     mounted() {
@@ -583,7 +590,13 @@
   }
 
   .copyright.ios {
-    position: fixed;
-    bottom: 0.2rem;
+    &:first-child {
+      position: fixed;
+      bottom: 0.4rem;
+    }
+    &:last-child {
+      position: fixed;
+      bottom: 0.2rem;
+    }
   }
 </style>

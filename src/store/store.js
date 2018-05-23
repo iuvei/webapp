@@ -356,7 +356,8 @@ export default new Vuex.Store({
     getAvailable: state => state.available,
     getSess: state => state.sess,
     getNowPlays: state => state.nowPlays,
-    getRxSelect: state => state.rxSelect
+    getRxSelect: state => state.rxSelect,
+    getServer: state => state.server
   },
   actions
 })

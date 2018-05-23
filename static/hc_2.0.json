@@ -1,13 +1,18 @@
 {
   "app_ver": {
-    "version": "2.0",
+    "version": "2.1",
     "iosStore": true,
     "updateFlag": 1,
     "available": 1,
     "url": "https://shtc021.com/feed/downH5/mobileh5vue.html"
   },
   "serverList": [
-    "http://10.63.15.242"
+    "https://piaozher.com",
+    "https://qhzxyy.com",
+    "https://qijifood.com",
+    "https://shtc021.com",
+    "https://wyjianli.com",
+    "https://xinqiedu.com"
   ],
   "quickBet": {
     "id": 1,

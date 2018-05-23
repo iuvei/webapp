@@ -5,6 +5,7 @@ export default {
   install: function (Vue, options) {
     // 实例变量
     Vue.prototype.playPlatform = 'android'
+    Vue.prototype.isApp = false // 原生包 true  H5包 false
     Vue.prototype.playSource = 6
     // 方法
     Vue.prototype.httpUrl = (val) => {
@@ -12,11 +13,15 @@ export default {
     }
     Vue.prototype.openurl = () => {
       let lickUrl = 'https://ngmm.livechatvalue.com/chat/chatClient/chatbox.jsp?companyID=12397&configID=50&jid='
-      plus.runtime.openURL(lickUrl, function () {
-        Vue.$vux.alert.show({
-          content: '联系客服失败'
+      if (Vue.prototype.isApp) {
+        JSBridge.openBrowser(lickUrl)
+      } else {
+        plus.runtime.openURL(lickUrl, function () {
+          Vue.$vux.alert.show({
+            content: '联系客服失败'
+          })
         })
-      })
+      }
     }
     Vue.prototype._getUpdate = () => {
       if (Store.state.ifLink == null) {
@@ -39,7 +44,11 @@ export default {
               title: '提示',
               content: '系统维护中',
               onHide() {
-                plus.runtime.quit()
+                if (Vue.prototype.isApp) {
+                  JSBridge.shutDown()
+                } else {
+                  plus.runtime.quit()
+                }
               }
             })
           } else {
@@ -49,29 +58,45 @@ export default {
             Store.commit('updateServer', serverList[j])
             Store.commit('updateLotteryType', appData.lotteryType)
             let appV = require('../../../static/version.json')
+            console.log(appData.app_ver.version, appV.version)
             if (appData.app_ver.version != appV.version) {
+              let fileSize
+              if (Vue.prototype.isApp) {
+                fileSize = JSBridge.getFileSize(serverList[j] + '/feed/android/hc.zip')
+                // fileSize = JSBridge.getFileSize('http://10.63.15.242/feed/android/hc.zip')
+              }
               if (appData.app_ver.updateFlag == 1) {
                 Vue.$vux.alert.show({
                   title: '提示',
-                  content: '有版本更新了,请立即更新',
+                  content: `有版本更新了,请立即更新,\n ${fileSize ? '文件大小' + (fileSize / 1024 / 1024).toFixed(2) + 'Mb' : ''} `,
                   onHide() {
-                    plus.runtime.openURL(updateUrl, function () {
-                      alert('更新失败')
-                    })
+                    if (Vue.prototype.isApp) {
+                      JSBridge.goDownLoad(serverList[j] + '/feed/android/hc.zip')
+                      // JSBridge.goDownLoad('http://10.63.15.242/feed/android/hc.zip')
+                    } else {
+                      plus.runtime.openURL(updateUrl, function () {
+                        alert('更新失败')
+                      })
+                    }
                   }
                 })
               } else {
                 Vue.$vux.confirm.show({
                   title: '提示',
-                  content: '有版本更新了，是否立即更新！',
+                  content: `有版本更新了,请立即更新,\n ${fileSize ? '文件大小' + (fileSize / 1024 / 1024).toFixed(2) + 'Mb' : ''} `,
                   confirmText: '立即更新',
                   cancelText: '取消',
                   onCancel() {
                   },
                   onConfirm() {
-                    plus.runtime.openURL(updateUrl, function () {
-                      alert('更新失败')
-                    })
+                    if (Vue.prototype.isApp) {
+                      JSBridge.goDownLoad(serverList[j] + '/feed/android/hc.zip')
+                      // JSBridge.goDownLoad('http://10.63.15.242/feed/android/hc.zip')
+                    } else {
+                      plus.runtime.openURL(updateUrl, function () {
+                        alert('更新失败')
+                      })
+                    }
                   }
                 })
               }

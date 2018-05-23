@@ -95,7 +95,11 @@
         if (this.playPlatform === 'web') {
           window.open(this.bankInfo.bank_url);
         } else {
-          plus.runtime.openURL(this.bankInfo.bank_url);
+          if (this.isApp) {
+            JSBridge.openBrowser(this.bankInfo.bank_url)
+          } else {
+            plus.runtime.openURL(this.bankInfo.bank_url);
+          }
         }
       }
     }

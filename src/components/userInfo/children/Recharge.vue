@@ -36,8 +36,8 @@
           </ul>
         </li>
       </ul>
-      <div class="tips" v-if="playPlatform==='ios'">最大充值金额<i>{{loadmax}}</i>元,最小可充值金额<i>{{loadmin}}</i>元</div>
-      <div class="tips" v-else>
+      <!--<div class="tips" v-if="playPlatform==='ios'">最大充值金额<i>{{loadmax}}</i>元,最小可充值金额<i>{{loadmin}}</i>元</div>-->
+      <div class="tips">
         <p>最大充值金额<i>{{loadmax}}</i>元,最小可充值金额<i>{{loadmin}}</i>元</p>
         <p :style="alplayInfo.name == 'zhifubaoc9' ? 'display: block' : 'display: none'">金额必须是<i>10</i>的倍数并且大于<i>500</i>时必须是<i>50</i>的倍数
         </p>
@@ -160,7 +160,7 @@
             return
           }
         }
-        if (this.alplayInfo.name == 'zhifubaoc9' && this.playPlatform === 'web') {
+        if (this.alplayInfo.name == 'zhifubaoc9') {
           if (this.inputMoney <= parseFloat(this.loadmax) && this.inputMoney >= parseFloat(this.loadmin)) {
             if (!((this.inputMoney <= 500 && this.inputMoney % 10 == 0) || (this.inputMoney > 500 && this.inputMoney % 50 == 0))) {
               this.$vux.alert.show({
@@ -173,7 +173,7 @@
         if (this.alplayInfo.name === "weixinsmc") {
           if (Number(this.inputMoney) < Number(this.alplayInfo.loadmin) || Number(this.inputMoney) > Number(this.alplayInfo.loadmax) || this.inputMoney % 100 != 0) {
             this.$vux.alert.show({
-              content: '充值金额格式不正确'
+              content: `充值金额格式不正确<br>有效充值金额范围为${this.alplayInfo.loadmin}~${this.alplayInfo.loadmax}元，并且为100的整数倍！`
             })
             return
           }
@@ -221,7 +221,11 @@
                       windowOpen.location = tempData.data.urlMiddleman
                     } else {
                       let actionurl = tempData.data.urlMiddleman
-                      plus.runtime.openURL(actionurl)
+                      if (this.isApp) {
+                        JSBridge.openBrowser(actionurl)
+                      } else {
+                        plus.runtime.openURL(actionurl)
+                      }
                     }
                   }
                 }
@@ -235,7 +239,11 @@
                   windowOpen.location = tempData.data.urlMiddleman
                 } else {
                   let actionurl = tempData.data.urlMiddleman
-                  plus.runtime.openURL(actionurl)
+                  if (this.isApp) {
+                    JSBridge.openBrowser(actionurl)
+                  } else {
+                    plus.runtime.openURL(actionurl)
+                  }
                 }
               }
             }
