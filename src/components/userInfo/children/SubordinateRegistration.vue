@@ -200,39 +200,39 @@
     },
     methods: {
       _fandian() {
-        if (this.playPlatform !== 'web') {
-          if (this.fandian) {
-            Velocity(document.getElementById("icon_hook"), {
-              rotateZ: '135deg'
-            }, {
-              duration: 300
-            });
-          } else {
-            Velocity(document.getElementById("icon_hook"), {
-              rotateZ: '-45deg'
-            }, {
-              duration: 300
-            });
-          }
-        }
+        // if (this.playPlatform !== 'web') {
+        //   if (this.fandian) {
+        //     Velocity(document.getElementById("icon_hook"), {
+        //       rotateZ: '135deg'
+        //     }, {
+        //       duration: 300
+        //     });
+        //   } else {
+        //     Velocity(document.getElementById("icon_hook"), {
+        //       rotateZ: '-45deg'
+        //     }, {
+        //       duration: 300
+        //     });
+        //   }
+        // }
         this.fandian = !this.fandian
       },
       _peie() {
-        if (this.playPlatform !== 'web') {
-          if (this.peie) {
-            Velocity(document.getElementById("peie_icon_hook"), {
-              rotateZ: '135deg'
-            }, {
-              duration: 300
-            });
-          } else {
-            Velocity(document.getElementById("peie_icon_hook"), {
-              rotateZ: '-45deg'
-            }, {
-              duration: 300
-            });
-          }
-        }
+        // if (this.playPlatform !== 'web') {
+        //   if (this.peie) {
+        //     Velocity(document.getElementById("peie_icon_hook"), {
+        //       rotateZ: '135deg'
+        //     }, {
+        //       duration: 300
+        //     });
+        //   } else {
+        //     Velocity(document.getElementById("peie_icon_hook"), {
+        //       rotateZ: '-45deg'
+        //     }, {
+        //       duration: 300
+        //     });
+        //   }
+        // }
         this.peie = !this.peie
       },
       // 注册
