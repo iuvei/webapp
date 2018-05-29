@@ -138,6 +138,7 @@
             this.bankList = bankLists
             this.loadmax = this.third.length > 0 ? this.third[0]['loadmax'] : (this.bankList.length > 0 ? this.bankList[0]['loadmax'] : 0)
             this.loadmin = this.third.length > 0 ? this.third[0]['loadmin'] : (this.bankList.length > 0 ? this.bankList[0]['loadmin'] : 0)
+            this.handCharge = this.third[0].handing_charge
           } else {
             this.$vux.alert.show({
               content: tempData.error_msg
