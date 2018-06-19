@@ -5,6 +5,11 @@
     <div class="header_app_v">
       <p class="tips" v-show='tip'>请自行打开任意银行，汇款充值即可！</p>
       <div class="rechargeBox">
+        <div class="boxList clear" v-if="bankInfo.loadstep=='微信转账'">
+          <div class="rechargetit">收款银行</div>
+          <div class="rechargetR">{{bankInfo.account_name}}</div>
+          <p @click="_copys('amount_hook',bankInfo.account_name)" class="button_copy amount_hook">点击复制</p>
+        </div>
         <div class="boxList clear">
           <div class="rechargetit">充值金额</div>
           <div class="rechargetR">{{bankInfo.amount}}</div>
@@ -24,20 +29,26 @@
           <div class="rechargetR copys">{{bankInfo.acc_name}}</div>
           <p @click="_copys('acc_name_hook',bankInfo.acc_name)" class="button_copy acc_name_hook">点击复制</p>
         </div>
-        <div class="boxList">
+        <div class="boxList" v-if="bankInfo.loadstep!='微信转账'">
           <div class="rechargetit">附言</div>
           <div class="rechargetR copys">{{bankInfo.key}}</div>
           <p @click="_copys('key_hook',bankInfo.key)" class="button_copy key_hook">点击复制</p>
         </div>
       </div>
       <div class="fuyan copys">
-        <dl>
+        <dl v-if="bankInfo.loadstep!='微信转账'">
           <dt>充值说明</dt>
           <dd>1.复制“附言内容”粘贴到工行“附言”栏内，否则充值无法到账</dd>
           <dd>2.充值附言随机生成，一个附言只能充值一次，重复使用充值将无法到账</dd>
           <dd>3.收款账户和E-mail会不定时更换，请再获取最新信息后充值</dd>
           <dd>4.登录工行网银后，点击“转账汇款”后选择“E-mail”汇款</dd>
           <dd>5.平台工行充值只支持工行网银转账</dd>
+        </dl>
+        <dl v-else>
+          <dt>注意事项</dt>
+          <dd>1、平台填写金额应当与转账金额完全一致，否则将无法成功自动上分。</dd>
+          <dd>2、平台的银行账户会不定时更换，请在获取最新消息后充值，否则将无法即时到账。</dd>
+          <dd>3、使用微信转账时，请选择“2小时内到账”，到账后立即自动上分。</dd>
         </dl>
       </div>
       <p class="nextStep" v-tap="{ methods:openUrl}" v-show='showcontent'>立即支付</p>
@@ -68,6 +79,7 @@
       // 	document.addEventListener('plusready',function () {})
       // }
       let getParam = this.$route.query.data
+      console.log(getParam)
       if (getParam.bankname == 'abc') {
         this.tip = true
         this.showcontent = false

@@ -86,6 +86,11 @@
         return ver.version
       }
     },
+    created() {
+      if (this.playPlatform === 'android' && !this.$store.getters.getServer) {
+        this._getUpdate()
+      }
+    },
     mounted() {
       // if(window.plus){}else{
       //   document.addEventListener('plusready',function () {})
@@ -254,7 +259,7 @@
             return
           }
           this.times = 0
-          let httpurl = this.$store.state.server + this.mUtils.interFace('LOGIN')
+          let httpurl = this.$store.getters.getServer + this.mUtils.interFace('LOGIN')
           this.httpAction(httpurl, (res) => {
             this.loginTimes = 0
             this.clickFlag = true

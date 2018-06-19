@@ -70,7 +70,8 @@
         alplayname: '',
         loadmax: 0,
         loadmin: 0,
-        handCharge: 0
+        handCharge: 0,
+        bankDetail: {}
       }
     },
     mounted() {
@@ -93,6 +94,7 @@
         let obj = params.item
         let ev = params.event
         this.alplayInfo = obj
+        this.bankDetail = params.item
         this.loadmax = obj.loadmax
         this.loadmin = obj.loadmin
         if (obj.actioner.split('=')[1] == 'alipaywith' || obj.actioner.split('=')[1] == 'alipaywh2') {
@@ -202,7 +204,7 @@
           alipayName: this.alplayname,
           'play_source': this.playSource
         }
-        if (this.playPlatform === 'web') {
+        if (this.playPlatform === 'web' && this.bankDetail.title != '微信转账') {
           var windowOpen = window.open()
         }
         this.httpAction(pwdurl, (res) => {
