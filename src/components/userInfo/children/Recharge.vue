@@ -71,7 +71,9 @@
         loadmax: 0,
         loadmin: 0,
         handCharge: 0,
-        bankDetail: {}
+        bankDetail: {},
+        deductionstart: 0,
+        deductionend: 0
       }
     },
     mounted() {
@@ -124,6 +126,11 @@
             let thirds = tempData.data.payList.third
             this.alplayInfo = thirds[0]
             for (let val in thirds) {
+              console.log(thirds[val])
+              if (thirds[val].name == 'weixinzz') {
+                this.deductionstart = thirds[val].deductionstart
+                this.deductionend = thirds[val].deductionend
+              }
               let tempAction = thirds[val]['actioner'].split('=')[1]
               if (val == 0) {
                 if (tempAction == 'alipaywith' || tempAction == 'alipaywh2') {
@@ -189,73 +196,149 @@
             return
           }
         }
-        this.$vux.loading.show({
-          text: '正在充值'
-        })
-        let pwdurl = this.httpUrl('NEXTBANKLIST')
-        let tempInfo = this.alplayInfo
-        let obj = {
-          tag: tempInfo['actioner'].split('=')[1],
-          flag: 'load',
-          username: this.username,
-          bid: tempInfo.tbank_id,
-          amount: this.inputMoney,
-          Ruleset: 'deposit-hcp',
-          alipayName: this.alplayname,
-          'play_source': this.playSource
-        }
-        if (this.playPlatform === 'web' && this.bankDetail.title != '微信转账') {
-          var windowOpen = window.open()
-        }
-        this.httpAction(pwdurl, (res) => {
-          this.$vux.loading.hide()
-          let tempData = res.data
-          let _this = this
-          if (tempData.error_code == 0) {
-            if (tempData.data['updateMoneyFloat'] != undefined && tempData.data['updateMoneyFloat'] == 1) {
-              this.$vux.alert.show({
-                content: '随机改变充值金额 : 为了避免您的支付限额，系统默认对您填写的整数金额随机减少' + tempData.data['moneyFloatLimitStart'] + '-' + tempData.data['moneyFloatLimitEnd'] + '元！',
-                onHide() {
-                  if (tempData.data.urlMiddleman == "") {
-                    let param = tempData.data
-                    _this.$router.push({path: '/userInfo/RechargeDetail', query: {'data': param}})
+        if (this.alplayInfo.name == 'weixinzz') {
+          this.$vux.confirm.show({
+            title: '温馨提示',
+            content: `随机改变充值金额 : 为了避免您的支付限额，系统默认对您填写的整数金额随机减少${this.deductionstart}-${this.deductionend}元！`,
+            onConfirm: () => {
+              this.$vux.loading.show({
+                text: '正在充值'
+              })
+              let pwdurl = this.httpUrl('NEXTBANKLIST')
+              let tempInfo = this.alplayInfo
+              let obj = {
+                tag: tempInfo['actioner'].split('=')[1],
+                flag: 'load',
+                username: this.username,
+                bid: tempInfo.tbank_id,
+                amount: this.inputMoney,
+                Ruleset: 'deposit-hcp',
+                alipayName: this.alplayname,
+                'play_source': this.playSource
+              }
+              if (this.playPlatform === 'web' && this.bankDetail.title != '微信转账') {
+                var windowOpen = window.open()
+              }
+              this.httpAction(pwdurl, (res) => {
+                this.$vux.loading.hide()
+                let tempData = res.data
+                let _this = this
+                if (tempData.error_code == 0) {
+                  if (tempData.data['updateMoneyFloat'] != undefined && tempData.data['updateMoneyFloat'] == 1) {
+                    this.$vux.alert.show({
+                      content: '随机改变充值金额 : 为了避免您的支付限额，系统默认对您填写的整数金额随机减少' + tempData.data['moneyFloatLimitStart'] + '-' + tempData.data['moneyFloatLimitEnd'] + '元！',
+                      onHide() {
+                        if (tempData.data.urlMiddleman == "") {
+                          let param = tempData.data
+                          _this.$router.push({path: '/userInfo/RechargeDetail', query: {'data': param}})
+                        } else {
+                          if (this.playPlatform === 'web') {
+                            windowOpen.location = tempData.data.urlMiddleman
+                          } else {
+                            let actionurl = tempData.data.urlMiddleman
+                            if (this.isApp) {
+                              JSBridge.openBrowser(actionurl)
+                            } else {
+                              plus.runtime.openURL(actionurl)
+                            }
+                          }
+                        }
+                      }
+                    })
                   } else {
-                    if (this.playPlatform === 'web') {
-                      windowOpen.location = tempData.data.urlMiddleman
+                    if (tempData.data.urlMiddleman == "") {
+                      let param = tempData.data
+                      _this.$router.push({path: '/userInfo/RechargeDetail', query: {'data': param}});
                     } else {
-                      let actionurl = tempData.data.urlMiddleman
-                      if (this.isApp) {
-                        JSBridge.openBrowser(actionurl)
+                      if (this.playPlatform === 'web') {
+                        windowOpen.location = tempData.data.urlMiddleman
                       } else {
-                        plus.runtime.openURL(actionurl)
+                        let actionurl = tempData.data.urlMiddleman
+                        if (this.isApp) {
+                          JSBridge.openBrowser(actionurl)
+                        } else {
+                          plus.runtime.openURL(actionurl)
+                        }
                       }
                     }
                   }
-                }
-              })
-            } else {
-              if (tempData.data.urlMiddleman == "") {
-                let param = tempData.data
-                _this.$router.push({path: '/userInfo/RechargeDetail', query: {'data': param}});
-              } else {
-                if (this.playPlatform === 'web') {
-                  windowOpen.location = tempData.data.urlMiddleman
                 } else {
-                  let actionurl = tempData.data.urlMiddleman
-                  if (this.isApp) {
-                    JSBridge.openBrowser(actionurl)
+                  this.$vux.alert.show({
+                    content: tempData.error_msg
+                  })
+                }
+              }, obj)
+            }
+          })
+        } else {
+          this.$vux.loading.show({
+            text: '正在充值'
+          })
+          let pwdurl = this.httpUrl('NEXTBANKLIST')
+          let tempInfo = this.alplayInfo
+          let obj = {
+            tag: tempInfo['actioner'].split('=')[1],
+            flag: 'load',
+            username: this.username,
+            bid: tempInfo.tbank_id,
+            amount: this.inputMoney,
+            Ruleset: 'deposit-hcp',
+            alipayName: this.alplayname,
+            'play_source': this.playSource
+          }
+          if (this.playPlatform === 'web' && this.bankDetail.title != '微信转账') {
+            var windowOpen = window.open()
+          }
+          this.httpAction(pwdurl, (res) => {
+            this.$vux.loading.hide()
+            let tempData = res.data
+            let _this = this
+            if (tempData.error_code == 0) {
+              if (tempData.data['updateMoneyFloat'] != undefined && tempData.data['updateMoneyFloat'] == 1) {
+                this.$vux.alert.show({
+                  content: '随机改变充值金额 : 为了避免您的支付限额，系统默认对您填写的整数金额随机减少' + tempData.data['moneyFloatLimitStart'] + '-' + tempData.data['moneyFloatLimitEnd'] + '元！',
+                  onHide() {
+                    if (tempData.data.urlMiddleman == "") {
+                      let param = tempData.data
+                      _this.$router.push({path: '/userInfo/RechargeDetail', query: {'data': param}})
+                    } else {
+                      if (this.playPlatform === 'web') {
+                        windowOpen.location = tempData.data.urlMiddleman
+                      } else {
+                        let actionurl = tempData.data.urlMiddleman
+                        if (this.isApp) {
+                          JSBridge.openBrowser(actionurl)
+                        } else {
+                          plus.runtime.openURL(actionurl)
+                        }
+                      }
+                    }
+                  }
+                })
+              } else {
+                if (tempData.data.urlMiddleman == "") {
+                  let param = tempData.data
+                  _this.$router.push({path: '/userInfo/RechargeDetail', query: {'data': param}});
+                } else {
+                  if (this.playPlatform === 'web') {
+                    windowOpen.location = tempData.data.urlMiddleman
                   } else {
-                    plus.runtime.openURL(actionurl)
+                    let actionurl = tempData.data.urlMiddleman
+                    if (this.isApp) {
+                      JSBridge.openBrowser(actionurl)
+                    } else {
+                      plus.runtime.openURL(actionurl)
+                    }
                   }
                 }
               }
+            } else {
+              this.$vux.alert.show({
+                content: tempData.error_msg
+              })
             }
-          } else {
-            this.$vux.alert.show({
-              content: tempData.error_msg
-            })
-          }
-        }, obj)
+          }, obj)
+        }
       }
     }
   }

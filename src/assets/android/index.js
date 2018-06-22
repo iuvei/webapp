@@ -5,7 +5,7 @@ export default {
   install: function (Vue, options) {
     // 实例变量
     Vue.prototype.playPlatform = 'android'
-    Vue.prototype.isApp = false // 原生包 true  H5包 false
+    Vue.prototype.isApp = true // 原生包 true  H5包 false
     Vue.prototype.playSource = 6
     // 方法
     Vue.prototype.httpUrl = (val) => {
@@ -58,7 +58,6 @@ export default {
             Store.commit('updateServer', serverList[j])
             Store.commit('updateLotteryType', appData.lotteryType)
             let appV = require('../../../static/version.json')
-            console.log(appData.app_ver.version, appV.version)
             if (appData.app_ver.version != appV.version) {
               let fileSize
               if (Vue.prototype.isApp) {

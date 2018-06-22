@@ -36,11 +36,9 @@ import('./assets/web/index.css')
 // ios
 // Vue.use(iosPlugin)
 // import('./assets/ios/index.css')
-
 const router = new VueRouter({
   routes
 })
-
 Vue.config.productionTip = false
 Vue.filter('filterRebate', function (value) {
   return (value * 100).toFixed(1) + '%'

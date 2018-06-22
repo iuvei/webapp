@@ -51,7 +51,7 @@
           <dd>3、使用微信转账时，请选择“2小时内到账”，到账后立即自动上分。</dd>
         </dl>
       </div>
-      <p class="nextStep" v-tap="{ methods:openUrl}" v-show='showcontent'>立即支付</p>
+      <p class="nextStep" v-tap="{ methods:openUrl}" v-show='showcontent' v-if="bankInfo.loadstep!='微信转账'">立即支付</p>
     </div>
   </div>
 </template>
@@ -79,7 +79,6 @@
       // 	document.addEventListener('plusready',function () {})
       // }
       let getParam = this.$route.query.data
-      console.log(getParam)
       if (getParam.bankname == 'abc') {
         this.tip = true
         this.showcontent = false
