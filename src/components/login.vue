@@ -238,6 +238,21 @@
           // 设置在登录状态
           this.isLoging = true
           this.loginText = '登录中...'
+          if ((this.$store.state.server == 'file://' || !this.$store.state.server) && this.playPlatform != 'web') {
+            this._getUpdate()
+            this.noServerTimeout = setTimeout(() => {
+              this.$vux.alert.show({
+                title: '提示',
+                content: '账号验证失败，请重新登录',
+                onShow: () => {
+                  clearTimeout(this.noServerTimeout)
+                  this.clickFlag = true
+                  this.loginText = '登录'
+                }
+              })
+            }, 1000)
+            return false
+          }
           if (this.$store.state.server == null) {
             this.clear = setTimeout(() => {
               this.clickFlag = true
