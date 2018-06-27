@@ -189,8 +189,7 @@
       "lastupdate": 0,
       "lotterytype": 1,
       "curmid": 313550
-    },
-    {
+    },{
       "cnname": "河内1分彩",
       "nav": "hnffc",
       "lotteryid": 27,
@@ -219,6 +218,17 @@
       "imgSrc": "new",
       "disabled": false,
       "hotLottery": 1
+    },
+    {
+      "cnname": "瑞典一分彩",
+      "nav": "rd60",
+      "lotteryid": 32,
+      "lotteryCurmlotteryid": 313980,
+      "lotteryDesc": "24小时全天开奖",
+      "methodid": 3113219,
+      "lastupdate": 0,
+      "lotterytype": 4,
+      "curmid": 313980
     }
   ]
 }
