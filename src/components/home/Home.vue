@@ -321,7 +321,7 @@
             let data = res.data
             // 处理龙虎庄闲数据
             let lhobj = {}, zxobj = {}, rxobj = {}, rxArr = [], _indexArr = []
-            if ((navArr[i] == 'ssc' || navArr[i] == 'txffc' || navArr[i] == 'jnd30s' || navArr[i] == 'ffc') && Array.isArray(data)) {
+            if ((navArr[i] == 'ssc' || navArr[i] == 'txffc' || navArr[i] == 'jnd30s' || navArr[i] == 'ffc' || navArr[i] == 'rd60') && Array.isArray(data)) {
               data.forEach((value, index) => {
                 if (value.title === '龙虎庄闲') {
                   _indexArr.push(index)
