@@ -12,16 +12,21 @@ export default {
       return Store.state.server + Utils.interFace(val) + '&sess=' + Store.getters.getSess
     }
     Vue.prototype.openurl = () => {
-      let lickUrl = 'https://ngmm.livechatvalue.com/chat/chatClient/chatbox.jsp?companyID=12397&configID=50&jid='
-      if (Vue.prototype.isApp) {
-        JSBridge.openBrowser(lickUrl)
-      } else {
-        plus.runtime.openURL(lickUrl, function () {
-          Vue.$vux.alert.show({
-            content: '联系客服失败'
-          })
-        })
-      }
+      Vue.prototype.httpAction(Vue.prototype.httpUrl('KEFU'), (res) => {
+        if (res.data.status == 200) {
+          let data = res.data.repsoneContent;
+          let lickUrl = data.kefulink
+          if (Vue.prototype.isApp) {
+            JSBridge.openBrowser(lickUrl)
+          } else {
+            plus.runtime.openURL(lickUrl, function () {
+              Vue.$vux.alert.show({
+                content: '联系客服失败'
+              })
+            })
+          }
+        }
+      })
     }
     Vue.prototype._getUpdate = () => {
       if (Store.state.ifLink == null) {

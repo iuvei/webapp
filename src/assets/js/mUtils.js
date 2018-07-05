@@ -192,8 +192,14 @@ export const interFace = (key) => {
   INTERFACE['SENDDIVIDENDSALARY'] = 'controller=dividendsalary&action=sendDividendSalary';
   // 历史分红
   INTERFACE['PRESONALSALARY'] = 'controller=dividendsalary&action=personalsalary';
-
-  var httpurl = '/wap/index.php?' + INTERFACE[key]
+  // 客服，域名
+  INTERFACE['KEFU'] = 'controller=default&action=index&KefuLink=true';
+  var httpurl;
+  if (key == 'KEFU') {
+    httpurl = '/pcservice/index.php?' + INTERFACE[key]
+  } else {
+    httpurl = '/wap/index.php?' + INTERFACE[key]
+  }
   return httpurl
 }
 

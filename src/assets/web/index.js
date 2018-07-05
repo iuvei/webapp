@@ -28,11 +28,13 @@ export default {
       return Store.state.server + Utils.interFace(val) + '&sess=' + sess;
     }
     Vue.prototype.openurl = () => {
-      let lickUrl = 'https://ngmm.livechatvalue.com/chat/chatClient/chatbox.jsp?companyID=12397&configID=50&jid=';
-      window.open(lickUrl, function () {
-        Vue.$vux.alert.show({
-          content: '联系客服失败'
-        })
+      let kefuWin = window.open()
+      Vue.prototype.httpAction(Vue.prototype.httpUrl('KEFU'), (res) => {
+        if (res.data.status == 200) {
+          let data = res.data.repsoneContent
+          let lickUrl = data.kefulink
+          kefuWin.location.href = lickUrl
+        }
       })
     }
     Vue.prototype._getUpdate = () => {
