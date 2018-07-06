@@ -193,7 +193,12 @@ export const interFace = (key) => {
   // 历史分红
   INTERFACE['PRESONALSALARY'] = 'controller=dividendsalary&action=personalsalary';
 
-  var httpurl = '/wap/index.php?' + INTERFACE[key]
+  var httpurl;
+  if(key == 'TEAMMANAGEMENT' || key == 'SEEPROTOCOL' || key == 'UPDATEPROTOCOL'){
+    httpurl = '/pcservice/index.php?' + INTERFACE[key]
+  }else{
+    httpurl = '/wap/index.php?' + INTERFACE[key]
+  }
   return httpurl
 }
 

@@ -51,7 +51,7 @@
       </ul>
     </div>
     <p id="copyright" class="copyright" :class="playPlatform">Copyright &copy; 2014 - 2017 恒彩彩票版权所有</p><br>
-    <p id="copyright" class="copyright" :class="playPlatform">当前版本：V{{version}}</p>
+    <p class="copyright" :class="playPlatform">当前版本：V{{version}}</p>
   </div>
 </template>
 

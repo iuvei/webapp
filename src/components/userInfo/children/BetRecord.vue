@@ -55,7 +55,7 @@
             <tbody>
             <tr v-tap="{ methods:_betRecordDetails, item: item }" v-for="(item,index) in dataList" :key="index"
                 align="center" style=" height: 1.2rem;">
-              <td class="whiteSpace">{{index+1}}</td>
+              <td class="whiteSpace">{{index + 1}}</td>
               <td>
                 <p v-text="item.cnname"></p>
                 <p v-show="isActives==3" v-text="item.writetime"></p>

@@ -73,8 +73,14 @@ import Setpwd from '../components/bankCard/children/Setpwd.vue'
 import Settkpwd from '../components/bankCard/children/Settkpwd.vue'
 import SecSetpwd from '../components/bankCard/children/SecSetpwd.vue'
 import Help from '../components/help/help.vue'
+import SetSalary from '../components/userInfo/children/SetDalary.vue'
 
 export default [
+  {
+    path: '/userInfo/setDalary',
+    component: SetSalary,
+    meta: {keepAlive: true}
+  },
   {
     path: '/welcome/welcome',
     component: Welcome,
@@ -440,7 +446,7 @@ export default [
     // 团队管理用户名
     path: '/userInfo/secondaryAgent',
     component: SecondaryAgent,
-    meta: {keepAlive: true}
+    meta: {keepAlive: false}
   },
   {
     // 追号记录

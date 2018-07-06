@@ -10,60 +10,76 @@
           <br class="clear">
         </li>
         <li>
+          <p class="teamTit">用户类型</p>
+          <p class="teamcontent" v-text="agentDetail.groupname"></p>
+          <p class="teamr"></p>
+          <br class="clear">
+        </li>
+        <li>
+          <p class="teamTit">团队人数</p>
+          <p class="teamcontent" v-text="agentDetail.team_count + '人'"></p>
+          <p class="teamr"></p>
+          <br class="clear">
+        </li>
+        <li>
           <p class="teamTit">注册时间</p>
-          <p class="teamcontent" v-text="agentDetail.registertime"></p>
+          <p class="teamcontent" v-text="agentDetail.register_time"></p>
           <p class="teamr"></p>
           <br class="clear">
         </li>
         <li>
-          <p class="teamTit">返点级别</p>
-          <p class="teamcontent">{{teamcontent}}</p>
-          <p class="teamr upBtn" v-tap="{ methods: clickteamcontent }" v-if="isupBtn">
-            <span>提升返点</span>
-          </p>
+          <p class="teamTit">奖金组</p>
+          <p class="teamcontent" v-text="agentDetail.prize_group"></p>
+          <div class="updateBtn">修改</div>
           <br class="clear">
-          <div class="upfandian" v-show="isshow">
-                <form @submit.prevent="submit">
-                  <div class="clear">
-                    <p>自身保留返点</p>
-                    <p>
-                      <input type="text" name="keeppoint" v-model="keeppoint" placeholder="自身最少保留0.1">
-                    </p>
-                    <p class="settingfandian">
-                      <input  type="submit" value="一键设置" readonly style="background: transparent;color:#fff;text-indent:0;">
-                    </p>
-                    <input type="hidden" name="flag" value="rapid">
-                    <input type="hidden" name='uid' v-model="postData.uid">
-                    <div v-for="items in AllLotterys">
-                      <input type="hidden" name='lottery' v-model="items.setted.lotteryid">
-
-                      <input type="hidden" :name='items.namepg' v-model="items.setted.userpgid">
-
-                      <input type="hidden" :name='items.namemin_point' v-model="items.setted.min">
-                      <input type="hidden" :name='items.namemax_point' v-model="items.setted.max">
-                      <input type="hidden" :name='items.namepoint' v-model="items.allFD">
-
-                      <input type="hidden" :name='items.namemin_indefinite_point' v-model="items.setted.minIndefinite">
-                      <input type="hidden" :name='items.namemax_indefinite_point' v-model="items.setted.maxIndefinite">
-                      <input type="hidden" :name='items.nameindefinite_point' v-model="items.bddFD">
-                    </div>
-                  </div>
-                  <div class="tips right">
-                    自身返点至少保留<span>0.1</span><span v-text="parseFloat(maxPoint)<= 0 ? '，当前已无法提升返点': ('，最高为您当前返点'+maxPoint)"></span>
-                  </div>
-                </form>
-              </div>
         </li>
         <li>
-          <p class="teamTit">账户余额</p>
-          <p class="teamcontent">{{agentDetail.availablebalance | tofixed('')}}</p>
+          <p class="teamTit">个人余额</p>
+          <p class="teamcontent textColor">{{agentDetail.private_money | tofixed('')}} 元</p>
+          <div class="updateBtn">充值</div>
+          <br class="clear">
+        </li>
+        <li>
+          <p class="teamTit">团队余额</p>
+          <p class="teamcontent textColor">{{teamMoney | tofixed('')}} 元</p>
           <p class="teamr"></p>
           <br class="clear">
         </li>
         <li>
-          <p class="teamTit">最后一次登录</p>
-          <p class="teamcontent" v-text="agentDetail.lasttime=='1970-01-01 00:00:00'? '您还是第一次登录哦': agentDetail.lasttime "></p>
+          <p class="teamTit">最后登录时间</p>
+          <p class="teamcontent" v-text="agentDetail.lasttime=='1970-01-01 00:00:00'? '新建账号，未登录！': agentDetail.lasttime "></p>
           <p class="teamr"></p>
+          <br class="clear">
+        </li>
+        <li v-if="this.$store.state.dayWage == 1">
+          <p class="teamTit">日工资比例</p>
+          <p class="teamcontent textColor" v-if="agentDetail.daily_salary_status=='1'">{{agentDetail.salaryHighRadio}}%</p>
+          <div class="updateBtn updateBtning" v-if="agentDetail.daily_salary_status=='0'" v-text="agentDetail.daily_salary_status=='0' && '签订中'"></div>
+          <div class="teamr pereBtn" v-if="agentDetail.daily_salary_status=='1'" v-tap="{ methods: _showSalary }"></div>
+          <div class="updateBtn" v-if="agentDetail.daily_salary_status=='2'" v-text="agentDetail.daily_salary_status=='2' && '已拒绝'" v-tap="{ methods: _setSalary }"></div>
+          <div class="updateBtn" v-if="agentDetail.daily_salary_status=='3'" v-text="agentDetail.daily_salary_status=='3' && '未签订'" v-tap="{ methods: _setSalary }"></div>
+          <br class="clear">
+          <table class="salaryTable" v-if="showSalary" width="100%" cellpadding="0" cellspacing="0" border="0">
+            <thead>
+              <tr align="center">
+                <td>日销量</td>
+                <td>活跃人数</td>
+                <td>日工资比例</td>
+              </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(item, index) in newSalary" align="center">
+              <td>{{item.sale}}</td>
+              <td>{{item.active_member}}</td>
+              <td>{{item.salary_ratio}}%</td>
+            </tr>
+            </tbody>
+          </table>
+        </li>
+        <li v-if="this.$store.state.dividend == 1">
+          <p class="teamTit">分红比例</p>
+          <p class="teamcontent textColor" v-if="agentDetail.dividend_salary_status=='1'">{{agentDetail.dividend_radio}}%</p>
+          <div class="updateBtn" v-text="agentDetail.dividend_salary_status=='1'? '修改' : '未签订'"></div>
           <br class="clear">
         </li>
         <li>
@@ -120,7 +136,10 @@
         lotterys: [], // 计算列表
         AllLotterys: [],
         AllLotterysflag: [],
-        isupBtn: false
+        isupBtn: false,
+        teamMoney: 0, // 团队余额
+        showSalary: false,
+        newSalary: []
       }
     },
     watch: {
@@ -137,10 +156,57 @@
     mounted () {
       this._getUpedituser()
       this._getUseraccnum()
+      this._getTeamMoney()
+      this._getHistorySalary()
     },
     methods: {
+      /*签订日工资*/
+      _setSalary() {
+        this.$router.push({path: '/userInfo/setDalary'})
+      },
+      /*团队余额*/
+      _getTeamMoney() {
+        this.httpAction(this.httpUrl('TEAMMANAGEMENT'), (res) => {
+          if (res.data.status == 200) {
+            this.teamMoney =  res.data.repsoneContent.money
+          }
+        }, {
+          uid: this.agentDetail.userid,
+          tag: 'get_team_money'
+        })
+      },
+
       _show () {
         this.show = !this.show
+      },
+      _getHistorySalary() {
+        if(this.$store.state.dayWage == 1){
+          this.httpAction(this.httpUrl('SEEPROTOCOL'), (res) => {
+            if (res.data.status == 200) {
+              let pros = res.data.repsoneContent.pros;
+              this.newSalary = pros['new'];
+              if(this.newSalary.length < 1){
+                this.agentDetail.newSalary = [
+                  {
+                    active_member: '',
+                    salary_ratio: '',
+                    sale: ''
+                  }
+                ]
+              }else{
+                this.agentDetail.newSalary = pros['new'];
+              }
+              this.agentDetail.oldSalary = pros['old'];
+              this.$store.commit('updateAgentDetail', this.agentDetail)
+            }
+          }, {
+            userid: this.agentDetail.userid,
+            parentid: this.agentDetail.parentid,
+          })
+        }
+      },
+      _showSalary() {
+        this.showSalary = !this.showSalary
       },
       clickteamcontent () {
         this.isshow = !this.isshow
@@ -371,6 +437,12 @@
   .topPadding{
     height:0.88rem;
   }
+ .salaryTable{
+   background: #fff;
+   thead tr td{
+     border-top: 1px solid #dddddd;
+   }
+ }
   .tips{
     color:#FD004C;
     margin-right:0.6rem;
@@ -398,6 +470,25 @@
         .icon_arrows(0.17rem,0,#aaa,0.18rem,135deg)
       }
     }
+    .textColor{
+      color: #f00;
+    }
+     .updateBtn{
+       float: right;
+       width: 1.2rem;
+       height: 0.5rem;
+       line-height: 0.5rem;
+       border: 1px solid #f00;
+       border-radius: 3px;
+       color: #f00;
+       text-align: center;
+       margin: 0.08rem 0.16rem 0 0;
+       font-size: 0.28rem;
+     }
+     .updateBtning{
+       border: 1px solid #a5a5a5;
+       color: #a5a5a5;
+     }
     .pereBtn{
       position: relative;
       float:left;

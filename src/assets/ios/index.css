@@ -4,11 +4,7 @@
 
 .main-body_userInfo {
   margin-bottom: 0.8rem;
+  background: #F6F6F6;
 }
 
-/*报表管理中head定位*/
-.p_fixed {
-  position: fixed;
-  top: 1.25rem;
-  z-index: -1;
-}
+

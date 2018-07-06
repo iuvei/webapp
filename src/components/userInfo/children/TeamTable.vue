@@ -425,5 +425,11 @@
     .cl;
     margin-top:0.5rem;
   }
+  /*报表管理中head定位*/
+  .p_fixed {
+    position: fixed;
+    top: 1.25rem;
+    z-index: -1;
+  }
 
 </style>
