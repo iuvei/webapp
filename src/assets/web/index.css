@@ -4,13 +4,6 @@
   background: #F6F6F6;
 }
 
-/*报表管理中head定位*/
-.p_fixed {
-  position: fixed;
-  top: 0.88rem;
-  z-index: -1;
-}
-
 .weui-dialog {
   overflow: visible !important;
 }
