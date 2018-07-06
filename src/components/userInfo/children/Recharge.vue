@@ -126,7 +126,6 @@
             let thirds = tempData.data.payList.third
             this.alplayInfo = thirds[0]
             for (let val in thirds) {
-              console.log(thirds[val])
               if (thirds[val].name == 'weixinzz') {
                 this.deductionstart = thirds[val].deductionstart
                 this.deductionend = thirds[val].deductionend

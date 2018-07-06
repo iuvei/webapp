@@ -84,7 +84,7 @@
 //        let appData = require('../../../static/ios_hc.json')
 //        let getversion = appData.app_ver.version
 //        let updateUrl = appData.app_ver.url
-          let httpurl = 'https://dn-outwitinc.qbox.me/hcol/ios_hc_new.json?ver=' + new Date().getTime()
+          let httpurl = this.jsonUrl + new Date().getTime()
           this.httpAction(httpurl, (res) => {
             this.updateV = true
             let getversion = res.data.app_ver.version

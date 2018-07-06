@@ -238,6 +238,7 @@
           // 设置在登录状态
           this.isLoging = true
           this.loginText = '登录中...'
+          console.log(this.$store.state.server)
           if ((this.$store.state.server == 'file://' || !this.$store.state.server) && this.playPlatform != 'web') {
             this._getUpdate()
             this.noServerTimeout = setTimeout(() => {

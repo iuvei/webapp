@@ -317,7 +317,6 @@
         let regd = /和值/
         //第一步：这里处理各种不同的玩法
         let r = random(Lodid)
-        console.log(r)
         // 任选和值
         if (this.rxZXIds.indexOf(lt_method[String(Lodid)]) > -1) {
           let tmp = [[]]

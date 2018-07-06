@@ -11,6 +11,7 @@ export default {
     Vue.prototype.httpUrl = (val) => {
       return Store.state.server + Utils.interFace(val) + '&sess=' + Store.getters.getSess
     }
+    Vue.prototype.jsonUrl = 'https://dn-outwitinc.qbox.me/hcol/android.json?ver='
     Vue.prototype.openurl = () => {
       Vue.prototype.httpAction(Vue.prototype.httpUrl('KEFU'), (res) => {
         if (res.data.status == 200) {
@@ -32,7 +33,7 @@ export default {
       if (Store.state.ifLink == null) {
         // let httpurl = 'https://dn-outwitinc.qbox.me/hcol/ios_hc_appstore.json?ver='+new Date().getTime()
         // if (process.env.NODE_ENV === 'production') {
-        var httpurl = 'https://dn-outwitinc.qbox.me/hcol/hc_2.0.json?ver=' + new Date().getTime() //上线用
+        var httpurl = Vue.prototype.jsonUrl + new Date().getTime() //上线用
         // } else {
         var appData = require('../../../static/hc_2.0.json') // 开发用
         // }
