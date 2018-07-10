@@ -14,10 +14,10 @@
       <tbody>
       <tr align="center" v-for="(item, index) in newSalary">
         <td width="25%">
-          <input type="text" v-model="item.sale" @input="verifyNumber(newSalary, index)">
+          <input type="text" v-model="item.sale" @input="verifySalary(newSalary, index)">
         </td>
         <td width="25%">
-          <input type="text" v-model="item.active_member">
+          <input type="text" v-model="item.active_member" @input="verifyNumber(newSalary, index)">
         </td>
         <td width="25%">
           <input type="text" v-model="item.salary_ratio">%
@@ -51,12 +51,12 @@
 
     <div class="old_salary_content" v-if="agentDetail.oldSalary instanceof Array && agentDetail.oldSalary.length > 0">
       <p>旧版日工资参考：</p>
-      <table width="100%" border="1" cellspacing="0">
+      <x-table style="background-color:#fff;">
         <thead>
-        <tr align="center">
-          <td>日销量</td>
-          <td>活跃人数</td>
-          <td>日工资比例</td>
+        <tr>
+          <th>日销量</th>
+          <th>活跃人数</th>
+          <th>日工资比例</th>
         </tr>
         </thead>
         <tbody>
@@ -66,21 +66,22 @@
           <td>{{item.salary_ratio}}%</td>
         </tr>
         </tbody>
-      </table>
+      </x-table>
     </div>
   </div>
 </template>
 
 <script>
   import headTop from '../../header/Header.vue'
-  import { Icon, Flexbox, FlexboxItem, XButton } from 'vux'
+  import { Icon, Flexbox, FlexboxItem, XButton, XTable } from 'vux'
   export default{
     components: {
       headTop,
       Icon,
       Flexbox,
       FlexboxItem,
-      XButton
+      XButton,
+      XTable,
     },
     data(){
       return {
@@ -91,11 +92,19 @@
     mounted() {
     },
     methods: {
-      verifyNumber(newSalary, index) {
+      /*验证日销量*/
+      verifySalary(newSalary, index) {
         let reg = /^[0-9]*$/, str = newSalary[index].sale,
           r = reg.test(str);
         if (!r) {
           this.newSalary[index].sale = str.substring(0, str.length - 1)
+        }
+      },
+      verifyNumber(newSalary, index) {
+        let reg = /^[0-9]*$/, str = newSalary[index].active_member,
+          r = reg.test(str);
+        if (!r) {
+          this.newSalary[index].active_member = str.substring(0, str.length - 1)
         }
       },
       /*添加档位*/
@@ -220,12 +229,6 @@
     margin: 0 0.2rem;
     p{
       padding: 0.16rem 0;
-    }
-    table{
-      border-color: #ddd;
-      thead td{
-        width: 33%;
-      }
     }
   }
 </style>

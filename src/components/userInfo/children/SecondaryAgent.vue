@@ -69,14 +69,14 @@
           {
             uid: ''
           }
-        ],
+        ]
       }
     },
     activated() {
       this._getSecondaryAgent()
     },
     mounted() {
-//      this._getSecondaryAgent()
+      this._getSecondaryAgent()
     },
     methods: {
       // 获取团队管理

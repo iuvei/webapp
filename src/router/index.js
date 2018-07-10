@@ -74,8 +74,14 @@ import Settkpwd from '../components/bankCard/children/Settkpwd.vue'
 import SecSetpwd from '../components/bankCard/children/SecSetpwd.vue'
 import Help from '../components/help/help.vue'
 import SetSalary from '../components/userInfo/children/SetDalary.vue'
+import SetDividend from '../components/userInfo/children/SetDividend.vue'
 
 export default [
+  {
+    path: '/userInfo/SetDividend',
+    component: SetDividend,
+    meta: {keepAlive: true}
+  },
   {
     path: '/userInfo/setDalary',
     component: SetSalary,

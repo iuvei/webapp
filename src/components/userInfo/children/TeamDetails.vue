@@ -30,14 +30,97 @@
         <li>
           <p class="teamTit">奖金组</p>
           <p class="teamcontent" v-text="agentDetail.prize_group"></p>
-          <div class="updateBtn">修改</div>
+          <div class="updateBtn" v-tap="{methods: _showPrizeGroup}">修改</div>
           <br class="clear">
+          <div class="prize_group_content" v-if="showPrizeGroup">
+            <ul class="fandian clear">
+              <li>自身返点：{{selfPoint * 100}}%</li>
+              <li>用户返点：{{userKeeppoint}}%</li>
+              <li>保留返点：{{(selfPoint * 100 - userKeeppoint).toFixed(1)}}%</li>
+            </ul>
+            <p class="prize_group_text">设置奖金组：{{prizeGroup}}</p>
+            <div class="range_content">
+              <range v-model="prizeGroup"
+                     :step="2"
+                     :min="prizeGroupList.length !== 0 ? parseInt(prizeGroupList[0].prizeGroup) : 1800"
+                     :max="prizeGroupList.length !== 0 ? parseInt(prizeGroupList[prizeGroupList.length - 1].prizeGroup) : 1956"
+                     @on-change="_onChangeKeepPoint"
+              >
+              </range>
+            </div>
+            <div class="set_proup_btn">
+              <flexbox>
+                <flexbox-item>
+                  <x-button type="warn" v-tap="{methods: _setPrizeGroup}">确定</x-button>
+                </flexbox-item>
+                <flexbox-item>
+                  <x-button type="default" v-tap="{methods: _cancelSet}">取消</x-button>
+                </flexbox-item>
+              </flexbox>
+            </div>
+          </div>
         </li>
         <li>
           <p class="teamTit">个人余额</p>
           <p class="teamcontent textColor">{{agentDetail.private_money | tofixed('')}} 元</p>
-          <div class="updateBtn">充值</div>
+          <div class="updateBtn" v-tap="{ methods: onRecharge }">充值</div>
           <br class="clear">
+          <div v-transfer-dom>
+            <x-dialog v-model="showRecharge" class="dialog-demo">
+              <div class="img-box">
+                <div class="recharge_content">
+                  <span class="r_title">下级充值</span>
+                  <icon class="r_close" type="cancel" v-tap="{methods: _rechargeClose}"></icon>
+                </div>
+              </div>
+              <ul class="recharge_list">
+                <li>
+                  <span>用户账号：</span>
+                  <span>{{agentDetail.username}}</span>
+                </li>
+                <li>
+                  <span>您的余额：</span>
+                  <span class="text_color">{{recharge.balance}} 元</span>
+                </li>
+                <li>
+                  <div class="clear">
+                    <span class="rechage_text">充值金额：</span>
+                    <x-input class="recharge_input"
+                             type="number"
+                             placeholder="输入充值金额"
+                             :show-clear="false"
+                             v-model="rechargeMoney"
+                    >
+                    </x-input>
+                    <span class="rechage_text">元</span>
+                  </div>
+                  <p class="money_hint">
+                    最低金额
+                    <strong class="text_color">{{recharge.recharge_min}}</strong>
+                    元，最高
+                    <strong class="text_color">{{recharge.recharge_max}}</strong>
+                    元的整数
+                  </p>
+                </li>
+                <li class="clear">
+                  <span class="rechage_text">资金密码：</span>
+                  <x-input class="fund_input"
+                           type="password"
+                           placeholder="输入资金密码"
+                           :show-clear="false"
+                           v-model="fundPassword"
+                  >
+                  </x-input>
+                </li>
+                <li>
+                  <p class="text_color">{{errorText}}</p>
+                </li>
+                <li style="text-align: center">
+                  <x-button mini type="warn" :show-loading="rechargeLoading" v-tap="{methods: onConfirm}">立即充值</x-button>
+                </li>
+              </ul>
+            </x-dialog>
+          </div>
         </li>
         <li>
           <p class="teamTit">团队余额</p>
@@ -54,7 +137,7 @@
         <li v-if="this.$store.state.dayWage == 1">
           <p class="teamTit">日工资比例</p>
           <p class="teamcontent textColor" v-if="agentDetail.daily_salary_status=='1'">{{agentDetail.salaryHighRadio}}%</p>
-          <div class="updateBtn updateBtning" v-if="agentDetail.daily_salary_status=='0'" v-text="agentDetail.daily_salary_status=='0' && '签订中'"></div>
+          <div class="updateBtn updateBtning" v-if="agentDetail.daily_salary_status=='0'" v-text="agentDetail.daily_salary_status=='0' && '签订中'" v-tap="{ methods: _setSalary }"></div>
           <div class="teamr pereBtn" v-if="agentDetail.daily_salary_status=='1'" v-tap="{ methods: _showSalary }"></div>
           <div class="updateBtn" v-if="agentDetail.daily_salary_status=='2'" v-text="agentDetail.daily_salary_status=='2' && '已拒绝'" v-tap="{ methods: _setSalary }"></div>
           <div class="updateBtn" v-if="agentDetail.daily_salary_status=='3'" v-text="agentDetail.daily_salary_status=='3' && '未签订'" v-tap="{ methods: _setSalary }"></div>
@@ -78,36 +161,46 @@
         </li>
         <li v-if="this.$store.state.dividend == 1">
           <p class="teamTit">分红比例</p>
-          <p class="teamcontent textColor" v-if="agentDetail.dividend_salary_status=='1'">{{agentDetail.dividend_radio}}%</p>
-          <div class="updateBtn" v-text="agentDetail.dividend_salary_status=='1'? '修改' : '未签订'"></div>
+          <p class="teamcontent textColor" v-if="agentDetail.dividend_salary_status=='1' && !showRevise">{{agentDetail.dividend_radio}}%</p>
+          <x-input class="dividend_input"
+                   v-if="showRevise"
+                   type="number"
+                   :show-clear="false"
+                   v-model="dividendPoint"
+          >
+          </x-input>
+          <div class="updateBtn" v-if="showRevise" v-tap="{ methods: _saveDividend}">保存修改</div>
+          <div class="updateBtn" v-if="showRevise" v-tap="{ methods: _cancelDividend }">取消</div>
+          <div class="updateBtn" v-if="!showRevise" v-text="agentDetail.dividend_salary_status == '1' ? '修改' : '未签订'" v-tap="{ methods: _setDividend }"></div>
           <br class="clear">
         </li>
         <li>
           <p class="teamTit">配额设定</p>
           <p class="teamcontent"></p>
-          <p class="teamr pereBtn" v-tap="{ methods: _show }" v-if="useraccnum.length!==0">
-          </p>
+          <p class="teamr pereBtn" v-tap="{ methods: _show }"></p>
           <br class="clear">
-          <transition name="fade">
-            <form @submit.prevent="submits">
-              <input type="hidden" name='flag' value="edit">
-              <input type="hidden" name='uid' v-model="postData.uid">
-              <ul class="quotaSetting" v-if="show">
-                <li class="clear" v-for="(item,index) in useraccnum" v-if="item.accnum != 0">
-                  <div class="left">
-                    <span>
-                      <span>{{item.low | filterRebate}}~</span><span>{{item.high | filterRebate}}</span>区间返点区间配额为<input class="accnum accnum_hook" type="text" name="accnum" @blur="_blurAccnum(item.accnum,index)">
-                    </span>
-                  <input type="hidden" name='accgroup' v-model="item.agid">
-                  </div>
-                  <div class="left">(当前可用{{item.accnum}}个)</div>
-                </li>
-                <div class="settingpeie">
-                  <input name="submit" type="submit" value="提交" style="background: transparent;color:#fff;width:2rem;height:0.6rem;">
-                </div>
-              </ul>
-            </form>
-          </transition>
+            <ul class="quotaSetting" v-if="show">
+              <li v-for="(item, i) in quotaList" v-if="item.accGroup <= agentDetail.prize_group">
+                {{item.accGroup}}配额为
+                <span
+                className="subaccnum">{{item.subaccnum == undefined ? '0' : item.subaccnum}}</span>个，
+                <span>
+                  再增加
+                  <x-input class="quota_input"
+                           type="number"
+                           :show-clear="false"
+                           v-model="agPost.accnum[i] && agPost.accnum[i]"
+                           @on-change="onChangeAccGroup(agPost.accnum[i], item)"
+                  >
+                  </x-input>
+                  个(剩余可分配{{item.accnum}}个)
+                </span>
+              </li>
+              <li>{{agentDetail.prize_group < 1950 ? agentDetail.prize_group : '1948'}}及以下剩余配额：无限；</li>
+              <li style="text-align: center">
+                <x-button mini type="warn" :show-loading="quotaLoding" v-tap="{methods: onApplyPrizeQuota}">提交</x-button>
+              </li>
+            </ul>
         </li>
       </ul>
     </div>
@@ -115,10 +208,21 @@
 </template>
 <script>
   import headTop from '../../header/Header.vue'
+  import {Range, Flexbox, XButton, FlexboxItem, XDialog, TransferDomDirective as TransferDom, Icon, md5, XInput } from 'vux'
 
   export default {
+    directives: {
+      TransferDom
+    },
     components: {
-      headTop
+      headTop,
+      Range,
+      Flexbox,
+      XButton,
+      FlexboxItem,
+      XDialog,
+      Icon,
+      XInput
     },
     data () {
       return {
@@ -128,18 +232,30 @@
         isshow: false,
         agentDetail: this.$store.state.agentDetail,
         maxPoint: (this.$route.query.selfp - this.$store.state.agentDetail.userpoint * 100 - 0.1).toFixed(1), // 最高返点
-        useraccnum: [], // 配额设定列表
-        setAccnum: 0, // 配额个数
-        postData: {
-          uid: this.$store.state.agentDetail.userid
-        },
         lotterys: [], // 计算列表
         AllLotterys: [],
         AllLotterysflag: [],
         isupBtn: false,
         teamMoney: 0, // 团队余额
         showSalary: false,
-        newSalary: []
+        newSalary: [],
+        selfPoint: 0,
+        showPrizeGroup: false,
+        prizeGroup: parseInt(this.$store.state.agentDetail.prize_group),
+        prizeGroupList: [],
+        userKeeppoint: 0,
+        showRecharge: false,
+        recharge: {},
+        rechargeMoney: '',
+        fundPassword: '',
+        rechargeLoading: false,
+        errorText: '',
+        showRevise: false,
+        dividendPoint: '', // 修改的分红比例
+        dividendLoading: true,
+        quotaList: [], // 配额列表
+        agPost: {}, // 申请配额请求参数
+        quotaLoding: false,
       }
     },
     watch: {
@@ -154,12 +270,232 @@
       }
     },
     mounted () {
-      this._getUpedituser()
       this._getUseraccnum()
       this._getTeamMoney()
       this._getHistorySalary()
+      this._getPrizeGroup()
+      this._getAccGroupList()
     },
     methods: {
+      _getAccGroupList() {
+        this.httpAction(this.httpUrl('USERACCNUM'), (res) => {
+          let result = res.data;
+          if (result.status == 200) {
+            let aAllUserTypeAccNum = result.repsoneContent.aAllUserTypeAccNum, ap = this.agPost
+            ap.accgroup = [];
+            ap.accnum = [];
+            aAllUserTypeAccNum.forEach((item) => {
+              ap.accgroup.push(item.agid);
+              if (item.quotanum != undefined) {
+                ap.accnum.push(item.quotanum);
+              } else {
+                ap.accnum.push('0');
+              }
+            });
+            ap.uid = this.agentDetail.userid
+            ap.flag = 'post',
+            this.quotaList = aAllUserTypeAccNum
+            this.agPost =ap
+            console.log(ap)
+          }
+        }, {
+          uid: this.agentDetail.userid
+        })
+      },
+      /*申请配额*/
+      onApplyPrizeQuota(){
+        this.quotaLoding = true
+        this.httpAction(this.httpUrl('USERACCNUM'), (res) => {
+          this.quotaLoding = false
+          let result = res.data
+          if (result.status == 200) {
+            this.agPost = {}
+            this._getAccGroupList()
+            this.$vux.alert.show({
+              title: '温馨提示',
+              content: result.repsoneContent,
+            });
+          }
+        }, this.agPost)
+      },
+      /*设置配额契约*/
+      onChangeAccGroup(value, item) {
+        let ap = this.agPost,
+          accgroup = ap.accgroup;
+        for (let i = 0; i < accgroup.length; i++) {
+          if (accgroup[i] == item.agid) {
+            ap.accnum[i] = value;
+            break;
+          }
+        }
+        this.agPost = ap
+      },
+      _saveDividend() {
+        let dp = this.dividendPoint
+        if(dp == '' || dp < 0){
+          this.$vux.alert.show({
+            title: '温馨提示',
+            content: '填写的比例必须大于0 ！'
+          })
+          return
+        }
+        if(!this.dividendLoading){
+          return
+        }
+        this.dividendLoading = false
+        this.httpAction(this.httpUrl('RATIO'), (res) => {
+          this.dividendLoading = true
+          let result = res.data;
+          if (result.status == 200) {
+            this.$router.go(-1)
+            this.$vux.alert.show({
+              title: result.longMessage,
+              content: result.repsoneContent
+            });
+          } else {
+            this.$vux.alert.show({
+              title: result.longMessage,
+              content: result.shortMessage
+            });
+          }
+        }, {
+          dividend_radio: this.dividendPoint,
+          userid: this.agentDetail.userid
+        })
+      },
+      _cancelDividend() {
+        this.showRevise = false
+      },
+      /*签订分红*/
+      _setDividend() {
+        if(this.agentDetail.dividend_salary_status == '1'){
+          this.showRevise = true
+        }else{
+          this.$router.push({path: '/userInfo/setDividend'})
+        }
+      },
+      /*关闭充值窗口*/
+      _rechargeClose() {
+        this.showRecharge = false
+        this.rechargeMoney = ''
+        this.errorText = ''
+        this.fundPassword = ''
+
+      },
+      _showRecharge() {
+        this.showRecharge = true
+      },
+      /*选择充值*/
+      onRecharge() {
+        this.showRecharge = true
+        this.httpAction(this.httpUrl('TRANSFER'), (res) => {
+          let result = res.data;
+          if (result.status == 200) {
+            let data = result.repsoneContent, recharge = {}
+            recharge.userid = this.agentDetail.userid
+            recharge.recharge_max = data.recharge_max
+            recharge.recharge_min = data.recharge_min
+            recharge.balance = data.balance
+            this.recharge = recharge
+          }
+        }, {
+          toUserid: this.agentDetail.userid,
+          type: 'TransferInfo'
+        })
+      },
+      /*立即充值*/
+      onConfirm() {
+        let rm = parseInt(this.rechargeMoney), rh = this.recharge, fp = this.fundPassword
+        if(rm == '' || rm < parseInt(rh.recharge_min) || rm > parseInt(rh.recharge_max)){
+          this.errorText = '金额格式输入不正确，请重新输入！'
+          return
+        }
+        if(fp == ''){
+          this.errorText = '资金密码不能为空，请重新输入！'
+          return
+        }
+        this.rechargeLoading = true
+        this.httpAction(this.httpUrl('TRANSFER'), (res) => {
+          this.rechargeLoading = false
+          let result = res.data;
+          if (result.status == 200) {
+            this._rechargeClose()
+            this.$router.go(-1)
+            this.$vux.alert.show({
+              title: '温馨提示',
+              content: result.shortMessage
+            })
+          } else {
+            this.errorText = result.shortMessage
+          }
+        }, {
+          toUserid: this.agentDetail.userid,
+          type: 'goTransfer',
+          money: this.rechargeMoney,
+          secpass: md5(this.fundPassword)
+        })
+      },
+      _onChangeKeepPoint(value) {
+        this.userKeeppoint = (this.prizeGroupList.filter((item)=>item.prizeGroup == value)[0].high * 100).toFixed(1)
+      },
+      _showPrizeGroup() {
+        this.showPrizeGroup = !this.showPrizeGroup
+      },
+      _cancelSet() {
+        this.showPrizeGroup = false
+      },
+      // 设置奖金组
+      _setPrizeGroup() {
+        let _this = this
+        this.$vux.confirm.show({
+          title: '温馨提示',
+          content: '确定要修改' + this.agentDetail.username + '的奖金组契约吗?',
+          onConfirm() {
+            _this._setPG()
+          }
+        })
+      },
+      _setPG() {
+        this.httpAction(this.httpUrl('UPEDITUSER'), (res) => {
+          let result = res.data;
+          if (result.status == 200) {
+            this.$router.go(-1)
+            this.$vux.alert.show({
+              title: result.longMessage,
+              content: result.repsoneContent
+            });
+          } else {
+            this.$vux.alert.show({
+              title: result.longMessage,
+              content: result.shortMessage
+            });
+          }
+        }, {
+          flag: "rapid",
+          uid: this.agentDetail.userid,
+          groupLevel: this.prizeGroup,
+          keeppoint: (this.selfPoint * 100 - this.userKeeppoint).toFixed(1),
+          selfPoint: this.selfPoint
+        })
+      },
+      //获取可设置的奖金组列表
+      _getPrizeGroup() {
+        this.httpAction(this.httpUrl('UPEDITUSER'), (res) => {
+          if (res.data.status == 200) {
+            let data = res.data.repsoneContent;
+            this.selfPoint = data.selfPoint;
+            this.prizeGroupList = data.list;
+            this.userKeeppoint = (data.list.filter((item)=>item.prizeGroup == this.prizeGroup)[0].high * 100).toFixed(1);
+          } else {
+            this.$vux.alert.show({
+              title: res.data.shortMessage,
+              content: '新注册的用户10分钟后才能修改奖金组，请稍后再试！'
+            })
+          }
+        }, {
+          uid: this.agentDetail.userid,
+        })
+      },
       /*签订日工资*/
       _setSalary() {
         this.$router.push({path: '/userInfo/setDalary'})
@@ -175,7 +511,6 @@
           tag: 'get_team_money'
         })
       },
-
       _show () {
         this.show = !this.show
       },
@@ -246,108 +581,6 @@
             content: res.data.msg
           })
         },formData)
-      },
-      // 配额设定
-      submits (e) {
-        let accnumHook = document.getElementsByClassName('accnum_hook')
-        let flag = true
-        for (let i = 0; i < accnumHook.length; i++) {
-          if (accnumHook[i].value !== '') {
-            flag = false
-            break
-          }
-        }
-        if (flag) {
-          this.$vux.alert.show({
-            title: '提示',
-            content: '请设定配额'
-          })
-          return
-        }
-        let formDatas = this.formser(e.target)
-        formDatas.accnum = formDatas.accnum.split(',')
-        formDatas.accgroup = formDatas.accgroup.split(',')
-        let httpurl = this.httpUrl('USERACCNUM')
-        this.httpAction(httpurl,(res) => {
-          this.$vux.alert.show({
-            title: '提示',
-            content: res.data.msg
-          })
-        },formDatas)
-      },
-      // 配额设定
-      _blurAccnum (val, index) {
-        let accnumHook = document.getElementsByClassName('accnum_hook')[index - 2].value
-        accnumHook = parseFloat(accnumHook)
-        let reg = /^0$|^\+?[1-9]\d*$/
-        let r = reg.test(accnumHook)
-        if (!r) {
-          this.$vux.alert.show({
-            title: '提示',
-            content: '请输入正整数'
-          })
-          document.getElementsByClassName('accnum_hook')[index - 2].value = ''
-          return
-        }
-        if (accnumHook < 0) {
-          this.$vux.alert.show({
-            title: '提示',
-            content: '请输入大于0的正整数'
-          })
-          document.getElementsByClassName('accnum_hook')[index - 2].value = ''
-          return
-        } else if (accnumHook > val) {
-          this.$vux.alert.show({
-            title: '提示',
-            content: '不能超过当前可用配额，请重新输入'
-          })
-          document.getElementsByClassName('accnum_hook')[index - 2].value = ''
-          return
-        } else if (accnumHook < 1) {
-          this.$vux.alert.show({
-            title: '提示',
-            content: '当前配额设定不能等于0，请重新输入'
-          })
-          document.getElementsByClassName('accnum_hook')[index - 2].value = ''
-          return
-        }
-      },
-      _blurKeeppoint () {
-        if (parseFloat(this.keeppoint) < 0.1 || this.keeppoint == '') {
-//          this.$vux.alert.show({
-//            title: '温馨提示',
-//            content: '自身返点不能小于0.1'
-//          })
-          this.keeppoint = 0.1
-          return
-        } else if (parseFloat(this.keeppoint) > parseFloat(this.maxPoint)) {
-//          this.$vux.alert.show({
-//            title: '温馨提示',
-//            content: '不能大于您的最高当前返点'
-//          })
-          this.keeppoint = (parseFloat(this.maxPoint)).toFixed(1)
-        } else {
-          this.keeppoint = parseFloat(this.keeppoint).toFixed(1)
-        }
-        this._getInputData()
-      },
-      // 请求提升返点
-      _getUpedituser () {
-        let httpurl = this.httpUrl('UPEDITUSER')
-        this.httpAction(httpurl,(res) => {
-          if (res.data.lotterys == undefined) {
-            this.isupBtn = false
-            this.$vux.alert.show({
-              title: '温馨提示',
-              content: '正在注册中，请稍后再试！'
-            })
-            return
-          } else {
-            this.isupBtn = true
-            this.lotterys = res.data.lotterys
-            this._getInputData()
-          }
-        },this.postData)
       },
       _getInputData () {
         let TempAllLotterys = this.lotterys
@@ -429,14 +662,87 @@
 <style lang="less" scoped>
  @import '../../../assets/css/style';
 
-   @media screen and (max-width: 330px) {
-     .quotaSetting{
-       padding:0 0 2rem 0 !important;
+ @media screen and (max-width: 330px) {
+   .quotaSetting{
+     padding:0 0 2rem 0 !important;
+   }
+ }
+ .recharge_content{
+   font-size: 0.28rem;
+   height: 0.6rem;
+   line-height: 0.6rem;
+   background: #CB1313;
+   color: #fff;
+   text-align: center;
+   .r_title{
+     margin-left: 1rem;
+   }
+   .weui-icon-cancel{
+     color: #fff;
+   }
+   .r_close{
+     float: right;
+     padding: 0.08rem 0.1rem 0.08rem 0.3rem;
+   }
+ }
+ .recharge_list{
+   font-size: 0.28rem;
+   margin: 0.2rem 0.3rem;
+   li{
+     text-align: left;
+     padding: 0.15rem 0;
+   }
+   .money_hint{
+     font-size: 0.24rem;
+     color: #5a5a5a;
+   }
+   .text_color{
+     color: #CB1313;
+   }
+   .rechage_text{
+     float: left;
+   }
+   .recharge_input, .fund_input{
+     float: left;
+     height: 0.64rem;
+     padding: 0 0.1rem;
+     width: 50%;
+     border: 1px solid #ddd;
+     border-radius: 3px;
+     margin-top: -0.1rem;
+     background: #fff;
+   }
+   .weui-cell:before{
+     border: 0;
+   }
+ }
+ .prize_group_content{
+   border-top: 1px solid #dddddd;
+   .fandian{
+     margin-top: 0.1rem;
+     li{
+       float: left;
+       width: 33%;
+       text-align: center;
+     }
+     li:last-child{
+       color: #f00;
      }
    }
-  .topPadding{
-    height:0.88rem;
-  }
+ }
+ .set_proup_btn{
+   width: 87%;
+   margin: 0 auto 0.5rem;
+ }
+ .prize_group_text{
+   text-align: center;
+ }
+ .range_content{
+   margin: 0.5rem 0.3rem 1rem -0.2rem;
+ }
+ .topPadding{
+   height:0.88rem;
+ }
  .salaryTable{
    background: #fff;
    thead tr td{
@@ -472,6 +778,21 @@
     }
     .textColor{
       color: #f00;
+    }
+    .dividend_input{
+      width: 20%;
+      display: inline-block;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      padding: 0 0.1rem;
+      background: #fff;
+      height: 0.52rem;
+      line-height: 0.52rem;
+      margin-bottom: 0.08rem;
+      vertical-align: bottom;
+    }
+    .weui-cell:before{
+      border: 0;
     }
      .updateBtn{
        float: right;
@@ -536,20 +857,18 @@
     }
     .quotaSetting{
       box-sizing: border-box;
-      padding: 0.2rem 0.2rem 2rem 0.2rem;
+      padding: 0.2rem 0 2rem 0.3rem;
       width: 100%;
-      background: #444444;
-      color:#fff;
       .cl;
-      input{
-        box-sizing: border-box;
-        background:#fff;
-        border-radius:3px;
-        width:1.3rem;
-        height: 0.54rem;
-        line-height:0.54rem;
-        padding:0 0.1rem;
-        margin:0 0.1rem;
+      .quota_input{
+        display: inline-block;
+        height: 0.6rem;
+        line-height: 0.6rem;
+        padding: 0 0.1rem;
+        width: 15%;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        background: #fff;
       }
       .settingpeie{
         .borderRadius(0.08rem);
