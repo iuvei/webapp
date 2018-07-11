@@ -40,18 +40,19 @@
             </ul>
             <p class="prize_group_text">设置奖金组：{{prizeGroup}}</p>
             <div class="range_content">
-              <range v-model="prizeGroup"
+              <range v-model="prizeGroupFlag"
                      :step="2"
+                     :decimal = 'true'
                      :min="prizeGroupList.length !== 0 ? parseInt(prizeGroupList[0].prizeGroup) : 1800"
                      :max="prizeGroupList.length !== 0 ? parseInt(prizeGroupList[prizeGroupList.length - 1].prizeGroup) : 1956"
-                     @on-change="_onChangeKeepPoint"
+                     @on-change="_onChangeKeepPoint(prizeGroupFlag)"
               >
               </range>
             </div>
             <div class="set_proup_btn">
               <flexbox>
                 <flexbox-item>
-                  <x-button type="warn" v-tap="{methods: _setPrizeGroup}">确定</x-button>
+                  <x-button type="warn" v-tap="{methods: _setPrizeGroup}" :disabled="prizeGroupFlag == agentDetail.prize_group">确定</x-button>
                 </flexbox-item>
                 <flexbox-item>
                   <x-button type="default" v-tap="{methods: _cancelSet}">取消</x-button>
@@ -176,20 +177,21 @@
         </li>
         <li>
           <p class="teamTit">配额设定</p>
-          <p class="teamcontent"></p>
+          <p class="teamcontent">{{quotaTotal}}</p>
           <p class="teamr pereBtn" v-tap="{ methods: _show }"></p>
           <br class="clear">
             <ul class="quotaSetting" v-if="show">
               <li v-for="(item, i) in quotaList" v-if="item.accGroup <= agentDetail.prize_group">
                 {{item.accGroup}}配额为
-                <span
-                className="subaccnum">{{item.subaccnum == undefined ? '0' : item.subaccnum}}</span>个，
+                <span className="subaccnum">
+                  {{item.subaccnum == undefined ? '0' : item.subaccnum}}
+                </span>个，
                 <span>
                   再增加
                   <x-input class="quota_input"
                            type="number"
                            :show-clear="false"
-                           v-model="agPost.accnum[i] && agPost.accnum[i]"
+                           v-model="agPost.accnum[i]"
                            @on-change="onChangeAccGroup(agPost.accnum[i], item)"
                   >
                   </x-input>
@@ -197,8 +199,8 @@
                 </span>
               </li>
               <li>{{agentDetail.prize_group < 1950 ? agentDetail.prize_group : '1948'}}及以下剩余配额：无限；</li>
-              <li style="text-align: center">
-                <x-button mini type="warn" :show-loading="quotaLoding" v-tap="{methods: onApplyPrizeQuota}">提交</x-button>
+              <li class="set_quota_btn" v-if="quotaBtn > 0">
+                <x-button type="warn" :show-loading="quotaLoding" v-tap="{methods: onApplyPrizeQuota}">提交</x-button>
               </li>
             </ul>
         </li>
@@ -226,22 +228,15 @@
     },
     data () {
       return {
-        teamcontent: (this.$store.state.agentDetail.userpoint * 100).toFixed(1),
-        keeppoint: 0.1,
         show: false,
-        isshow: false,
         agentDetail: this.$store.state.agentDetail,
-        maxPoint: (this.$route.query.selfp - this.$store.state.agentDetail.userpoint * 100 - 0.1).toFixed(1), // 最高返点
-        lotterys: [], // 计算列表
-        AllLotterys: [],
-        AllLotterysflag: [],
-        isupBtn: false,
         teamMoney: 0, // 团队余额
         showSalary: false,
         newSalary: [],
         selfPoint: 0,
         showPrizeGroup: false,
         prizeGroup: parseInt(this.$store.state.agentDetail.prize_group),
+        prizeGroupFlag: parseInt(this.$store.state.agentDetail.prize_group),
         prizeGroupList: [],
         userKeeppoint: 0,
         showRecharge: false,
@@ -254,23 +249,18 @@
         dividendPoint: '', // 修改的分红比例
         dividendLoading: true,
         quotaList: [], // 配额列表
-        agPost: {}, // 申请配额请求参数
+        agPost: {
+          accnum: [0, 0, 0, 0],
+          accgroup: [0, 0, 0, 0],
+          uid: '',
+          flag: 'post'
+        }, // 申请配额请求参数
         quotaLoding: false,
-      }
-    },
-    watch: {
-      keeppoint: {
-        deep: true,
-        handler: function (val, oldVal) {
-          if (this.keeppoint.indexOf('.') > -1) {
-            this.keeppoint = this.keeppoint.split('.')[0] + '.' + this.keeppoint.split('.')[1].substring(0, 1)
-          }
-          this._getInputData()
-        }
+        quotaBtn: false,
+        quotaTotal: 0,
       }
     },
     mounted () {
-      this._getUseraccnum()
       this._getTeamMoney()
       this._getHistorySalary()
       this._getPrizeGroup()
@@ -281,7 +271,7 @@
         this.httpAction(this.httpUrl('USERACCNUM'), (res) => {
           let result = res.data;
           if (result.status == 200) {
-            let aAllUserTypeAccNum = result.repsoneContent.aAllUserTypeAccNum, ap = this.agPost
+            let aAllUserTypeAccNum = result.repsoneContent.aAllUserTypeAccNum, ap = {}
             ap.accgroup = [];
             ap.accnum = [];
             aAllUserTypeAccNum.forEach((item) => {
@@ -289,14 +279,23 @@
               if (item.quotanum != undefined) {
                 ap.accnum.push(item.quotanum);
               } else {
-                ap.accnum.push('0');
+                ap.accnum.push(0)
               }
             });
             ap.uid = this.agentDetail.userid
-            ap.flag = 'post',
+            ap.flag = 'post'
+            let at = aAllUserTypeAccNum.filter(item => item.accGroup <= this.agentDetail.prize_group)
+            if(at.length <= 0){
+              this.quotaTotal = '配额无限制'
+            }else{
+              at.forEach((item) => {
+                this.quotaTotal += parseInt(item.subaccnum == undefined ? 0 : item.subaccnum)
+              })
+              this.quotaTotal = this.quotaTotal + '个'
+            }
             this.quotaList = aAllUserTypeAccNum
-            this.agPost =ap
-            console.log(ap)
+            this.quotaBtn = at.length
+            this.agPost = ap
           }
         }, {
           uid: this.agentDetail.userid
@@ -309,7 +308,12 @@
           this.quotaLoding = false
           let result = res.data
           if (result.status == 200) {
-            this.agPost = {}
+            this.agPost = {
+              accnum: [0, 0, 0, 0],
+              accgroup: [0, 0, 0, 0],
+              uid: '',
+              flag: 'post'
+            }
             this._getAccGroupList()
             this.$vux.alert.show({
               title: '温馨提示',
@@ -436,7 +440,15 @@
         })
       },
       _onChangeKeepPoint(value) {
-        this.userKeeppoint = (this.prizeGroupList.filter((item)=>item.prizeGroup == value)[0].high * 100).toFixed(1)
+        if(isNaN(value)){
+          return
+        }
+        let pg = this.prizeGroupList.filter((item) => item.prizeGroup == value)
+        if(pg.length <= 0){
+          return
+        }
+        this.prizeGroup = value
+        this.userKeeppoint = (pg[0].high * 100).toFixed(1)
       },
       _showPrizeGroup() {
         this.showPrizeGroup = !this.showPrizeGroup
@@ -543,118 +555,6 @@
       _showSalary() {
         this.showSalary = !this.showSalary
       },
-      clickteamcontent () {
-        this.isshow = !this.isshow
-      },
-      // 一键设置
-      submit (e) {
-        let formData = this.formser(e.target)
-        formData.lottery = formData.lottery.split(',')
-
-        if (parseFloat(this.keeppoint) < 0.1 || this.keeppoint == '') {
-          this.$vux.alert.show({
-            title: '温馨提示',
-            content: '自身返点不能小于0.1'
-          })
-          this.keeppoint = 0.1
-          return
-        } else if (parseFloat(this.keeppoint) > parseFloat(this.maxPoint)) {
-          this.$vux.alert.show({
-            title: '温馨提示',
-            content: '不能大于您的最高当前返点'
-          })
-          this.keeppoint = (parseFloat(this.maxPoint)).toFixed(1)
-          return
-        } else {
-          this.keeppoint = parseFloat(this.keeppoint).toFixed(1)
-        }
-        this._getInputData()
-
-        let httpurl = this.httpUrl('UPEDITUSER')
-        this.httpAction(httpurl,(res) => {
-          if (res.data.status == 200) {
-            this.teamcontent = (this.$route.query.selfp - this.keeppoint).toFixed(1)
-            this.maxPoint = (this.$route.query.selfp - this.teamcontent - 0.1).toFixed(1)
-          }
-          this.$vux.alert.show({
-            title: '温馨提示',
-            content: res.data.msg
-          })
-        },formData)
-      },
-      _getInputData () {
-        let TempAllLotterys = this.lotterys
-        let flag = []
-        for (let i = 0; i < TempAllLotterys.length; i++) {
-          if (TempAllLotterys[i].setted == null) {
-            continue
-          }
-          if (TempAllLotterys[i].setted.maxIndefinite < 0) {
-            TempAllLotterys[i].setted.maxIndefinite = 0.1
-          }
-          if (TempAllLotterys[i].setted.max < 0) {
-            TempAllLotterys[i].allFD = 0
-          } else {
-//            TempAllLotterys[i].allFD = parseFloat((TempAllLotterys[i].setted.point * 100 - this.keeppoint).toFixed(1))
-            TempAllLotterys[i].allFD = parseFloat((this.$route.query.selfp - this.keeppoint).toFixed(1))
-
-          }
-          TempAllLotterys[i].bddFD = parseFloat((TempAllLotterys[i].setted.maxIndefinite - this.keeppoint).toFixed(1))
-          if (TempAllLotterys[i].allFD < 0) {
-            TempAllLotterys[i].allFD = 0
-          }
-          if (TempAllLotterys[i].bddFD < 0) {
-            TempAllLotterys[i].bddFD = 0
-          }
-          TempAllLotterys[i].lottery = [TempAllLotterys[i].setted.lotteryid]
-          TempAllLotterys[i].namepg = 'pg_' + TempAllLotterys[i].setted.lotteryid
-          TempAllLotterys[i].namemin_point = 'min_point_' + TempAllLotterys[i].setted.lotteryid
-          TempAllLotterys[i].namemax_point = 'max_point_' + TempAllLotterys[i].setted.lotteryid
-          TempAllLotterys[i].namepoint = 'point_' + TempAllLotterys[i].setted.lotteryid
-          TempAllLotterys[i].namemin_indefinite_point = 'min_indefinite_point_' + TempAllLotterys[i].setted.lotteryid
-          TempAllLotterys[i].namemax_indefinite_point = 'max_indefinite_point_' + TempAllLotterys[i].setted.lotteryid
-          TempAllLotterys[i].nameindefinite_point = 'indefinite_point_' + TempAllLotterys[i].setted.lotteryid
-          flag.push(TempAllLotterys[i])
-        }
-        this.AllLotterys = flag
-      },
-      formser (form) {
-        let arr = {}
-        for (let i = 0; i < form.elements.length; i++) {
-          let feled = form.elements[i]
-          switch (feled.type) {
-            case undefined:
-            case 'button':
-            case 'file':
-            case 'reset':
-            case 'submit':
-              break
-            case 'checkbox':
-            case 'radio':
-              if (!feled.checked) {
-                break
-              }
-            default:
-              if (arr[feled.name] || arr[feled.name] == '') {
-                arr[feled.name] = arr[feled.name] + ',' + feled.value
-              } else {
-                arr[feled.name] = feled.value
-              }
-          }
-        }
-        return arr
-      },
-      // 请求用户配额
-      _getUseraccnum () {
-        let httpurl = this.httpUrl('USERACCNUM')
-        this.httpAction(httpurl,(res) => {
-          if (res.data.status == 990) {
-            this.useraccnum = []
-          } else {
-            this.useraccnum = res.data.aAllUserTypeAccNum
-          }
-        })
-      }
     }
   }
 
@@ -869,6 +769,11 @@
         border: 1px solid #ddd;
         border-radius: 3px;
         background: #fff;
+      }
+      .set_quota_btn{
+        button.weui-btn{
+          width: 50%;
+        }
       }
       .settingpeie{
         .borderRadius(0.08rem);
