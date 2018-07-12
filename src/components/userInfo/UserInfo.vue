@@ -166,10 +166,7 @@
       },
       // 是否显示日工资,日亏损佣金，团队分红
       _statement() {
-        let httpurl = this.httpUrl('DAYWAGE'),
-          daywageData = {
-            check: 1
-          }
+        let httpurl = this.httpUrl('DAYWAGE')
         this.httpAction(httpurl, (res) => {
           if (res.data.status == 200) {
             this.dayWage = res.data.data.isSalary
@@ -179,7 +176,9 @@
             this.$store.commit('updatedayLoss', this.dayLoss)
             this.$store.commit('updatedividend', this.dividend)
           }
-        }, daywageData)
+        }, {
+          check: 1
+        })
       },
       _activity() {
         this.$router.push({path: '/activity'})

@@ -196,9 +196,11 @@ export const interFace = (key) => {
   INTERFACE['TRANSFER'] = 'controller=financial&action=Transfer';
   // 配额
   INTERFACE['USERACCNUM'] = 'controller=user&action=useraccnum';
+  //日工资状态
+  INTERFACE['RGZSTATUS'] = 'controller=user&action=main';
 
   var httpurl;
-  if(key == 'TEAMMANAGEMENT' || key == 'SEEPROTOCOL' || key == 'UPDATEPROTOCOL' || key == 'UPEDITUSER' || key == 'TRANSFER' || key == 'RATIO' || key == 'USERACCNUM'){
+  if(key == 'TEAMMANAGEMENT' || key == 'SEEPROTOCOL' || key == 'UPDATEPROTOCOL' || key == 'UPEDITUSER' || key == 'TRANSFER' || key == 'RATIO' || key == 'USERACCNUM' || key == 'RGZSTATUS'){
     httpurl = '/pcservice/index.php?' + INTERFACE[key]
   }else{
     httpurl = '/wap/index.php?' + INTERFACE[key]

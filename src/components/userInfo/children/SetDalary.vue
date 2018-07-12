@@ -226,7 +226,7 @@
     }
   }
   .old_salary_content{
-    margin: 0 0.2rem;
+    margin: 0 0.2rem 1.5rem;
     p{
       padding: 0.16rem 0;
     }

@@ -103,17 +103,59 @@
         </div>
       </mt-loadmore>
     </div>
+    <div v-transfer-dom>
+      <x-dialog v-model="showSalary">
+        <p class="title_salary_home">签订日工资契约</p>
+        <div class="new_salary">
+          <p class="title_text">您的日工资比例如下：</p>
+          <table class="home_salary_table" cellspacing="0" width="100%">
+            <thead>
+            <tr>
+              <th>日销量</th>
+              <th>活跃人数</th>
+              <th>日工资比例</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="item in rgzData">
+              <td>{{item.sale}}</td>
+              <td>{{item.active_member}}</td>
+              <td>{{item.salary_ratio}}%</td>
+            </tr>
+            </tbody>
+          </table>
+          <p class="hint_text">提示：日工资契约签订后不可修改，如需调整请联系平台。</p>
+          <flexbox>
+            <flexbox-item>
+              <x-button type="warn" :show-loading="affirmLoading" v-tap="{methods: agreeRgz, val: 1}">签订</x-button>
+            </flexbox-item>
+            <flexbox-item>
+              <x-button type="default" :show-loading="repulseLoading" v-tap="{methods: agreeRgz, val: 2}">拒绝</x-button>
+            </flexbox-item>
+          </flexbox>
+        </div>
+      </x-dialog>
+    </div>
   </div>
 </template>
 
 <script>
   import Swipe from '../swipe/Swipe.vue'
   import rollNotice from '../rollNotice/rollNotice.vue'
-  import {Loading, XDialog, TransferDomDirective as TransferDom} from 'vux'
+  import {Loading, XDialog, TransferDomDirective as TransferDom, Flexbox, XButton, FlexboxItem } from 'vux'
 
   export default {
     directives: {
       TransferDom
+    },
+    components: {
+      Swipe,
+      rollNotice,
+      Loading,
+      XDialog,
+      Flexbox,
+      XButton,
+      FlexboxItem,
     },
     data() {
       return {
@@ -138,14 +180,12 @@
         lotteryType: [], // 彩种类型
         times: '', // 定时器
         showToast: false, // 活动
-        clearsetTime: ''
+        clearsetTime: '',
+        rgzData: [],
+        showSalary: false,
+        affirmLoading: false,
+        repulseLoading: false,
       }
-    },
-    components: {
-      Swipe,
-      rollNotice,
-      Loading,
-      XDialog
     },
     watch: {
       enshrine: {
@@ -196,6 +236,7 @@
       next(true)
     },
     mounted() {
+      this.getRigongzi()
       if (this.playPlatform === 'web') {
         this.httpUrl()
         this._getaccout()
@@ -204,6 +245,57 @@
       this._getlocalStorage()
     },
     methods: {
+      //获取日工资状态
+      getRigongzi(){
+        this.httpAction(this.httpUrl('RGZSTATUS'), (res) => {
+          let result = res.data
+          if(result.status == 200){
+            if(result.repsoneContent.status == 0){
+              this.showSalary = true
+              this.rgzData = result.repsoneContent.protocol||[]
+            }
+          }
+        },{
+          tag:'getSalaryStatus'
+        })
+      },
+      //通过或拒绝日工资
+      agreeRgz(param){
+        let val = param.val
+        if(val == 1){
+          this.affirmLoading = true
+        }else{
+          this.repulseLoading = true
+        }
+        this.httpAction(this.httpUrl('RGZSTATUS'), (res) => {
+          this.showSalary = false
+          this.affirmLoading = false
+          this.repulseLoading = false
+          let result = res.data
+          if(result.status == 200){
+            let divContent;
+            if(val == 1){
+              this.$vux.alert.show({
+                title: '温馨提示',
+                content: '恭喜！您已成功签定日工资契约'
+              })
+            }else{
+              this.$vux.alert.show({
+                title: '温馨提示',
+                content: '已拒绝，可联系您的上级！'
+              })
+            }
+          }else{
+            this.$vux.alert.show({
+              title: '温馨提示',
+              content: result.shortMessage
+            })
+          }
+        }, {
+          tag:'UpdateSalaryStatus',
+          status: val
+        })
+      },
       _message() {
         this.showToast = false
         this.$router.push({path: '/activity'})
@@ -240,7 +332,7 @@
         this.getcq()
         this._restart_tick()
       },
-      _enshrine() {
+      _enshrine(){
         let lotteryType = this.$store.state.lotteryType
         for (let i = 0; i < lotteryType.length; i++) {
           if (lotteryType[i].lotteryid == 1 || lotteryType[i].lotteryid == 14 || lotteryType[i].lotteryid == 19) {
@@ -535,6 +627,51 @@
   @import '../../assets/css/style';
 
   @border_radius: 0.265rem;
+  /*上级签订了日工资home页--start*/
+  .new_salary{
+    color: rgba(0, 0, 0, 0.85);
+    padding: 0.2rem;
+  }
+  .title_salary_home{
+    height: 0.6rem;
+    line-height: 0.6rem;
+    background: #F5F5F5;
+    border-bottom: 2px solid #cf2027;
+    font-size: 0.28rem;
+  }
+  .new_salary .home_salary_table{
+    margin: 0.2rem 0;
+    border: 1px solid #ddd;
+    border-bottom: 0;
+  }
+  .new_salary .home_salary_table th{
+    background: #F5F5F5;
+    padding: 0.1rem 0.05rem;
+    border-left: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+  }
+  .new_salary .home_salary_table th:first-child{
+    border-left: 0;
+  }
+  .new_salary .home_salary_table td{
+    padding: 0.1rem 0.05rem;
+    border-left: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+  }
+  .new_salary .home_salary_table td:first-child{
+    border-left: 0;
+  }
+  .new_salary .title_text{
+    text-align: left;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.65);
+  }
+  .new_salary .hint_text{
+    text-align: left;
+    color: rgba(0, 0, 0, 0.65);
+    font-size: 0.24rem;
+    padding-bottom: 0.2rem;
+  }
 
   .cqcody_style {
     display: inline-block;
@@ -551,7 +688,7 @@
       top: -0.265rem;
       background: #fff;
       border-radius: @border_radius;
-      z-index: 9999999;
+      z-index: 999;
       .icon_right {
         .icon_arrows(0.2rem, 0.22rem, #ccc, 0.1rem, 45deg)
       }
