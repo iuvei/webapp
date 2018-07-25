@@ -1454,10 +1454,10 @@
           if (this.$store.state.typeInput == 'input') {
             // 处理M对象
             let tempFlag = false
-            let tempArr = ['15', '10', '2295', '2379', '2374', '2423', '190403', '190303', '191903', '278', '273']
+            let tempArr = ['HHZX', 'RX2ZUXDS', 'RX3ZUXHX']
             this.model.contents = ''
             for (let i = 0, len = tempArr.length; i < len; i++) {
-              if (this.methodid == tempArr[i] && this.$store.state.typeInput == 'input') {
+              if (lt_method[String(this.methodid)] == tempArr[i] && this.$store.state.typeInput == 'input') {
                 tempFlag = true
               }
             }
