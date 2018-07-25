@@ -502,7 +502,7 @@
           if (this.model.type === 'input') {
             this._danshiBall(this.danshiBall)
           }
-          this.$store.commit('updateRXSelect',this.rxSelect)
+          this.$store.commit('updateRXSelect', this.rxSelect)
         }
       },
       methodid: {
