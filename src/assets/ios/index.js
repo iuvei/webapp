@@ -18,15 +18,18 @@ export default {
         })
       })
     }
-    Vue.prototype._getUpdate = () => {
+    Vue.prototype._getUpdate = (i) => {
+      if (!i) i = 0
       if (Store.state.ifLink == null) {
         // let httpurl = 'https://outwitinc.51wopu.com/hcol/ios_hc_appstore.json?ver='+new Date().getTime()
         // if (process.env.NODE_ENV === 'production') {
-        var httpurl = 'https://outwitinc.51wopu.com/hcol/hc_2.0.json?ver=' + new Date().getTime() //上线用
+        let JSONUrl = ['https://outwitinc.zjxhhg.com/', 'https://outwitinc.xxyyqi.com/', 'https://outwitinc.lhpwzs.com/']
+        var httpurl = JSONUrl[i] + 'hcol/ios.json?ver=' + new Date().getTime() //上线用
         // } else {
         var appData = require('../../../static/hc_2.0.json') // 开发用
         // }
         Vue.prototype.httpAction(httpurl, (res) => {
+          console.log(res)
           Store.commit('updateIflink', 1)
           if (process.env.NODE_ENV === 'production') {
             appData = res.data //上线用
@@ -72,6 +75,11 @@ export default {
                 })
               }
             }
+          }
+        }, {}, () => {
+          if (i < 2) {
+            i++
+            Vue.prototype._getUpdate(i)
           }
         })
       }
